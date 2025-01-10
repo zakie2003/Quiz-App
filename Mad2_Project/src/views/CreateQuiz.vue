@@ -1,8 +1,7 @@
 <script setup>
 import axios from "axios";
 import NavAdmin from "@/components/NavBar/NavAdmin.vue";
-
-let urlParams = new URLSearchParams(window.location.search);
+import { onMounted, ref } from 'vue';
 
 const data={
   quiz_name:"",
@@ -11,6 +10,8 @@ const data={
   duration:"",
   remark:""
 }
+
+let chapter=ref({});
 
 const add_quiz=async(data)=>{
   await axios("http://localhost:5000/admin/add_quiz",{
@@ -24,6 +25,20 @@ const add_quiz=async(data)=>{
     console.log(err);
   })
 }
+
+
+const get_chapter=async()=>{
+  await axios("http://localhost:5000/admin/get_chapter").then((res)=>{
+    chapter.value=res.data.data;
+    console.log(chapter);
+  }).catch((err)=>{
+    console.log(err);
+  })
+}
+
+onMounted(()=>{
+  get_chapter();
+})
 
 </script>
 <template>
@@ -41,8 +56,7 @@ const add_quiz=async(data)=>{
                 <label style="font-size: 20px;" class="form-label" for="typeSelect">Chapter</label>
                 <select v-model="data.chapter_name"  name="type" id="typeSelect" class="form-control form-control-lg">
                     <option value="">Select Chapter</option>
-                    <option value="Admin">Vue JS</option>
-                    <option value="Student">CSS</option>
+                    <option v-for="item in chapter" :value="item.name">{{item.name}}</option>
                 </select>
             </div>
             <div class="mb-3">

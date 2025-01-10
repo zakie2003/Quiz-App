@@ -3,7 +3,7 @@ from flask import Blueprint,jsonify,request
 from sqlalchemy import and_
 import jwt
 from Model.DataBase import db
-from Model.Model import Admin,Subject,Chapter,Quiz
+from Model.Model import Admin,Subject,Chapter,Quiz,Question
 
 adminbp=Blueprint('adminbp',__name__)
 
@@ -91,7 +91,10 @@ def create_chapter():
 def get_chapters():
     try:
         subject_id=request.args.get("subject_id")
-        chapter=Chapter.query.filter(Chapter.subject_id==subject_id).all()
+        if(subject_id==None):
+            chapter=Chapter.query.all()
+        else:
+            chapter=Chapter.query.filter(Chapter.subject_id==subject_id).all()
         chapter_list=[]
         for chapter in chapter:
              chapter_list.append(row2dict(chapter))
@@ -142,5 +145,16 @@ def get_quizes():
             row=row2dict(i)
             temp.append(row)
         return jsonify({"status":200,"quiz_data":temp})
+    except Exception as e:
+        return jsonify({"status":404,"message":f"{e}"})
+    
+@adminbp.route("/add_question",methods=["POST"])
+def add_question():
+    try:
+        data=request.json
+        question=Question(data["chapter_name"],data["quiz_id"],data["question_description"],data["option_1"],data["option_2"],data["option_3"],data["option_4"],data["answer"])
+        db.session.add(question)
+        db.session.commit()
+        return jsonify({"status":200,"message":"Question Added"})
     except Exception as e:
         return jsonify({"status":404,"message":f"{e}"})

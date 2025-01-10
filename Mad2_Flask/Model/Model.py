@@ -93,7 +93,7 @@ class Quiz(db.Model):
 class Question(db.Model):
     __tablename__ = "question"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    chapter_id = db.Column(db.Integer, nullable=False)
+    chapter_name = db.Column(db.String(50), nullable=False)
     quiz_id = db.Column(db.Integer, nullable=False)
     question = db.Column(db.String(200), nullable=False)
     option_a = db.Column(db.String(200), nullable=False)
@@ -101,8 +101,8 @@ class Question(db.Model):
     option_c = db.Column(db.String(200), nullable=False)
     option_d = db.Column(db.String(200), nullable=False)
     correct_option = db.Column(db.String(200), nullable=False)
-    def __init__(self, chapter_id,quiz_id, question, option_a, option_b, option_c, option_d, correct_option):
-        self.chapter_id = chapter_id
+    def __init__(self, chapter_name,quiz_id, question, option_a, option_b, option_c, option_d, correct_option):
+        self.chapter_name = chapter_name
         self.quiz_id = quiz_id
         self.question = question
         self.option_a = option_a

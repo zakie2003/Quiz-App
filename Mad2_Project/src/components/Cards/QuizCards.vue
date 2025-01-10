@@ -11,7 +11,7 @@ const props=defineProps(
 const data=ref({})
 
 const go_to_add_question=()=>{
-  window.location.href="/admin/add_question?quiz_id="+props.item.id;
+  window.location.href="/admin/add_question?quiz_id="+props.item.id+"&chapter_name="+props.item.chapter_name;
 }
 
 
