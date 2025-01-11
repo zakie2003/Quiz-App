@@ -14,7 +14,17 @@ const go_to_add_question=()=>{
   window.location.href="/admin/add_question?quiz_id="+props.item.id+"&chapter_name="+props.item.chapter_name;
 }
 
+const get_questions=async()=>{
+  await axios.post("http://localhost:5000/admin/get_questions",{"quiz_id":props.item.id,"chapter_name":props.item.chapter_name}).then((res)=>{
+    data.value=res.data.data;
+  }).then((err)=>{
+    console.log(err);
+  })
+}
 
+onMounted(()=>{
+  get_questions();
+})
 
 </script>
 <template>
@@ -39,11 +49,11 @@ const go_to_add_question=()=>{
           <tbody>
             
             <tr v-for="(item, index) in data" :key="index">
-              <td>mkmom</td>
-              <td>0</td>
+              <td>{{ item.id }}</td>
+              <td>{{ item.question }}</td>
               <td>
-                <button v-on:click="go_to_edit(item.name,item.number_of_questions)" style="background-color: #f38d04;" class="btn my-1">Edit</button> &nbsp;
-                <button v-on:click="delete_chapter(item.name)" style="background-color: #f38d04;" class="btn my-1">Delete</button>
+                <button style="background-color: #f38d04;" class="btn my-1">Edit</button> &nbsp;
+                <button style="background-color: #f38d04;" class="btn my-1">Delete</button>
               </td>
             </tr>
           </tbody>

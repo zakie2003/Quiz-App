@@ -42,7 +42,7 @@ onMounted(() => {
   </nav>
 </template>
 <style>
-@import "../assets/CSS/nav.css";
+@import "../../assets/CSS/nav.css";
 
 
 form {

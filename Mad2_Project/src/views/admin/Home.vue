@@ -76,7 +76,7 @@ onMounted(() => {
   </nav>
 </template>
 <style>
-@import "../assets/CSS/nav.css";
+@import "../../assets/CSS/nav.css";
 .ag-courses_box {
     display: -webkit-box;
     display: -ms-flexbox;

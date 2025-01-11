@@ -20,43 +20,43 @@ const router = createRouter({
     {
       path: '/admin/home',
       name: 'AdminHome',
-      component: () => import('../views/Home.vue'),
+      component: () => import('../views/admin/Home.vue'),
       meta: { requiresAuth: true } 
     },
     {
       path: '/admin/create_subject',
       name: 'CreateSubject',
-      component: () => import('../views/CreateSubject.vue'),
+      component: () => import('../views/admin/CreateSubject.vue'),
       meta: { requiresAuth: true } 
     },
     {
       path: '/admin/create_chapter',
       name: 'CreateChapter',
-      component: () => import('../views/CreateChapter.vue'),
+      component: () => import('../views/admin/CreateChapter.vue'),
       meta: { requiresAuth: true }
     },
     {
       path: '/admin/edit_chapter',
       name: 'EditChapter',
-      component: () => import('../views/EditChapter.vue'),
+      component: () => import('../views/admin/EditChapter.vue'),
       meta: { requiresAuth: true }
     },
     {
       path: '/admin/quiz_dashboard',
       name: 'QuizDashboard',
-      component: () => import('../views/QuizBoard.vue'),
+      component: () => import('../views/admin/QuizBoard.vue'),
       meta: { requiresAuth: true }
     },
     {
       path: '/admin/create_quiz',
       name: 'CreateQuiz',
-      component: ()=> import('../views/CreateQuiz.vue'),
+      component: ()=> import('../views/admin/CreateQuiz.vue'),
       meta: { requiresAuth: true }
     },
     {
       path: '/admin/add_question',
       name: "AddQuestion",
-      component: () => import('../views/AddQuestion.vue'),
+      component: () => import('../views/admin/AddQuestion.vue'),
       meta: { requiresAuth: true }
     }
 

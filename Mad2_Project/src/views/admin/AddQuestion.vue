@@ -69,7 +69,7 @@ const add_question=async(data)=>{
   </nav>
 </template>
 <style>
-@import "../assets/CSS/nav.css";
+@import "../../assets/CSS/nav.css";
 
 /* Add custom styles for better form spacing */
 form {

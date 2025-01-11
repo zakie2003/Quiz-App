@@ -158,3 +158,18 @@ def add_question():
         return jsonify({"status":200,"message":"Question Added"})
     except Exception as e:
         return jsonify({"status":404,"message":f"{e}"})
+    
+
+@adminbp.route("/get_questions",methods=["POST"])
+def get_questions():
+    try:
+       data=request.json
+
+       questions=Question.query.filter(Question.chapter_name==data["chapter_name"]).all()
+       quest_list=[]
+       for row in questions:
+           row=row2dict(row)
+           quest_list.append(row)
+       return jsonify({"message":"Got Questions","data":quest_list,"status_code":"200"})
+    except Exception as e:
+        return jsonify({"error":f"{e}","status_code":"404"})
