@@ -1,7 +1,8 @@
 <script setup>
 import axios from "axios";
 import NavAdmin from "@/components/NavBar/NavAdmin.vue";
-import { onMounted } from "vue";
+import { onMounted,ref } from "vue";
+import ErrorMessage from "@/components/Message/ErrorMessage.vue";
 let urlParams = new URLSearchParams(window.location.search);
 const data={
   chapter_name:urlParams.get('chapter_name'),
@@ -14,10 +15,16 @@ const data={
   answer:""
 }
 
+const msg=ref({});
+
 const add_question=async(data)=>{
-  console.log(data);
   await axios.post("http://localhost:5000/admin/add_question",data).then((response)=>{
-    console.log(response);
+    if(response.data.message=="Question limit reached"){
+      msg.value.message=response.data.message;
+    }
+    else{
+      window.location.href="/admin/quiz_dashboard";
+    }
   }).catch((err)=>{
     console.log(err);
   })
@@ -62,6 +69,7 @@ const add_question=async(data)=>{
               <option value="4">Four</option>
             </select>
           </div>
+          <ErrorMessage v-if="msg.message" :message="msg.message" />
           <button style="font-size: 20px;background-color: #4723d9;color: aliceblue;" type="submit" class="m-3 btn  ">Submit</button>
         </form>
       </div>

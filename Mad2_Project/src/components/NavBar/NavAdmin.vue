@@ -40,10 +40,10 @@ onMounted(() => {
           <a href="/signin" class="nav_link"><i class='bx bx-bar-chart-square nav_icon'></i> <span class="nav_name">Statistics</span> </a>
           <button style="background: none;border: none;" class="nav_link "><i class='bx bx-moon' ></i> <span>Theme</span></button>
           <button @click="logout" style="background: none;border: none;" class="nav_link "><i class='bx bx-door-open' ></i> <span>Logout</span></button>
+          <button  style="background: none;border: none;" class="nav_close nav_link" id="nav-close"> <i  class='bx bx-x nav_icon'></i> Close</button>
         </div>
       </div>
-      <!-- Add close button -->
-      <div class="nav_close" id="nav-close"> <i class='bx bx-x'></i> </div>
+
     </nav>
   </div>
 </template>

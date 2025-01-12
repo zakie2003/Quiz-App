@@ -180,7 +180,7 @@ def get_questions():
     try:
        data=request.json
 
-       questions=Question.query.filter(Question.chapter_name==data["chapter_name"]).all()
+       questions=Question.query.filter(Question.chapter_name==data["chapter_name"] , Question.quiz_id==data["quiz_id"]).all()
        quest_list=[]
        for row in questions:
            row=row2dict(row)

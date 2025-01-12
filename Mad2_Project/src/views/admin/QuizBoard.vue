@@ -3,11 +3,13 @@ import axios from "axios";
 import NavAdmin from "@/components/NavBar/NavAdmin.vue";
 import QuizCards from "@/components/Cards/QuizCards.vue";
 import { onMounted, ref } from "vue";
+import ErrorMessage from "@/components/Message/ErrorMessage.vue";
 
 const data = ref({
   name: "",
   description: "",
-  quiz_data: []
+  quiz_data: [],
+  alert_msg: "",
 });
 
 const go_to_create_quiz = () => {
@@ -27,6 +29,10 @@ const fetch_quiz = async () => {
 
 onMounted(() => {
   fetch_quiz();
+  const referrer = document.referrer;
+  if (referrer.includes("/admin/create_quiz")) {
+    data.value.alert_msg = "Quiz created successfully";
+  }
 });
 
 </script>
@@ -34,6 +40,7 @@ onMounted(() => {
   <nav class="navbar navbar-expand-lg pb-0 bg-body-tertiary">
     <NavAdmin /> 
     <div style="height: 100vh;" class="bg-light w-100">
+      <ErrorMessage v-if="data.alert_msg" :message="data.alert_msg" />
       <h1 class="m-4">Quiz Dashboard  <button v-on:click="go_to_create_quiz" style="background-color: #4723d9;color: aliceblue;" class="btn">Create Quiz</button></h1> 
       <div v-for="(item, index) in data.quiz_data" :key="index">
         <QuizCards :item="item"/>

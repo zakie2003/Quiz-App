@@ -36,6 +36,7 @@ const go_to_edit_question=(id)=>{
 }
 
 onMounted(()=>{
+  console.log(props);
   get_questions();
 })
 
