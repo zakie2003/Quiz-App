@@ -24,7 +24,7 @@ const get_question = async () => {
     const res = await axios.post("http://localhost:5000/admin/get_question", { question_id });
     // Ensure the API response matches the structure of `data`
     if (res.data && res.data.data) {
-      data.value=Object.assign(data, res.data.data);
+      Object.assign(data, res.data.data);
       console.log(data);
     } else {
       console.error("Invalid API response:", res.data);
@@ -34,11 +34,30 @@ const get_question = async () => {
   }
 };
 
-const add_question = async (formData) => {
+const add_question = async () => {
+  let urlPath = window.location.pathname;
+  const parts = urlPath.split('/');
+  const question_id = parts[parts.length - 1]; 
+  const formData = {
+    id: question_id,
+    chapter_name: data.chapter_name,
+    quiz_id: data.quiz_id,
+    question_description: data.question,
+    option_1: data.option_a,
+    option_2: data.option_b,
+    option_3: data.option_c,
+    option_4: data.option_d,
+    correct_option: data.correct_option,
+  };
+
   try {
-    const res = await axios.post("http://localhost:5000/admin/edit_question", formData);
-    console.log("Question updated successfully:", res.data);
-    alert("Question updated successfully!");
+     await axios.post("http://localhost:5000/admin/edit_question", formData).then((res) => {
+       console.log(res);
+       window.location.href = "/admin/quiz_dashboard";
+     }).catch((err) => {
+       console.log(err);
+     })
+    // window.location.href = "/admin/quiz_dashboard";
   } catch (err) {
     console.error("Error updating question:", err);
     alert("Failed to update question.");
@@ -58,7 +77,7 @@ onMounted(() => {
       <div class="container">
         <form
           class="d-flex flex-column w-90"
-          @submit.prevent="add_question(data)"
+          @submit.prevent="add_question"
           action=""
         >
           <div class="mb-3">

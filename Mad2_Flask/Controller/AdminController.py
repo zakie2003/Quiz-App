@@ -209,3 +209,20 @@ def delete_question():
         return jsonify({"status":200,"message":"Question Deleted"})
     except Exception as e:
         return jsonify({"status":404,"message":f"{e}"})
+    
+@adminbp.route("/edit_question",methods=["POST"])
+def edit_question():
+    try:
+        data=request.json
+        question=Question.query.filter(Question.id==data["id"]).first()
+        print(data)
+        question.question=data["question_description"]
+        question.option_a=data["option_1"]
+        question.option_b=data["option_2"]
+        question.option_c=data["option_3"]
+        question.option_d=data["option_4"]
+        question.correct_option=data["correct_option"]
+        db.session.commit()
+        return jsonify({"status":200,"message":"Question edited"})
+    except Exception as e:
+        return jsonify({"status":404,"message":f"{e}"})
