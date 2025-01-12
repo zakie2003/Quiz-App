@@ -22,6 +22,19 @@ const get_questions=async()=>{
   })
 }
 
+const delete_question=async(id)=>{
+  await axios.post("http://localhost:5000/admin/delete_question",{"id":id}).then((res)=>{
+    console.log(res);
+    get_questions();
+  }).then((err)=>{
+    console.log(err);
+  })
+}
+
+const go_to_edit_question=(id)=>{
+  window.location.href="/admin/edit_question/"+id;
+}
+
 onMounted(()=>{
   get_questions();
 })
@@ -52,8 +65,8 @@ onMounted(()=>{
               <td>{{ item.id }}</td>
               <td>{{ item.question }}</td>
               <td>
-                <button style="background-color: #f38d04;" class="btn my-1">Edit</button> &nbsp;
-                <button style="background-color: #f38d04;" class="btn my-1">Delete</button>
+                <button style="background-color: #f38d04;" v-on:click="go_to_edit_question(item.id)" class="btn my-1">Edit</button> &nbsp;
+                <button style="background-color: #f38d04;" v-on:click="delete_question(item.id)" class="btn my-1">Delete</button>
               </td>
             </tr>
           </tbody>

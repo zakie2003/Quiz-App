@@ -1,8 +1,9 @@
 from datetime import datetime, timedelta
-from flask import Blueprint,jsonify,request
+from flask import Blueprint,jsonify,request,session
 from sqlalchemy import and_
 import jwt
 from Model.DataBase import db
+from flask_session import Session
 from Model.Model import Admin,Subject,Chapter,Quiz,Question
 
 adminbp=Blueprint('adminbp',__name__)
@@ -30,6 +31,8 @@ def authorize():
     if(len(admin_data)>0):
         token = jwt.encode({'user_id': admin_data[0].id,'exp': datetime.now() + timedelta(hours=1)}, "secret", algorithm='HS256')
         admin_data[0].token=token
+        session["token"] = token
+        session["name"] = admin_data[0].name
         db.session.commit()
         return jsonify({'status':200,'token':token,"id":admin_data[0].id,"email":admin_data[0].email,"name":admin_data[0].name,"password":admin_data[0].password,"message":"Admin found"})
     else:
@@ -37,6 +40,8 @@ def authorize():
     
 @adminbp.route('/getinfo',methods=['POST'])
 def getinfo():
+    if(session.get("token") is None):
+        return jsonify({'status':404,"message":"Admin not found"})
     data = request.json
     token = data["token"][1:len(data["token"])-1]
     admin_data = Admin.query.filter(Admin.token == token).all()
@@ -107,6 +112,10 @@ def edit_chapter():
     try:
         data=request.json
         chapter=Chapter.query.filter(Chapter.name==data["name"]).first()
+        question=Question.query.filter(Question.chapter_name==data["name"]).all()
+        if(len(question)>data["numberofquestion"]):
+            return jsonify({"status":404,"message":"Can't edit number of question"})
+
         chapter.name=data["name"]
         chapter.number_of_questions=data["numberofquestion"]
         db.session.commit()
@@ -152,6 +161,12 @@ def get_quizes():
 def add_question():
     try:
         data=request.json
+        prev_question=Question.query.filter(Question.chapter_name==data["chapter_name"]).all()
+        chapter=Chapter.query.filter(Chapter.name==data["chapter_name"]).first()    
+        number_of_questions=chapter.number_of_questions
+        if(len(prev_question)>=number_of_questions):
+            return jsonify({"status":404,"message":"Question limit reached"})
+        
         question=Question(data["chapter_name"],data["quiz_id"],data["question_description"],data["option_1"],data["option_2"],data["option_3"],data["option_4"],data["answer"])
         db.session.add(question)
         db.session.commit()
@@ -173,3 +188,24 @@ def get_questions():
        return jsonify({"message":"Got Questions","data":quest_list,"status_code":"200"})
     except Exception as e:
         return jsonify({"error":f"{e}","status_code":"404"})
+    
+@adminbp.route("/get_question",methods=["POST"])
+def get_question():
+    try:
+        data=request.json
+        question=Question.query.filter(Question.id==data["question_id"]).first()
+        row=row2dict(question)
+        return jsonify({"message":"Got Question","data":row,"status_code":"200"})
+    except Exception as e:
+        return jsonify({"error":f"{e}","status_code":"404"})
+    
+@adminbp.route("/delete_question",methods=["POST"])
+def delete_question():
+    try:
+        data=request.json
+        question=Question.query.filter(Question.id==data["id"]).first()
+        db.session.delete(question)
+        db.session.commit()
+        return jsonify({"status":200,"message":"Question Deleted"})
+    except Exception as e:
+        return jsonify({"status":404,"message":f"{e}"})

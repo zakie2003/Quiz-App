@@ -46,7 +46,6 @@ const fetchChapters = async () => {
       method: "GET",
       headers: { "Content-Type": "application/json" }
     });
-
     data.value.chapters = res.data.data;
     isLoading.value = false;
   } catch (err) {
