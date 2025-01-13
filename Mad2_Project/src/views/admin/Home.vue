@@ -4,6 +4,7 @@ import "@/assets/JS/nav.js";
 import axios from "axios";
 import NavAdmin from '@/components/NavBar/NavAdmin.vue';
 import Cards from '@/components/Cards/Cards.vue';
+import Loader from '@/components/Loader/Loader.vue';
 
 // Example of making an authenticated request
 const token = sessionStorage.getItem('token');
@@ -63,7 +64,7 @@ onMounted(() => {
   <nav class="navbar navbar-expand-lg pb-0 bg-body-tertiary">
     <NavAdmin /> 
     <div :style="{ minHeight: dynamicHeight }" class="bg-light w-100">
-      <div v-if="isLoading">Loading</div>
+      <div v-if="isLoading" style="display: flex;justify-content: center;align-items: center;height: 100vh;"><Loader/></div>
       <div v-else>
         <h1 class="m-4">Welcome to Admin Dashboard, {{ data.name }}</h1> 
         <button v-on:click="go_to_create" type="button" style="background-color: #4723d9;color: aliceblue;" class="btn  m-4">Add Subject</button>

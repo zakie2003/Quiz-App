@@ -72,7 +72,7 @@ onMounted(() => {
 <template>
   <nav class="navbar navbar-expand-lg pb-0 bg-body-tertiary">
     <NavAdmin />
-    <div style="height: 100vh;" class="bg-light w-100">
+    <div style="min-height: 100vh;" class="bg-light w-100">
       <h1 class="m-4">Edit Question</h1>
       <div class="container">
         <form

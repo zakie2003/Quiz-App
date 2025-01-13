@@ -161,7 +161,7 @@ def get_quizes():
 def add_question():
     try:
         data=request.json
-        prev_question=Question.query.filter(Question.chapter_name==data["chapter_name"]).all()
+        prev_question=Question.query.filter(Question.chapter_name==data["chapter_name"],Question.quiz_id==data["quiz_id"]).all()
         chapter=Chapter.query.filter(Chapter.name==data["chapter_name"]).first()    
         number_of_questions=chapter.number_of_questions
         if(len(prev_question)>=number_of_questions):

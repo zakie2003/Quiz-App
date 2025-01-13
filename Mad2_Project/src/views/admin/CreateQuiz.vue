@@ -44,7 +44,7 @@ onMounted(()=>{
 <template>
   <nav class="navbar navbar-expand-lg pb-0 bg-body-tertiary">
     <NavAdmin /> 
-    <div style="height: 100vh;" class="bg-light w-100">
+    <div style="min-height: 100vh;" class="bg-light w-100">
       <h1 class="m-4">Create Quiz</h1>
       <div class="container">
         <form class="d-flex flex-column w-90" action="" @submit.prevent="add_quiz(data)">

@@ -39,7 +39,7 @@ onMounted(() => {
 <template>
   <nav class="navbar navbar-expand-lg pb-0 bg-body-tertiary">
     <NavAdmin /> 
-    <div style="height: 100vh;" class="bg-light w-100">
+    <div :style="{ minHeight: '100vh' }" class="bg-light w-100">
       <ErrorMessage v-if="data.alert_msg" :message="data.alert_msg" />
       <h1 class="m-4">Quiz Dashboard  <button v-on:click="go_to_create_quiz" style="background-color: #4723d9;color: aliceblue;" class="btn">Create Quiz</button></h1> 
       <div v-for="(item, index) in data.quiz_data" :key="index">
@@ -50,7 +50,7 @@ onMounted(() => {
 </template>
 <style>
 @import "../../assets/CSS/nav.css";
-
+@import "../../assets//CSS/login.css";
 
 form {
   max-width: 600px;

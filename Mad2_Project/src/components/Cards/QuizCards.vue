@@ -35,6 +35,10 @@ const go_to_edit_question=(id)=>{
   window.location.href="/admin/edit_question/"+id;
 }
 
+const go_to_preview=()=>{
+  window.location.href="/admin/quiz_preview/";
+}
+
 onMounted(()=>{
   console.log(props);
   get_questions();
@@ -42,13 +46,13 @@ onMounted(()=>{
 
 </script>
 <template>
-  <div class="ag-courses_item">
+  <div v-on:click="go_to_preview" class="ag-courses_item">
     <div class="ag-courses-item_link">
       <div class="ag-courses-item_bg"></div>
       <div class="ag-courses-item_title">
         {{ props.item.quiz_name }}  
         <a>
-          <button v-on:click="go_to_add_question" style="background-color: aliceblue;color: black;" class="btn m-2">Add Question</button>
+          <button v-on:click.stop="go_to_add_question" style="background-color: aliceblue;color: black;" class="btn m-2">Add Question</button>
         </a>
       </div>
       <div style="z-index: 2;position: relative;" class="text-white">
@@ -66,8 +70,8 @@ onMounted(()=>{
               <td>{{ item.id }}</td>
               <td>{{ item.question }}</td>
               <td>
-                <button style="background-color: #f38d04;" v-on:click="go_to_edit_question(item.id)" class="btn my-1">Edit</button> &nbsp;
-                <button style="background-color: #f38d04;" v-on:click="delete_question(item.id)" class="btn my-1">Delete</button>
+                <button style="background-color: #f38d04;" v-on:click.stop="go_to_edit_question(item.id)" class="btn my-1">Edit</button> &nbsp;
+                <button style="background-color: #f38d04;" v-on:click.stop="delete_question(item.id)" class="btn my-1">Delete</button>
               </td>
             </tr>
           </tbody>
