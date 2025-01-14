@@ -1,37 +1,126 @@
 <script setup>
 import "@/assets/JS/nav.js";
+import Loader from "@/components/Loader/Loader.vue";
+import axios from "axios";
+import { onMounted,ref } from "vue";
+
+const quiz_data=ref({
+  quiz: {
+    quiz_name: '',
+    time_duration: '',
+    chapter_name: '',
+    questions:[]
+  }
+});
+
+const pointer=ref({index:0});
+
+const get_quiz=async()=>{
+  const urlParams=window.location.pathname;
+  const parts=urlParams.split('/');
+  const quiz_id=parts[parts.length-1];
+  await axios.post("http://localhost:5000/admin/get_quiz",{"quiz_id":quiz_id}).then((res)=>{
+    quiz_data.value=res.data;
+    
+  }).catch((err)=>{
+    console.log(err);
+  })
+}
+
+const get_questions=async()=>{
+  const urlParams=window.location.pathname;
+  const parts=urlParams.split('/');
+  const quiz_id=parts[parts.length-1];
+  const chapter_name=parts[parts.length-2];
+  await axios.post("http://localhost:5000/admin/get_questions",{"chapter_name":chapter_name,"quiz_id":quiz_id}).then((res)=>{
+    quiz_data.value.questions=res.data.data;
+    console.log(quiz_data.value);
+  }).catch((err)=>{
+    console.log(err);
+  })
+}
+
+onMounted(()=>{
+  get_quiz();
+  get_questions();
+})
+
+
+const next=()=>{
+  if(pointer.value.index<quiz_data.value.questions.length-1){
+    pointer.value.index=pointer.value.index+1;
+  }
+}
+
+const prev=()=>{
+  if(pointer.value.index>0){
+    pointer.value.index=pointer.value.index-1;
+  }
+}
+
+const go_to_this_question=(index)=>{
+  pointer.value.index=index;
+}
+
+const edit_question=(id)=>{
+  window.location.href="/admin/edit_question/"+id;
+}
+
+const delete_question=async(id)=>{
+  await axios.post("http://localhost:5000/admin/delete_question",{"id":id}).then((res)=>{
+    console.log(res);
+    get_questions();
+  }).then((err)=>{
+    console.log(err);
+  })
+}
+
 </script>
 <template>
   <header  class="header bg-light p-3 mb-3 nav_bar text-white" id="header">
-    <h3 class="pt-2">Quiz Preview</h3>
+    <h3 class="pt-2">Quiz Preview: {{ quiz_data.quiz.quiz_name }} </h3>
+    <h3 class="pt-2">Time: {{ quiz_data.quiz.time_duration }}</h3>
+    <h3 class="pt-2">Chapter Name: {{ quiz_data.quiz.chapter_name }}</h3>
   </header>
-  <div class="row">
-    <div class="col-7 mx-2 my-4 rounded p-4 bg-light">
+  <div style="align-items: center;justify-content: center;display: flex;height: 100vh;" v-if="!quiz_data.questions">
+    <Loader/>
+  </div>
+  <div class="row" v-else>
+    <div style="display: flex;justify-content: center;align-items: center;height: 80vh;" v-if="quiz_data.questions.length==0">
+      <h3 class="col-7 mx-2 my-4 rounded p-4 bg-light" style="text-align: center;">No questions found</h3>  
+    </div>
+    <div v-else>
+    <div  class="col-7 mx-2 my-4 rounded p-4 bg-light">
       <div class="py-4 text-left">
-        <h3>Question No 1</h3>
+        <div class="d-flex justify-content-between align-items-center">
+          <h3>Question No {{ pointer.index+1 }}</h3>
+          <div>
+            <button class="btn nav_bar mx-1" v-on:click="edit_question(quiz_data.questions[pointer.index].id)">Edit</button>
+            <button  class="btn nav_bar mx-1" v-on:click="delete_question(quiz_data.questions[pointer.index].id)">Delete</button>
+          </div>
+        </div>
         <span class="p-2 d-block" style="font-size: larger;">
-          4 men and 7 women can do a work in 8 days.
-          7 men and 4 women can do the same work in 5 days.
-          Find the number of days in which 8 women can finish the work.
+           {{ quiz_data.questions[pointer.index].question }}
         </span>
         <h3 class="pt-4">Options</h3>
         <div class="py-2">
-          <button style="font-size: larger;" class="btn w-100 my-2 text-start border">4 days</button>
-          <button style="font-size: larger;" class="btn w-100 my-2 text-start border">5 days</button>
-          <button style="font-size: larger;" class="btn w-100 my-2 text-start border">6 days</button>
-          <button style="font-size: larger;" class="btn w-100 my-2 text-start border">7 days</button>
+          <button style="font-size: larger;" class="btn w-100 my-2 text-start border">{{ quiz_data.questions[pointer.index].option_a }}</button>
+          <button style="font-size: larger;" class="btn w-100 my-2 text-start border">{{ quiz_data.questions[pointer.index].option_b }}</button>
+          <button style="font-size: larger;" class="btn w-100 my-2 text-start border">{{ quiz_data.questions[pointer.index].option_c }}</button>
+          <button style="font-size: larger;" class="btn w-100 my-2 text-start border">{{ quiz_data.questions[pointer.index].option_d }}</button>
         </div>
         <div class="d-flex justify-content-between pt-4">
-          <button class="btn nav_bar text-white">Previous</button>
-          <button class="btn nav_bar text-white">Next</button>
+          <button class="btn nav_bar text-white" v-on:click="prev">Previous</button>
+          <button class="btn nav_bar text-white" v-on:click="next">Next</button>
         </div>
       </div>
     </div>
     <div class="col-4 mx-2 my-4 rounded p-4 bg-light">
       <h3 class="py-4">Questions</h3>
       <div class="row justify-content-center">
-        <button class="btn col-3 py-3 m-2 nav_bar text-white" v-for="i in 10" :key="i">{{ i }}</button>
+        <button v-on:click="go_to_this_question(i-1)" class="btn col-3 py-3 m-2 border" :class="{'nav_bar':pointer.index==i-1}"  v-for="i in quiz_data.questions.length" :key="i">{{ i }}</button>
       </div>
+    </div>
     </div>
   </div>
 </template>
@@ -39,5 +128,7 @@ import "@/assets/JS/nav.js";
 @import "../../assets/CSS/nav.css";
 .nav_bar{
   background-color: #4723D9 !important;
+  color: aliceblue !important;
+  border:2px solid #fff !important;
 }
 </style>

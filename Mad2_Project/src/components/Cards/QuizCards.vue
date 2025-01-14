@@ -35,8 +35,9 @@ const go_to_edit_question=(id)=>{
   window.location.href="/admin/edit_question/"+id;
 }
 
-const go_to_preview=()=>{
-  window.location.href="/admin/quiz_preview/";
+const go_to_preview=(event,chapter_name ,quiz_id)=>{
+  event.preventDefault();
+  window.location.href="/admin/quiz_preview/"+chapter_name+"/"+quiz_id;
 }
 
 onMounted(()=>{
@@ -46,13 +47,13 @@ onMounted(()=>{
 
 </script>
 <template>
-  <div v-on:click="go_to_preview" class="ag-courses_item">
+  <div v-on:click="(event) => go_to_preview(event,props.item.chapter_name,props.item.id)" class="ag-courses_item">
     <div class="ag-courses-item_link">
       <div class="ag-courses-item_bg"></div>
       <div class="ag-courses-item_title">
         {{ props.item.quiz_name }}  
         <a>
-          <button v-on:click.stop="go_to_add_question" style="background-color: aliceblue;color: black;" class="btn m-2">Add Question</button>
+          <button v-on:click.stop="go_to_add_question(props.item.id)" style="background-color: aliceblue;color: black;" class="btn m-2">Add Question</button>
         </a>
       </div>
       <div style="z-index: 2;position: relative;" class="text-white">

@@ -226,3 +226,11 @@ def edit_question():
         return jsonify({"status":200,"message":"Question edited"})
     except Exception as e:
         return jsonify({"status":404,"message":f"{e}"})
+
+@adminbp.route("/get_quiz",methods=["POST"])
+def get_quiz():
+    data=request.json
+    quiz=Quiz.query.filter(Quiz.id==data["quiz_id"]).first()
+    if(quiz is None):
+        return jsonify({"status":404,"message":"quiz not found"})
+    return jsonify({"status":200,"quiz":row2dict(quiz)})
