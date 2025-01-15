@@ -12,7 +12,18 @@
 
     async function login(data) {
         sessionStorage.clear();
-        await axios("http://localhost:5000/admin/authorize", {
+        var url="";
+        var location="";
+        if(data.type==="Admin"){
+            url="http://localhost:5000/admin/authorize";
+            location="/admin/home";
+        }
+        else{
+            url="http://localhost:5000/user/user_authorize";
+            location="/user/home";
+        }
+
+        await axios(url, {
             method: "POST",
             data: data,
             headers: { "Content-Type": "application/json" }
@@ -23,8 +34,7 @@
                 sessionStorage.setItem('name', res.data.name);
                 sessionStorage.setItem('id', res.data.id);
                 sessionStorage.setItem('password', res.data.password);
-                console.log(res.data);
-                window.location.href = "/admin/home";
+                window.location.href = location;
             } else {
                 data.message = res.data.message;
             }
@@ -90,8 +100,7 @@
                         <div class="text-center text-lg-start mt-4 pt-2">
                             <button type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-lg" @click="login(data)"
                                 style="padding-left: 2.5rem; padding-right: 2.5rem; background-color:#4723d9;color: aliceblue;">Login</button>
-                            <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="#!"
-                                    class="link-danger">Register</a></p>
+                            <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="/signin" class="link-danger">Register</a></p>
                         </div>
 
                     </form>

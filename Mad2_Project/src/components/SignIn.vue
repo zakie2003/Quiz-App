@@ -1,7 +1,29 @@
+<script setup>
+import axios from 'axios';
+import { reactive } from 'vue';
+const data=reactive({
+    email:"",
+    password:"",
+    type:"User",
+    dob:"",
+    qualification:"",
+    name:"",
+    profile_url:""
+})
+
+const handle_submit=async()=>{
+    await axios.post("http://localhost:5000/user/create_user",data).then((res)=>{
+        console.log(res);
+    }).catch((err)=>{
+        console.log(err);
+    })
+}
+</script>
+
 <template>
-    <section class="vh-100">
-    <div class="container-fluid h-custom mb-5"> 
-        <div class="row d-flex justify-content-center align-items-center h-100">
+    <section style="min-height: 100vh;">
+    <div class="container-fluid h-custom"> 
+        <div style="min-height: 100vh;" class="row d-flex justify-content-center align-items-center ">
         <div class="col-md-9 col-lg-6 col-xl-5">
             <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
             class="img-fluid" alt="Sample image">
@@ -15,32 +37,32 @@
 
             <!-- Email input -->
             <div data-mdb-input-init class="form-outline mb-4">
-                <input type="email" id="emailInput" class="form-control form-control-lg"
+                <input v-model="data.email" type="email" id="emailInput" class="form-control form-control-lg"
                 placeholder="Enter a valid email address" />
                 <label class="form-label" for="emailInput">Email address</label>
             </div>
 
             <!-- Password input -->
             <div data-mdb-input-init class="form-outline mb-3">
-                <input type="password" id="passwordInput" class="form-control form-control-lg"
+                <input v-model="data.password" type="password" id="passwordInput" class="form-control form-control-lg"
                 placeholder="Enter password" />
                 <label class="form-label" for="passwordInput">Password</label>
             </div>
 
             <div data-mdb-input-init class="form-outline mb-4">
-                <input type="text" id="usernameInput" class="form-control form-control-lg"
+                <input v-model="data.name" type="text" id="usernameInput" class="form-control form-control-lg"
                 placeholder="Enter a valid User Name" />
                 <label class="form-label" for="usernameInput">User Name</label>
             </div>
 
             <div data-mdb-input-init class="form-outline mb-4">
-                <input type="text" id="qualificationInput" class="form-control form-control-lg"
+                <input v-model="data.qualification" type="text" id="qualificationInput" class="form-control form-control-lg"
                 placeholder="Enter qualification" />
                 <label class="form-label" for="qualificationInput">Qualification</label>
             </div>
 
             <div data-mdb-input-init class="form-outline mb-4">
-                <input type="date" id="dobInput" class="form-control form-control-lg"
+                <input v-model="data.dob" type="date" id="dobInput" class="form-control form-control-lg"
                 placeholder="Enter Date of Birth" />
                 <label class="form-label" for="dobInput">Date of Birth</label>
             </div>
@@ -60,10 +82,11 @@
             </div>
 
             <div class="text-center text-lg-start mt-4 pt-2">
-                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-lg"
+                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-lg" v-on:click="handle_submit()"
                 style="padding-left: 2.5rem; padding-right: 2.5rem; background-color:#4723d9;color: aliceblue;">Signin</button>
-                <p class="small fw-bold mt-2 pt-1 mb-0">Don't have an account? <a href="#!"
-                    class="link-danger">Signin</a></p>
+                <p class="small fw-bold mt-2 pt-1 mb-0">Already have an account? <a href="/"
+                    class="link-danger">Login</a>
+                </p>
             </div>
 
             </form>
@@ -73,7 +96,7 @@
     <div style="background-color: #4723d9;" class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 mt-5 px-4 px-xl-5 ">
         <!-- Copyright -->
         <div class="text-white mb-3 mb-md-0">
-        Copyright © 2020. All rights reserved.
+        Copyright © 2025 . All rights reserved.
         </div>
         <!-- Copyright -->
 

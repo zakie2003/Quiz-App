@@ -70,7 +70,22 @@ const router = createRouter({
       name: "QuizPreview",
       component: () => import('../views/admin/QuizPreview.vue'),
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'NotFound',
+      component: () => import('../views/NotFound.vue'),
+      meta: { requiresAuth: false }
+    },
+
+
+    {
+      path: '/user/home',
+      name: 'UserHome',
+      component: () => import('../views/user/Home.vue'),
+      meta: { requiresAuth: true }
     }
+
 
     
   ],

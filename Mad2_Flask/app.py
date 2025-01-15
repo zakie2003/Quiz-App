@@ -1,5 +1,6 @@
 from flask import Flask
 from Controller.AdminController import adminbp
+from Controller.UserController import userbp
 from Model.DataBase import db
 from flask_cors import CORS
 from flask_session import Session
@@ -8,6 +9,7 @@ from redis import Redis
 app=Flask(__name__)
 CORS(app)
 app.register_blueprint(adminbp, url_prefix='/admin')
+app.register_blueprint(userbp, url_prefix='/user')
 
 db_name = 'quiz.db'
 

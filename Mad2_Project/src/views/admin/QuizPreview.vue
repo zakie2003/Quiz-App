@@ -14,6 +14,7 @@ const quiz_data=ref({
 });
 
 const pointer=ref({index:0});
+const loading = ref(true);
 
 const get_quiz=async()=>{
   const urlParams=window.location.pathname;
@@ -21,9 +22,10 @@ const get_quiz=async()=>{
   const quiz_id=parts[parts.length-1];
   await axios.post("http://localhost:5000/admin/get_quiz",{"quiz_id":quiz_id}).then((res)=>{
     quiz_data.value=res.data;
-    
+    loading.value = false;
   }).catch((err)=>{
     console.log(err);
+    loading.value = false;
   })
 }
 
@@ -35,8 +37,10 @@ const get_questions=async()=>{
   await axios.post("http://localhost:5000/admin/get_questions",{"chapter_name":chapter_name,"quiz_id":quiz_id}).then((res)=>{
     quiz_data.value.questions=res.data.data;
     console.log(quiz_data.value);
+    loading.value = false;
   }).catch((err)=>{
     console.log(err);
+    loading.value = false;
   })
 }
 
@@ -82,15 +86,15 @@ const delete_question=async(id)=>{
     <h3 class="pt-2">Time: {{ quiz_data.quiz.time_duration }}</h3>
     <h3 class="pt-2">Chapter Name: {{ quiz_data.quiz.chapter_name }}</h3>
   </header>
-  <div style="align-items: center;justify-content: center;display: flex;height: 100vh;" v-if="!quiz_data.questions">
+  <div class="row" style="align-items: center;justify-content: center;display: flex;height: 100vh;" v-if="loading">
     <Loader/>
   </div>
   <div class="row" v-else>
-    <div style="display: flex;justify-content: center;align-items: center;height: 80vh;" v-if="quiz_data.questions.length==0">
+    <div class="row" style="display: flex;justify-content: center;align-items: center;height: 80vh;" v-if="quiz_data.questions.length==0">
       <h3 class="col-7 mx-2 my-4 rounded p-4 bg-light" style="text-align: center;">No questions found</h3>  
     </div>
-    <div v-else>
-    <div  class="col-7 mx-2 my-4 rounded p-4 bg-light">
+    <div class="row" v-else>
+    <div  class="col-7 mx-1 my-4 rounded p-4 bg-light">
       <div class="py-4 text-left">
         <div class="d-flex justify-content-between align-items-center">
           <h3>Question No {{ pointer.index+1 }}</h3>
@@ -115,7 +119,7 @@ const delete_question=async(id)=>{
         </div>
       </div>
     </div>
-    <div class="col-4 mx-2 my-4 rounded p-4 bg-light">
+    <div class="col-4 mx-1 my-4 rounded p-4 bg-light">
       <h3 class="py-4">Questions</h3>
       <div class="row justify-content-center">
         <button v-on:click="go_to_this_question(i-1)" class="btn col-3 py-3 m-2 border" :class="{'nav_bar':pointer.index==i-1}"  v-for="i in quiz_data.questions.length" :key="i">{{ i }}</button>
