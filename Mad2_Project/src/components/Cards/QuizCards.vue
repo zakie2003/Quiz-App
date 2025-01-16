@@ -4,7 +4,8 @@ import { onMounted, ref } from 'vue';
 
 const props=defineProps(
   {
-    item:Object
+    item:Object,
+    isready:String
   }
 )
 
@@ -45,15 +46,23 @@ onMounted(()=>{
   get_questions();
 })
 
+const add_to_ready_quiz=async(id)=>{
+  await axios.post("http://localhost:5000/admin/add_ready_quiz",{"quiz_id":id}).then((res)=>{
+    console.log(res);
+  }).then((err)=>{
+    console.log(err);
+  })
+}
+
 </script>
 <template>
-  <div v-on:click="(event) => go_to_preview(event,props.item.chapter_name,props.item.id)" class="ag-courses_item">
+  <div class="ag-courses_item">
     <div class="ag-courses-item_link">
       <div class="ag-courses-item_bg"></div>
       <div class="ag-courses-item_title">
         {{ props.item.quiz_name }}  
         <a>
-          <button v-on:click.stop="go_to_add_question(props.item.id)" style="background-color: aliceblue;color: black;" class="btn m-2">Add Question</button>
+          <button v-if="isready!='true'" v-on:click.stop="go_to_add_question(props.item.id)" style="background-color: aliceblue;color: black;" class="btn m-2">Add Question</button>
         </a>
       </div>
       <div style="z-index: 2;position: relative;" class="text-white">
@@ -62,7 +71,7 @@ onMounted(()=>{
             <tr>
               <th>ID</th>
               <th>Question Title</th>
-              <th>Actions</th>
+              <th v-if="isready!='true'">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -70,13 +79,15 @@ onMounted(()=>{
             <tr v-for="(item, index) in data" :key="index">
               <td>{{ item.id }}</td>
               <td>{{ item.question }}</td>
-              <td>
+              <td v-if="isready!='true'">
                 <button style="background-color: #f38d04;" v-on:click.stop="go_to_edit_question(item.id)" class="btn my-1">Edit</button> &nbsp;
                 <button style="background-color: #f38d04;" v-on:click.stop="delete_question(item.id)" class="btn my-1">Delete</button>
               </td>
             </tr>
           </tbody>
         </table>
+        <button v-if="isready!='true'" v-on:click.stop="add_to_ready_quiz(props.item.id)" style="background-color: aliceblue;color: black;width: 100%;" class="btn my-2">Add to Ready Quiz</button>
+        <button v-else style="background-color: aliceblue;color: black;width: 100%;" class="btn my-2">Go Back</button>
       </div>
     </div>
   </div>

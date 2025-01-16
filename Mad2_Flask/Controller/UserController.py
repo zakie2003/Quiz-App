@@ -4,7 +4,7 @@ from sqlalchemy import and_
 import jwt
 from Model.DataBase import db
 from flask_session import Session
-from Model.Model import Admin,Subject,Chapter,Quiz,Question,User
+from Model.Model import Admin,Subject,Chapter,Quiz,Question,User,ReadyQuiz
 
 userbp=Blueprint('userbp',__name__)
 
@@ -45,5 +45,30 @@ def user_authorize():
         session["token"] = token
         session["name"] = user.name
         return jsonify({"status":200,"password":user.password,"token":token,"name":user.name,"id":user.id,"message":"User logged in"})
+    except Exception as e:
+        return jsonify({"status":404,"message":f"{e}"})
+    
+
+@userbp.route("/get_quizes",methods=["GET"])
+def get_quizes():
+    try:
+        quizes=Quiz.query.all() 
+        temp=[]
+        for i in quizes:
+            row=row2dict(i)
+            temp.append(row)
+        return jsonify({"status":200,"quiz_data":temp})
+    except Exception as e:
+        return jsonify({"status":404,"message":f"{e}"})
+    
+@userbp.route("/get_ready_quizes",methods=["GET"])  
+def get_ready_quizes():
+    try:
+        ready_quiz=ReadyQuiz.query.all()
+        temp=[]
+        for i in ready_quiz:
+            row=row2dict(i)
+            temp.append(row)
+        return jsonify({"status":200,"ready_quiz_data":temp})
     except Exception as e:
         return jsonify({"status":404,"message":f"{e}"})

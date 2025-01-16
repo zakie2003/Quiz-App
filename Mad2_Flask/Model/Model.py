@@ -114,3 +114,22 @@ class Question(db.Model):
     def __repr__(self):
         return '<Question %r>' % self.chapter_id
 
+
+class ReadyQuiz(db.Model):
+    __tablename__= "readyquiz"
+    id=db.Column(db.Integer,primary_key=True)
+    quiz_name=db.Column(db.String(50),nullable=False)
+    chapter_name=db.Column(db.String(50),nullable=False)
+    date_of_quiz=db.Column(db.Date,nullable=False)
+    remark=db.Column(db.String(100),nullable=True)
+    time_duration=db.Column(db.String(20),nullable=False)
+    def __init__(self,id,quiz_name,chapter_name,date_of_quiz,remark,time_duration):
+        self.id=id
+        self.quiz_name=quiz_name
+        self.chapter_name=chapter_name
+        self.date_of_quiz=date_of_quiz
+        self.remark=remark
+        self.time_duration=time_duration
+
+    def __repr__(self):
+        return '<readyquiz %r>' % self.chapter_id

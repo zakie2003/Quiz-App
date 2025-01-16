@@ -4,7 +4,7 @@ from sqlalchemy import and_
 import jwt
 from Model.DataBase import db
 from flask_session import Session
-from Model.Model import Admin,Subject,Chapter,Quiz,Question
+from Model.Model import Admin,Subject,Chapter,Quiz,Question,ReadyQuiz
 
 adminbp=Blueprint('adminbp',__name__)
 
@@ -148,15 +148,70 @@ def add_quiz():
 @adminbp.route("/get_quizes")
 def get_quizes():
     try:
-        quizes=Quiz.query.all()
+        quizes = Quiz.query.all()
+        ready_quiz_ids = {quiz.id for quiz in ReadyQuiz.query.all()}
+        temp = []
+        for quiz in quizes:
+            if quiz.id not in ready_quiz_ids:
+                row = row2dict(quiz)
+                temp.append(row)
+        return jsonify({"status": 200, "quiz_data": temp})
+    except Exception as e:
+        return jsonify({"status": 404, "message": f"{e}"})
+
+@adminbp.route("/get_ready_quizes",methods=["GET"])  
+def get_ready_quizes():
+    try:
+        ready_quiz=ReadyQuiz.query.all()
         temp=[]
-        for i in quizes:
+        for i in ready_quiz:
             row=row2dict(i)
             temp.append(row)
-        return jsonify({"status":200,"quiz_data":temp})
+        return jsonify({"status":200,"ready_quiz_data":temp})
     except Exception as e:
         return jsonify({"status":404,"message":f"{e}"})
-    
+
+@adminbp.route("/add_ready_quiz", methods=["POST"])
+def add_ready_quiz():
+    try:
+        data = request.json
+        id = data["quiz_id"]
+        existing_quiz = Quiz.query.filter(Quiz.id == id).first()
+        if existing_quiz is None:
+            return jsonify({"status": 404, "message": "Quiz not found"})
+        
+        date_str = existing_quiz.date_of_quiz.strftime("%Y-%m-%d")
+        date = datetime.strptime(date_str, "%Y-%m-%d").date()
+        ready_quiz = ReadyQuiz(
+            id=id,
+            quiz_name=existing_quiz.quiz_name,
+            chapter_name=existing_quiz.chapter_name,
+            date_of_quiz=date,
+            time_duration=existing_quiz.time_duration,
+            remark=existing_quiz.remark
+        )
+        db.session.add(ready_quiz)
+        db.session.commit()
+        return jsonify({"status": 200, "message": "Request Sent"})
+    except Exception as e:
+        print(e)
+        return jsonify({"status": 404, "message": str(e)})
+
+@adminbp.route("/remove_ready_quiz", methods=["POST"])
+def remove_ready_quiz():
+    try:
+        data = request.json
+        id = data["quiz_id"]
+        ready_quiz = ReadyQuiz.query.filter(ReadyQuiz.id == id).first()
+        if ready_quiz is None:
+            return jsonify({"status": 404, "message": "Ready Quiz not found"})
+        
+        db.session.delete(ready_quiz)
+        db.session.commit()
+        return jsonify({"status": 200, "message": "Ready Quiz removed"})
+    except Exception as e:
+        return jsonify({"status": 404, "message": str(e)})
+
 @adminbp.route("/add_question",methods=["POST"])
 def add_question():
     try:

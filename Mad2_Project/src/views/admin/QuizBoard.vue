@@ -9,6 +9,7 @@ const data = ref({
   name: "",
   description: "",
   quiz_data: [],
+  ready_quiz_data: [],
   alert_msg: "",
 });
 
@@ -27,8 +28,24 @@ const fetch_quiz = async () => {
     });
 };
 
-onMounted(() => {
+const fetch_ready_quiz = async () => {
+  await axios("http://localhost:5000/admin/get_ready_quizes")
+    .then((res) => {
+      data.value.ready_quiz_data = res.data.ready_quiz_data;
+      console.log(data.value.ready_quiz_data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+const refresh_quizzes = () => {
   fetch_quiz();
+  fetch_ready_quiz();
+};
+
+onMounted(() => {
+  refresh_quizzes();
   const referrer = document.referrer;
   if (referrer.includes("/admin/create_quiz")) {
     data.value.alert_msg = "Quiz created successfully";
@@ -42,8 +59,16 @@ onMounted(() => {
     <div :style="{ minHeight: '100vh' }" class="bg-light w-100">
       <ErrorMessage v-if="data.alert_msg" :message="data.alert_msg" />
       <h1 class="m-4">Quiz Dashboard  <button v-on:click="go_to_create_quiz" style="background-color: #4723d9;color: aliceblue;" class="btn">Create Quiz</button></h1> 
-      <div v-for="(item, index) in data.quiz_data" :key="index">
-        <QuizCards :item="item"/>
+      <div class="ag-courses_box row">
+        <div v-for="(item, index) in data.quiz_data" :key="index" class="col-md-4">
+          <QuizCards :item="item"/>
+        </div>
+      </div>
+      <h1 class="p-4">Ready Quiz</h1>
+      <div class="ag-courses_box row">
+        <div v-for="(item, index) in data.ready_quiz_data" :key="index" class="col-md-4">
+          <QuizCards isready="true" :item="item"/>
+        </div>
       </div>
     </div>
   </nav>
@@ -51,6 +76,16 @@ onMounted(() => {
 <style>
 @import "../../assets/CSS/nav.css";
 @import "../../assets//CSS/login.css";
+
+.ag-courses_box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.ag-courses_item {
+  min-width: 300px; /* Set the minimum width for the card */
+}
 
 form {
   max-width: 600px;
