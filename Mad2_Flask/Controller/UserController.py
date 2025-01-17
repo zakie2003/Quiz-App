@@ -4,7 +4,7 @@ from sqlalchemy import and_
 import jwt
 from Model.DataBase import db
 from flask_session import Session
-from Model.Model import Admin,Subject,Chapter,Quiz,Question,User,ReadyQuiz
+from Model.Model import Admin,Subject,Chapter,Quiz,Question,User,ReadyQuiz,Quiz_Library
 
 userbp=Blueprint('userbp',__name__)
 
@@ -72,3 +72,54 @@ def get_ready_quizes():
         return jsonify({"status":200,"ready_quiz_data":temp})
     except Exception as e:
         return jsonify({"status":404,"message":f"{e}"})
+    
+@userbp.route("/add_to_library",methods=["POST"])
+def add_to_library():
+    try:
+        data=request.json
+        user=User.query.filter(User.id==data["user_id"]).first()
+        ready_quiz=ReadyQuiz.query.filter(ReadyQuiz.id==data["quiz_id"]).first()
+        if(user is None or ready_quiz is None):
+            return jsonify({"status":404,"message":"User or Quiz not found"})
+        library=Quiz_Library(user_id=user.id,quiz_id=data["quiz_id"])
+        db.session.add(library)
+        db.session.commit()
+        return jsonify({"status":200,"message":"Quiz added to library"})
+    except Exception as e:
+        return jsonify({"status":500,"message":f"{e}"})
+
+@userbp.route("/get_my_quizes",methods=["POST"])
+def get_my_quizes():
+    try:
+        data = request.json
+        user = User.query.filter(User.id == data["user_id"]).first()
+        if user is None:
+            return jsonify({"status": 404, "message": "User not found"})
+        quiz_library = Quiz_Library.query.filter(Quiz_Library.user_id == data["user_id"]).all()
+        arr = []
+        for i in quiz_library:
+            row = row2dict(i)
+            arr.append(row)
+        return jsonify({"status": 200, "quiz_library_data": arr})
+    except Exception as e:
+        return jsonify({"status": 500, "message": f"{e}"})
+
+@userbp.route("/check_quiz_in_library", methods=["POST"])
+def check_quiz_in_library():
+    try:
+        data = request.json
+        print(data)
+        user_id = data["user_id"]
+        quiz_id = data["quiz_id"]
+        
+        quiz_in_library = Quiz_Library.query.filter(and_(Quiz_Library.user_id == user_id, Quiz_Library.quiz_id == quiz_id)).first()
+        if quiz_in_library:
+            quiz_details=Quiz.query.filter(Quiz.id==quiz_id).first()
+            if(quiz_details is None):
+                return jsonify({"status": 404, "message": "Quiz not found"})
+            row=row2dict(quiz_details)
+            return jsonify({"status": 200, "quiz_data": row,"is_in_library": True})
+        else:
+            return jsonify({"status": 200, "is_in_library": False})
+    except Exception as e:
+        return jsonify({"status": 500, "message": f"{e}"})

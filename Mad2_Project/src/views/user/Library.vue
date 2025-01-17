@@ -2,23 +2,32 @@
 import axios from 'axios';
 import NavUser from '@/components/NavBar/NavUser.vue';
 import Loader from '@/components/Loader/Loader.vue';
-import UserCard from '@/components/Cards/UserCard.vue';
-import Footer from '@/components/Footer/Footer.vue';
 import { onMounted, ref } from 'vue';
+import UserLibraryCard from '@/components/Cards/UserLibraryCard.vue';
+import Footer from '@/components/Footer/Footer.vue';
 const data=ref({
     isLoading: false,
-    free_quizes:[]
+    quizes:[]
 })
-const get_ready_quizes=async()=>{
-  await axios("http://localhost:5000/user/get_ready_quizes").then((res)=>{
-    data.value.free_quizes=res.data.ready_quiz_data;
-  }).catch((err)=>{
-    console.log(err);
-  })
+
+const get_my_quizes=async()=>{
+  data.value.isLoading=true;
+  try {
+    const res = await axios("http://localhost:5000/user/get_my_quizes", {
+      method: "POST",
+      data:{"user_id":sessionStorage.getItem("id")},
+      headers: { "Content-Type": "application/json" }
+    });
+    data.value.quizes=res.data.quiz_library_data;
+    data.value.isLoading=false;
+  } catch (err) {
+    data.value.isLoading=false;
+    console.log('Error:', err);
+  }
 }
 
 onMounted(()=>{
-  get_ready_quizes();
+    get_my_quizes();
 })
 </script>
 <template>
@@ -27,16 +36,10 @@ onMounted(()=>{
       <div style="min-height: 100vh;" class="bg-light w-100">
         <div v-if="data.isLoading" style="display: flex;justify-content: center;align-items: center;height: 100vh;"><Loader/></div>
         <div v-else>
-          <h3 class="p-4">Quiz Recommendations</h3>
-          <div class="ag-courses_box px-4">
-            <div v-for="item in data.free_quizes" :key="item.id">
-                <UserCard :item="item"/>
-            </div> 
-        </div>
-        <h3 class="p-4">Paid Quizzes</h3>
-        <div class="ag-courses_box">
-            <div v-for="i in 4" :key="i">
-                <UserCard color='yellow'/>
+          <h3 class="p-4">My Quizzes</h3>
+          <div class="ag-courses_box">
+            <div v-for="item in data.quizes" :key="item.id">
+                <UserLibraryCard :item="item"/>
             </div> 
         </div>
         </div>
@@ -49,14 +52,12 @@ onMounted(()=>{
   .ag-courses_box {
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-start; 
-    width: 100%;
-
+    justify-content: flex-start; /* Changed from space-around to flex-start */
   }
   .ag-courses_item {
     flex: 1 1 300px;
     margin: 10px;
-    min-width: 300px;
+    min-width: 300px; /* Set the minimum width for the card */
   }
   .ag-courses_box {
       display: -webkit-box;

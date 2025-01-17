@@ -4,35 +4,23 @@ import { onMounted, ref } from 'vue';
 
 const props = defineProps({
   item: Object,
-  color: String,
+  color: String
 });
 
-const data = ref({});
+const quiz_data = ref({});
 const isInLibrary = ref(false);
 const isLoading = ref(true);
-
-const add_to_library = async () => {
-  await axios.post("http://localhost:5000/user/add_to_library", {
-    "quiz_id": props.item.id,
-    "user_id": sessionStorage.getItem("id")
-  }).then((res) => {
-    console.log(res);
-    checkLibrary();
-  }).catch((err) => {
-    console.log(err);
-  });
-};
 
 const checkLibrary = async () => {
   try {
     await axios.post("http://localhost:5000/user/check_quiz_in_library", {
       "user_id": sessionStorage.getItem("id"),
-      "quiz_id": props.item.id
+      "quiz_id": props.item.quiz_id
     }).then((res) => {
-      console.log("Data:", res);
-      isInLibrary.value = res.data.is_in_library;
-      isLoading.value = false;
-    });
+        quiz_data.value = res.data.quiz_data;
+        isInLibrary.value = res.data.is_in_library;
+        isLoading.value = false;
+    })
   } catch (err) {
     console.log('Error:', err);
     isLoading.value = false;
@@ -40,31 +28,30 @@ const checkLibrary = async () => {
 };
 
 onMounted(() => {
-  console.log(props);
   checkLibrary();
 });
 </script>
 <template>
   <div class="ag-courses_item">
     <div class="ag-courses-item_link">
-      <div :style="props.color != 'yellow' ? 'background: rgb(116,63,213);background: radial-gradient(circle, rgba(116,63,213,1) 0%, rgba(0,248,251,1) 90%);' : ''" class="ag-courses-item_bg"></div>
+      <div :style="props.color !== 'yellow' ? 'background: rgb(116,63,213);background: radial-gradient(circle, rgba(116,63,213,1) 0%, rgba(0,248,251,1) 90%);' : ''" class="ag-courses-item_bg"></div>
       <div v-if="isLoading" class="loader">Loading...</div>
       <div v-else>
         <div class="ag-courses-item_title">
-          {{ props.item?.quiz_name }}
+          {{ quiz_data?.quiz_name }}
         </div>
         <div style="z-index: 2;position: relative;" class="text-white">
           <table style="background: none; width: 100%;">
             <thead>
               <tr>
-                <th>Chapter: <span>{{ props.item?.chapter_name }}</span></th>
+                <th>Chapter: <span>{{ quiz_data?.chapter_name }}</span></th>
               </tr>
               <tr>
-               <th>Date of Creation: <span>{{ props.item?.date_of_quiz }}</span></th>
+               <th>Date of Creation: <span>{{ quiz_data?.date_of_quiz }}</span></th>
               </tr>
               <tr>
                   <th>
-                      Duration: <span>{{ props.item?.time_duration }}</span>
+                      Duration: <span>{{ quiz_data?.time_duration }}</span>
                   </th>
               </tr>
             </thead>
@@ -72,8 +59,8 @@ onMounted(() => {
             </tbody>
           </table>
           <div class="button-container">
-            <button v-if="!isInLibrary" v-on:click="add_to_library" style="background-color: aliceblue;color: black;width: 100%;" class="btn m-2">Add to Library</button>
-            <button v-else style="background-color: grey;color: aliceblue;width: 100%;" class="btn m-2">Already in Library</button>
+            <button v-if="isInLibrary" style="background-color: aliceblue;color: black;width: 100%;" class="btn m-2">Attempt Quiz</button>
+            <button v-else style="background-color: aliceblue;color: black;width: 100%;" class="btn m-2">Add to Library</button>
           </div>
         </div>
       </div>

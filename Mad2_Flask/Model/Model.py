@@ -133,3 +133,15 @@ class ReadyQuiz(db.Model):
 
     def __repr__(self):
         return '<readyquiz %r>' % self.chapter_id
+
+class Quiz_Library(db.Model):
+    __tablename__ = "quiz_library"
+    quiz_library_id=db.Column(db.Integer,primary_key=True,autoincrement=True)
+    user_id=db.Column(db.Integer,nullable=False)
+    quiz_id=db.Column(db.Integer,nullable=False)
+    def __init__(self,user_id,quiz_id):
+        self.user_id=user_id
+        self.quiz_id=quiz_id
+
+    def __repr__(self):
+        return '<readyquiz %r>' % self.quiz_library_id

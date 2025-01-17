@@ -42,14 +42,24 @@ const go_to_preview=(event,chapter_name ,quiz_id)=>{
 }
 
 onMounted(()=>{
-  console.log(props);
+  // console.log(props);
   get_questions();
 })
 
 const add_to_ready_quiz=async(id)=>{
   await axios.post("http://localhost:5000/admin/add_ready_quiz",{"quiz_id":id}).then((res)=>{
     console.log(res);
+    window.location.reload();
   }).then((err)=>{
+    console.log(err);
+  })
+}
+
+const remove_from_ready_quiz=async(id)=>{
+  await axios.post("http://localhost:5000/admin/remove_ready_quiz",{"quiz_id":id}).then((res)=>{
+    console.log(res);
+    window.location.reload();
+  }).catch((err)=>{
     console.log(err);
   })
 }
@@ -87,7 +97,7 @@ const add_to_ready_quiz=async(id)=>{
           </tbody>
         </table>
         <button v-if="isready!='true'" v-on:click.stop="add_to_ready_quiz(props.item.id)" style="background-color: aliceblue;color: black;width: 100%;" class="btn my-2">Add to Ready Quiz</button>
-        <button v-else style="background-color: aliceblue;color: black;width: 100%;" class="btn my-2">Go Back</button>
+        <button v-on:click.stop="remove_from_ready_quiz(props.item.id)" v-else style="background-color: aliceblue;color: black;width: 100%;" class="btn my-2">Go Back</button>
       </div>
     </div>
   </div>
