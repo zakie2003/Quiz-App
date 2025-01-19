@@ -88,7 +88,14 @@ const router = createRouter({
     {
       path: '/user/library',
       name: 'UserLibrary',
-      component: ()=> import('../views/user/Library.vue')
+      component: ()=> import('../views/user/Library.vue'),
+      meta: { requiresAuth: true }
+    },
+    {
+      path: '/user/quiz/:chapter_name/:quiz_id',
+      name: 'UserQuiz',
+      component: () => import('../views/user/Quiz.vue'),
+      meta: { requiresAuth: true }
     }
 
     

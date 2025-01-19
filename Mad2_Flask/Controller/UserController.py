@@ -4,7 +4,7 @@ from sqlalchemy import and_
 import jwt
 from Model.DataBase import db
 from flask_session import Session
-from Model.Model import Admin,Subject,Chapter,Quiz,Question,User,ReadyQuiz,Quiz_Library
+from Model.Model import Admin,Subject,Chapter,Quiz,Question,User,ReadyQuiz,Quiz_Library,QuizSession
 
 userbp=Blueprint('userbp',__name__)
 
@@ -123,3 +123,80 @@ def check_quiz_in_library():
             return jsonify({"status": 200, "is_in_library": False})
     except Exception as e:
         return jsonify({"status": 500, "message": f"{e}"})
+    
+@userbp.route("/get_questions",methods=["POST"])
+def get_questions():
+    try:
+       data=request.json
+       questions=Question.query.filter(Question.chapter_name==data["chapter_name"] , Question.quiz_id==data["quiz_id"]).all()
+       quest_list=[]
+       for row in questions:
+           row=row2dict(row)
+           quest_list.append(row)
+       return jsonify({"message":"Got Questions","data":quest_list,"status_code":"200"})
+    except Exception as e:
+        return jsonify({"error":f"{e}","status_code":"404"})
+
+@userbp.route("/start_quiz",methods=["POST"])
+def start_quiz():
+    try:
+        data = request.json
+        print(data)
+        quiz = Quiz.query.filter(Quiz.id == data["quiz_id"]).first()
+        if not quiz:
+            return jsonify({'error': 'Invalid quiz ID', 'status_code': '404'})
+        
+        expired_session = QuizSession.query.filter(and_(QuizSession.user_id == data["user_id"], QuizSession.quiz_id == data["quiz_id"]),QuizSession.end_time<datetime.now()).first()
+        # print("Expired ",expired_session)
+        if expired_session:
+            db.session.delete(expired_session)
+            db.session.commit()
+
+        minutes, seconds = map(int, quiz.time_duration.split(':'))
+        total_seconds = minutes * 60 + seconds
+        start_time = datetime.now()
+        end_time = datetime.now() + timedelta(seconds=total_seconds)
+        current_session = QuizSession.query.filter(and_(QuizSession.user_id == data["user_id"], QuizSession.quiz_id == data["quiz_id"]),QuizSession.end_time>datetime.now()).first()
+        if not current_session:
+            session = QuizSession(user_id=data["user_id"], quiz_id=data["quiz_id"], end_time=end_time)
+            db.session.add(session)
+            db.session.commit()
+
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({"error": f"{e}", "status_code": "500"})
+    
+@userbp.route('/remaining_time', methods=['POST'])
+def get_remaining_time():
+    try:
+        data = request.json
+        user_id = data.get('user_id')
+        quiz_id = data.get('quiz_id')
+        session = QuizSession.query.filter(and_(QuizSession.user_id == user_id, QuizSession.quiz_id == quiz_id)).first()
+        if not session:
+            return jsonify({'error': 'Session not found'}), 404
+        remaining_time = int((session.end_time - datetime.now()).total_seconds())
+        # print("Time ",remaining_time)
+        if remaining_time <= 0:
+            return jsonify({'remainingTime': 0, 'status': 'Time is up'})
+
+        return jsonify({'remainingTime': remaining_time})
+    except Exception as e:
+        return jsonify({'error': f'{e}', 'status_code': '500'})
+    
+@userbp.route("/submit_quiz", methods=["POST"])
+def submit_quiz():
+    try:
+        data = request.json
+        user_id = data.get('user_id')
+        quiz_id = data.get('quiz_id')
+        print(user_id, quiz_id)
+        session = QuizSession.query.filter(and_(QuizSession.user_id == user_id, QuizSession.quiz_id == quiz_id)).first()
+        if not session:
+            return jsonify({'error': 'Session not found'}), 404
+        db.session.delete(session)
+        db.session.commit()
+
+        return jsonify({'session_deleted': True})
+    except Exception as e:
+        return jsonify({"error": f"{e}", "status_code": 500})

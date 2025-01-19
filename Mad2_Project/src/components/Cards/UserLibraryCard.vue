@@ -17,6 +17,7 @@ const checkLibrary = async () => {
       "user_id": sessionStorage.getItem("id"),
       "quiz_id": props.item.quiz_id
     }).then((res) => {
+        console.log(res.data.quiz_data)
         quiz_data.value = res.data.quiz_data;
         isInLibrary.value = res.data.is_in_library;
         isLoading.value = false;
@@ -26,6 +27,10 @@ const checkLibrary = async () => {
     isLoading.value = false;
   }
 };
+
+const attempt_quiz=(quiz_data)=>{
+  window.location.href="/user/quiz/"+quiz_data.chapter_name+"/"+quiz_data.id;
+}
 
 onMounted(() => {
   checkLibrary();
@@ -59,7 +64,7 @@ onMounted(() => {
             </tbody>
           </table>
           <div class="button-container">
-            <button v-if="isInLibrary" style="background-color: aliceblue;color: black;width: 100%;" class="btn m-2">Attempt Quiz</button>
+            <button v-on:click="attempt_quiz(quiz_data)"v-if="isInLibrary" style="background-color: aliceblue;color: black;width: 100%;" class="btn m-2">Attempt Quiz</button>
             <button v-else style="background-color: aliceblue;color: black;width: 100%;" class="btn m-2">Add to Library</button>
           </div>
         </div>

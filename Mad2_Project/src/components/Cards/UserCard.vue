@@ -73,7 +73,7 @@ onMounted(() => {
           </table>
           <div class="button-container">
             <button v-if="!isInLibrary" v-on:click="add_to_library" style="background-color: aliceblue;color: black;width: 100%;" class="btn m-2">Add to Library</button>
-            <button v-else style="background-color: grey;color: aliceblue;width: 100%;" class="btn m-2">Already in Library</button>
+            <button v-else style="background-color: grey;color: aliceblue;width: 100%;" class="btn m-2">In Library</button>
           </div>
         </div>
       </div>

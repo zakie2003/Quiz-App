@@ -1,5 +1,5 @@
 from Model.DataBase import db
-
+from datetime import datetime
 class Admin(db.Model):
     __tablename__ = "admin"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -145,3 +145,20 @@ class Quiz_Library(db.Model):
 
     def __repr__(self):
         return '<readyquiz %r>' % self.quiz_library_id
+    
+
+class QuizSession(db.Model):
+    quizsession_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(100), nullable=False)
+    quiz_id = db.Column(db.Integer, db.ForeignKey('quiz.id'), nullable=False)
+    start_time = db.Column(db.DateTime, nullable=False, default=datetime.now())
+    end_time = db.Column(db.DateTime, nullable=True)
+
+    def __init__(self, user_id, quiz_id, end_time):
+        self.user_id = user_id
+        self.quiz_id = quiz_id
+        self.start_time = datetime.now()
+        self.end_time = end_time
+    
+    def __respr__(self):
+        return '<readyquiz %r>' % self.quizsession_id
