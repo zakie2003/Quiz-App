@@ -162,3 +162,36 @@ class QuizSession(db.Model):
     
     def __respr__(self):
         return '<readyquiz %r>' % self.quizsession_id
+    
+class Score(db.Model):
+    score_id=db.Column(db.Integer,primary_key=True,autoincrement=True)
+    user_id=db.Column(db.Integer,nullable=False)
+    quiz_id=db.Column(db.Integer,nullable=False)
+    date=db.Column(db.Date,nullable=False)
+    score=db.Column(db.Integer,nullable=False)
+    def __init__(self,user_id,quiz_id,score,date):
+        self.user_id=user_id
+        self.quiz_id=quiz_id
+        self.score=score
+        self.date=date
+    def __respr__(self):
+        return '<readyquiz %r>' % self.score_id
+
+class UserAnswerHistory(db.Model):
+    __tablename__ = "user_answer_history"
+    history_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, nullable=False)
+    quiz_id = db.Column(db.Integer, nullable=False)
+    question_id = db.Column(db.Integer, nullable=False)
+    user_answer = db.Column(db.String(200), nullable=False)
+    correct_answer = db.Column(db.String(200), nullable=False)
+
+    def __init__(self, user_id, quiz_id, question_id, user_answer, correct_answer):
+        self.user_id = user_id
+        self.quiz_id = quiz_id
+        self.question_id = question_id
+        self.user_answer = user_answer
+        self.correct_answer = correct_answer
+
+    def __repr__(self):
+        return '<UserAnswerHistory %r>' % self.history_id

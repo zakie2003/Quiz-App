@@ -96,6 +96,12 @@ const router = createRouter({
       name: 'UserQuiz',
       component: () => import('../views/user/Quiz.vue'),
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/user/score',
+      name: 'UserScore',
+      component: ()=> import("../views/user/Score_Section.vue"),
+      meta: { requiresAuth: true }
     }
 
     

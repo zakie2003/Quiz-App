@@ -5,6 +5,7 @@ from Model.DataBase import db
 from flask_cors import CORS
 from flask_session import Session
 from redis import Redis
+from celery import Celery
 
 app=Flask(__name__)
 CORS(app)

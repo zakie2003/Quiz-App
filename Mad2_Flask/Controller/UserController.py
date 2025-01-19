@@ -4,7 +4,7 @@ from sqlalchemy import and_
 import jwt
 from Model.DataBase import db
 from flask_session import Session
-from Model.Model import Admin,Subject,Chapter,Quiz,Question,User,ReadyQuiz,Quiz_Library,QuizSession
+from Model.Model import Quiz,Question,User,ReadyQuiz,Quiz_Library,QuizSession,UserAnswerHistory,Score
 
 userbp=Blueprint('userbp',__name__)
 
@@ -190,7 +190,21 @@ def submit_quiz():
         data = request.json
         user_id = data.get('user_id')
         quiz_id = data.get('quiz_id')
-        print(user_id, quiz_id)
+        score = 0
+        print("User Answers:", data["user_answers"])
+        print("Correct Answers:", data["correct_answers"])
+        print("Question ID:", data["question_ids"])
+        date = datetime.now().date()  # Convert to date object
+        for i in range(len(data["user_answers"])):
+            if data["user_answers"][i] == data["correct_answers"][i]:
+                score += 1
+            history = UserAnswerHistory(user_id=user_id, quiz_id=quiz_id, question_id=data["question_ids"][i], user_answer=data["user_answers"][i], correct_answer=data["correct_answers"][i])
+            db.session.add(history)
+            db.session.commit()
+        percent = ((score * 100) / len(data["user_answers"]))
+        score = Score(user_id=user_id, quiz_id=quiz_id, score=percent, date=date)
+        db.session.add(score)
+        db.session.commit()
         session = QuizSession.query.filter(and_(QuizSession.user_id == user_id, QuizSession.quiz_id == quiz_id)).first()
         if not session:
             return jsonify({'error': 'Session not found'}), 404
@@ -200,3 +214,21 @@ def submit_quiz():
         return jsonify({'session_deleted': True})
     except Exception as e:
         return jsonify({"error": f"{e}", "status_code": 500})
+
+@userbp.route("/get_score",methods=["POST"])
+def get_score():
+    try:
+        data=request.json
+        score=Score.query.filter(Score.user_id==data["user_id"]).all()
+        if(score == []):
+            return jsonify({"status":404,"message":"Score not found"})
+        temp=[]
+        for i in score:
+            quiz=Quiz.query.filter(Quiz.id==i.quiz_id).first()
+            row=row2dict(i)
+            row.update(row2dict(quiz))
+            temp.append(row)
+        return jsonify({"status":200,"Score_list":temp})
+    except Exception as e:
+        return jsonify({"status":500,"message":f"{e}"})
+    

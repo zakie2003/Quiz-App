@@ -18,6 +18,9 @@ const loading = ref(true);
 const remainingTime = ref(0);
 const minute=ref(0);
 const second=ref(0);
+const correct_options=ref([]);
+const user_option=ref([]);
+const question_ids=ref([]);
 let timer;
 
 const get_quiz=async()=>{
@@ -38,15 +41,16 @@ const get_questions=async()=>{
   const chapter_name=parts[parts.length-2];
   await axios.post("http://localhost:5000/user/get_questions",{"chapter_name":chapter_name,"quiz_id":quiz_id}).then((res)=>{
     quiz_data.value.questions=res.data.data;
-    loading.value = false;
+    correct_options.value=quiz_data.value.questions.map((question) => question.correct_option);
+    user_option.value=quiz_data.value.questions.map((question) => '');
+    question_ids.value=quiz_data.value.questions.map((question) => question.id);
+    console.log(correct_options.value);
   }).catch((err)=>{
     console.log(err);
-    loading.value = false;
   })
 }
 
 const start_quiz=async()=>{
-  console.log("Quiz data",quiz_data.value.quiz);
   await axios.post("http://localhost:5000/user/start_quiz",{
     "quiz_id": quiz_data.value.quiz.id,
     "time_duration": quiz_data.value.quiz.time_duration,
@@ -83,7 +87,10 @@ const submit_quiz = async () => {
   try {
     await axios.post("http://localhost:5000/user/submit_quiz", {
       "user_id": sessionStorage.getItem("id"),
-      "quiz_id": quiz_data.value.quiz.id
+      "quiz_id": quiz_data.value.quiz.id,
+      "user_answers": user_option.value,
+      "correct_answers": correct_options.value,
+      "question_ids": question_ids.value
     }).then((res) => {
       console.log(res);
     }).catch((err) => {
@@ -100,10 +107,16 @@ const startLocalCountdown = () => {
   }
 }
 
+const click_option = (index, value) => {
+  user_option.value[index] = value;
+  console.log(user_option.value);
+}
+
 onMounted(async()=>{
   await get_quiz();
   await get_questions();
   await start_quiz();
+  loading.value = false; 
   timer = setInterval(() => {
     startLocalCountdown();
   }, 1000);
@@ -154,10 +167,22 @@ const go_to_this_question=(index)=>{
         </span>
         <h3 class="pt-4">Options</h3>
         <div class="py-2">
-          <button style="font-size: larger;" class="btn w-100 my-2 text-start border">{{ quiz_data.questions[pointer.index].option_a }}</button>
-          <button style="font-size: larger;" class="btn w-100 my-2 text-start border">{{ quiz_data.questions[pointer.index].option_b }}</button>
-          <button style="font-size: larger;" class="btn w-100 my-2 text-start border">{{ quiz_data.questions[pointer.index].option_c }}</button>
-          <button style="font-size: larger;" class="btn w-100 my-2 text-start border">{{ quiz_data.questions[pointer.index].option_d }}</button>
+          <div class="option">
+            <input type="radio" id="option_a" name="option" :value="'1'" v-model="user_option[pointer.index]" @change="click_option(pointer.index, '1')">
+            <label for="option_a">{{ quiz_data.questions[pointer.index].option_a }}</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="option_b" name="option" :value="'2'" v-model="user_option[pointer.index]" @change="click_option(pointer.index, '2')">
+            <label for="option_b">{{ quiz_data.questions[pointer.index].option_b }}</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="option_c" name="option" :value="'3'" v-model="user_option[pointer.index]" @change="click_option(pointer.index, '3')">
+            <label for="option_c">{{ quiz_data.questions[pointer.index].option_c }}</label>
+          </div>
+          <div class="option">
+            <input type="radio" id="option_d" name="option" :value="'4'" v-model="user_option[pointer.index]" @change="click_option(pointer.index, '4')">
+            <label for="option_d">{{ quiz_data.questions[pointer.index].option_d }}</label>
+          </div>
         </div>
         <div class="d-flex justify-content-between pt-4">
           <button class="btn nav_bar text-white" v-on:click="prev">Previous</button>
@@ -180,5 +205,30 @@ const go_to_this_question=(index)=>{
   background-color: #4723D9 !important;
   color: aliceblue !important;
   border:2px solid #fff !important;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.option input[type="radio"] {
+  margin-right: 10px;
+}
+
+.option label {
+  font-size: larger;
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.option input[type="radio"]:checked + label {
+  background-color: #4723D9;
+  color: aliceblue;
+  border-color: #4723D9;
 }
 </style>

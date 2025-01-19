@@ -42,7 +42,7 @@ onMounted(() => {
         <div class="nav_list">
           <a href="/user/home" class="nav_link"> <i class='bx bx-home nav_icon'></i> <span class="nav_name">Home</span> </a>
           <a href="/user/library" class="nav_link"><i class='bx bx-library nav_icon'></i> <span class="nav_name">Library</span> </a>
-          <a href="/user/quiz_dashboard" class="nav_link"><i class='bx bx-file-blank nav_icon'></i> <span class="nav_name">Score</span> </a>
+          <a href="/user/score" class="nav_link"><i class='bx bx-file-blank nav_icon'></i> <span class="nav_name">Score</span> </a>
           <a href="#" class="nav_link"><i class='bx bx-bar-chart-square nav_icon'></i> <span class="nav_name">Statistics</span> </a>
           <button style="background: none;border: none;" class="nav_link "><i class='bx bx-moon' ></i> <span>Theme</span></button>
           <button @click="logout" style="background: none;border: none;" class="nav_link "><i class='bx bx-door-open' ></i> <span>Logout</span></button>
