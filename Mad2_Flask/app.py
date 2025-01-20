@@ -1,13 +1,15 @@
-from flask import Flask
+from flask import Flask, jsonify
 from Controller.AdminController import adminbp
 from Controller.UserController import userbp
 from Model.DataBase import db
 from flask_cors import CORS
 from flask_session import Session
 from redis import Redis
-from celery import Celery
+from Model.celery_config import make_celery
+from Model.tasks import init_tasks
 
-app=Flask(__name__)
+
+app = Flask(__name__)
 CORS(app)
 app.register_blueprint(adminbp, url_prefix='/admin')
 app.register_blueprint(userbp, url_prefix='/user')
@@ -28,11 +30,22 @@ app.config["SESSION_REDIS"] = Redis(
 app.config['SESSION_COOKIE_SECURE'] = False
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'None'
-Session(app)
 
+app.config['broker_url'] = 'redis://:v8xa7rg4kI2YvqlL4g9wYLTFScllIiVP@redis-19427.c322.us-east-1-2.ec2.redns.redis-cloud.com:19427/0'
+app.config['result_backend'] = 'redis://:v8xa7rg4kI2YvqlL4g9wYLTFScllIiVP@redis-19427.c322.us-east-1-2.ec2.redns.redis-cloud.com:19427/0'
+
+celery = make_celery(app)
+init_tasks(celery)
+
+@app.route("/celery/add", methods=["GET"])
+def celery_add():
+    result = celery.tasks['add'].delay(50, 10)
+    return jsonify(result=result.get())
+
+Session(app)
 db.init_app(app)
 
-if(__name__=="__main__"):
+if __name__ == "__main__":
     with app.app_context():
         db.create_all()
     app.run(debug=True)
