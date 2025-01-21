@@ -1,10 +1,11 @@
 from datetime import datetime, timedelta
-from flask import Blueprint,jsonify,request,session
+from flask import Blueprint,jsonify,request,session,send_file
 from sqlalchemy import and_
 import jwt
 from Model.DataBase import db
 from flask_session import Session
 from Model.Model import Quiz,Question,User,ReadyQuiz,Quiz_Library,QuizSession,UserAnswerHistory,Score
+from Model.PDF import PDF
 
 userbp=Blueprint('userbp',__name__)
 
@@ -195,14 +196,29 @@ def submit_quiz():
         print("Correct Answers:", data["correct_answers"])
         print("Question ID:", data["question_ids"])
         date = datetime.now().date()  # Convert to date object
+        time=datetime.now().time() 
         for i in range(len(data["user_answers"])):
             if data["user_answers"][i] == data["correct_answers"][i]:
                 score += 1
-            history = UserAnswerHistory(user_id=user_id, quiz_id=quiz_id, question_id=data["question_ids"][i], user_answer=data["user_answers"][i], correct_answer=data["correct_answers"][i])
+            history = UserAnswerHistory(
+                user_id=user_id,
+                quiz_id=quiz_id,
+                question_id=data["question_ids"][i],
+                user_answer=data["user_answers"][i],
+                correct_answer=data["correct_answers"][i],
+                date_of_attempt=date,
+                time_of_attempt=time
+            )
             db.session.add(history)
             db.session.commit()
         percent = ((score * 100) / len(data["user_answers"]))
-        score = Score(user_id=user_id, quiz_id=quiz_id, score=percent, date=date)
+        score = Score(
+            user_id=user_id,
+            quiz_id=quiz_id,
+            score=percent,
+            date=date,  # Use date object
+            time=time
+        )
         db.session.add(score)
         db.session.commit()
         session = QuizSession.query.filter(and_(QuizSession.user_id == user_id, QuizSession.quiz_id == quiz_id)).first()
@@ -232,3 +248,17 @@ def get_score():
     except Exception as e:
         return jsonify({"status":500,"message":f"{e}"})
     
+@userbp.route("/get_pdf",methods=["GET"])
+def get_pdf():
+    try:
+        pdf=PDF()
+        pdf.add_page()
+        pdf.set_font('Arial', 'B', 12)
+        pdf.cell(0, 10, 'Your Document Title', align='C', ln=True, border=0)
+        content = """This is an example of creating a PDF using Python's FPDF library.
+        FPDF is a lightweight and easy-to-use library for generating PDFs programmatically."""
+        pdf.multi_cell(0, 10, content)
+        pdf.output("test.pdf")
+        return send_file('test.pdf',as_attachment=True)
+    except Exception as e:
+        return jsonify({"status":500,"message":f"{e}"})

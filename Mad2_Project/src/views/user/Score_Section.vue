@@ -7,7 +7,8 @@ import UserLibraryCard from '@/components/Cards/UserLibraryCard.vue';
 import Footer from '@/components/Footer/Footer.vue';
 const data=ref({
     isLoading: false,
-    scores:[]
+    scores:[],
+    user_id:sessionStorage.getItem("id")
 })
 
 const get_reports=async()=>{
@@ -48,7 +49,7 @@ onMounted(()=>{
                   <td scope="row">{{ item.date }}</td>
                   <td scope="row">{{ Math.round(item.score) }}</td>
                   <td>
-                    <a href="#">Download Report</a>
+                    <a :href="'http://localhost:5000/celery/get_csv_data?user_id='+ data.user_id +'&quiz_id=' + item.id+'&time='+item.time+'&date='+item.date">Download Transcript</a>
                   </td>
                 </tr>
             </tbody>

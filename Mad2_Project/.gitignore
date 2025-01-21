@@ -13,6 +13,7 @@ dist
 dist-ssr
 coverage
 *.local
+../Mad2_Flask/.env
 
 /cypress/videos/
 /cypress/screenshots/
