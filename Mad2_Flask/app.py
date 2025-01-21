@@ -10,9 +10,14 @@ from flask_mail import Mail,Message
 from redis import Redis
 from Model.celery_config import make_celery
 from Model.tasks import init_tasks
-
+from flask_caching import Cache
+from Model.cache_config import cache
 
 app = Flask(__name__)
+
+
+cache.init_app(app)
+
 CORS(app)
 app.register_blueprint(adminbp, url_prefix='/admin')
 app.register_blueprint(userbp, url_prefix='/user')

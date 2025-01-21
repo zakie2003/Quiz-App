@@ -6,6 +6,7 @@ from Model.DataBase import db
 from flask_session import Session
 from Model.Model import Quiz,Question,User,ReadyQuiz,Quiz_Library,QuizSession,UserAnswerHistory,Score
 from Model.PDF import PDF
+from Model.cache_config import cache
 
 userbp=Blueprint('userbp',__name__)
 
@@ -63,6 +64,7 @@ def get_quizes():
         return jsonify({"status":404,"message":f"{e}"})
     
 @userbp.route("/get_ready_quizes",methods=["GET"])  
+@cache.cached(timeout=300)
 def get_ready_quizes():
     try:
         ready_quiz=ReadyQuiz.query.all()
