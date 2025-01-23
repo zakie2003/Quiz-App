@@ -201,3 +201,24 @@ class UserAnswerHistory(db.Model):
 
     def __repr__(self):
         return '<UserAnswerHistory %r>' % self.history_id
+    
+class DeviceTypeCount(db.Model):
+    __tablename__ = "device_type_count"
+    device_type = db.Column(db.String(20), primary_key=True)
+    count = db.Column(db.Integer, nullable=False, default=0)
+
+    def __init__(self, device_type, count):
+        self.device_type = device_type
+        self.count = count
+
+    def __repr__(self):
+        return f"<DeviceTypeCount {self.device_type}: {self.count}>"
+    
+class UserSinginActivity(db.Model):
+    __tablename__ = "user_signin_activity"
+    date = db.Column(db.Date, primary_key=True)
+    count = db.Column(db.Integer, nullable=False, default=0)
+
+    def __init__(self, date, count):
+        self.date = date
+        self.count = count

@@ -1,8 +1,36 @@
 <script setup>
-    import { reactive } from 'vue';
+    import { onMounted, reactive,ref } from 'vue';
     import axios from "axios";
     import ErrorMessage from "./Message/ErrorMessage.vue";
+    const device_data=ref({});
+    function detectDeviceType() {
+        if (navigator.userAgentData) {
 
+            if (navigator.userAgentData.mobile) {
+
+            return navigator.userAgentData.platform === "Android" && window.screen.width >= 600 ? "Tablet" : "Mobile";
+            } else {
+            return "Desktop/Laptop";
+            }
+        } 
+        else {
+            const userAgent = navigator.userAgent.toLowerCase();
+            const isTablet = /(ipad|tablet|(android(?!.*mobile))|(windows(?!.*phone)(.*touch))|kindle|playbook|silk|(puffin(?!.*(IP|AP|WP))))/.test(userAgent);
+            const isMobile = /Mobile|Android|iP(hone|od)|IEMobile|BlackBerry|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/.test(userAgent);
+            
+            if (isTablet) {
+            return "Tablet";
+            } else if (isMobile) {
+            return "Mobile";
+            } else {
+            return "Desktop/Laptop";
+            }
+        }
+        }
+onMounted(()=>{
+    const deviceType = detectDeviceType();
+    device_data.value=deviceType;
+})
     const data = reactive({
         email: "",
         password: "",
@@ -12,6 +40,12 @@
 
     async function login(data) {
         sessionStorage.clear();
+
+        await axios.post("http://localhost:5000/user/add_device",{"device":device_data.value}).then((res) => {
+            console.log(res);
+        }).catch((err) => {
+            console.log(err);
+        })
         var url="";
         var location="";
         if(data.type==="Admin"){

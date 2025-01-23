@@ -4,7 +4,7 @@ from sqlalchemy import and_
 import jwt
 from Model.DataBase import db
 from flask_session import Session
-from Model.Model import Quiz,Question,User,ReadyQuiz,Quiz_Library,QuizSession,UserAnswerHistory,Score
+from Model.Model import Quiz,Question,User,ReadyQuiz,Quiz_Library,QuizSession,UserAnswerHistory,Score,DeviceTypeCount,UserSinginActivity
 from Model.PDF import PDF
 from Model.cache_config import cache
 
@@ -46,11 +46,69 @@ def user_authorize():
         token = jwt.encode({'user_id': user.id,'exp': datetime.now() + timedelta(hours=1)}, "secret", algorithm='HS256')
         session["token"] = token
         session["name"] = user.name
+        user_login_acitivity=UserSinginActivity.query.filter(UserSinginActivity.date==datetime.now().date()).first()
+        if(user_login_acitivity is None):
+            user_login_acitivity=UserSinginActivity(datetime.now().date(),1)
+            db.session.add(user_login_acitivity)
+            db.session.commit()
+        else:
+            user_login_acitivity.count+=1
+            db.session.commit()
         return jsonify({"status":200,"password":user.password,"token":token,"name":user.name,"id":user.id,"message":"User logged in"})
     except Exception as e:
         return jsonify({"status":404,"message":f"{e}"})
     
 
+@userbp.route("/add_device",methods=["POST"])
+def add_device():
+    try:
+        data=request.json
+        device=DeviceTypeCount.query.filter(DeviceTypeCount.device_type==data["device"]).first()
+        if(device is None):
+            device=DeviceTypeCount(data["device"],1)
+            db.session.add(device)
+            db.session.commit()
+        else:
+            device.count+=1
+            db.session.commit()
+        return jsonify({"status":200,"message":"Device added"})
+    except Exception as e:
+        return jsonify({"status":404,"message":f"{e}"})
+    
+@userbp.route("/get_profile_data",methods=["GET"])
+def get_profile_data():
+    try:
+        devices = DeviceTypeCount.query.all()
+        usersigninacitivyty = UserSinginActivity.query.all()
+        top_quizes = Quiz_Library.query.all()
+        quiz = Quiz.query.all()
+        quiz_names = [{quiz.id, quiz.quiz_name} for quiz in quiz]
+        
+        print("Quizzes", quiz_names)
+        temp1 = []
+        for i in usersigninacitivyty:
+            row = row2dict(i)
+            temp1.append(row)
+        temp = []
+        for i in devices:
+            row = row2dict(i)
+            temp.append(row)
+        
+
+        
+        top_quiz_names = {}
+        for tq in top_quizes:
+            quiz = Quiz.query.filter(Quiz.id == tq.quiz_id).first()
+            if quiz:
+                if quiz.id in top_quiz_names:
+                    top_quiz_names[quiz.quiz_name] += 1
+                else:
+                    top_quiz_names[quiz.quiz_name] = 1
+        
+        return jsonify({"status": 200, "device_data": temp, "user_activity_data": temp1, "top_quiz_names": top_quiz_names})
+    except Exception as e:
+        return jsonify({"status": 404, "message": f"{e}"})
+    
 @userbp.route("/get_quizes",methods=["GET"])
 def get_quizes():
     try:
