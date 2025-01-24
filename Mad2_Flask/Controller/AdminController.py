@@ -4,7 +4,7 @@ from sqlalchemy import and_
 import jwt
 from Model.DataBase import db
 from flask_session import Session
-from Model.Model import Admin,Subject,Chapter,Quiz,Question,ReadyQuiz
+from Model.Model import Admin,Subject,Chapter,Quiz,Question,ReadyQuiz,User
 
 adminbp=Blueprint('adminbp',__name__)
 
@@ -289,3 +289,22 @@ def get_quiz():
     if(quiz is None):
         return jsonify({"status":404,"message":"quiz not found"})
     return jsonify({"status":200,"quiz":row2dict(quiz)})
+
+@adminbp.route("/search", methods=["POST"])
+def search():
+    try:
+    
+        search_term = request.json["search"]
+        print(search_term)
+        user = User.query.filter(User.name.ilike(f"%{search_term}%")).all()
+        quiz = Quiz.query.filter(Quiz.quiz_name.ilike(f"%{search_term}%")).all()
+        subjects = Subject.query.filter(Subject.name.ilike(f"%{search_term}%")).all()
+        user_list = [row2dict(u) for u in user]
+        quiz_list = [row2dict(q) for q in quiz]
+        subject_list = [row2dict(s) for s in subjects]
+        return jsonify({"status": 200, "user": user_list, "quiz": quiz_list, "subject": subject_list})
+    except Exception as e:
+        return jsonify({"status": 500, "Error": f"{e}"})
+
+# Register the blueprint in the main app file
+# app.register_blueprint(adminbp, url_prefix='/admin')

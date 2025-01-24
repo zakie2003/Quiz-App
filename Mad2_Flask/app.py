@@ -15,10 +15,12 @@ from Model.cache_config import cache
 
 app = Flask(__name__)
 
+# Initialize CORS with proper configuration
+CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}}, supports_credentials=True)
 
 cache.init_app(app)
 
-CORS(app)
+
 app.register_blueprint(adminbp, url_prefix='/admin')
 app.register_blueprint(userbp, url_prefix='/user')
 
@@ -73,4 +75,4 @@ db.init_app(app)
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    app.run(debug=True,use_reloader=True)

@@ -1,8 +1,20 @@
-<template>
+<script setup>
+import axios from 'axios';
+import { ref } from 'vue';
 
+let input_search= ref('');
+
+const search=async()=>{
+  if(input_search.value){
+    window.location.href=`/admin/search/${input_search.value}`;
+  }
+}
+
+</script>
+<template>
 <div class="search">
-        <input placeholder="Search..." type="text">
-        <button type="submit">Go</button>
+        <input v-model="input_search" placeholder="Search..." type="text">
+        <button v-on:click="search" type="submit">Go</button>
 </div>
 </template>
 <style>

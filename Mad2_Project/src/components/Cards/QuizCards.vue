@@ -5,7 +5,8 @@ import { onMounted, ref } from 'vue';
 const props=defineProps(
   {
     item:Object,
-    isready:String
+    isready:String,
+    display_button:Boolean
   }
 )
 
@@ -96,8 +97,10 @@ const remove_from_ready_quiz=async(id)=>{
             </tr>
           </tbody>
         </table>
-        <button v-if="isready!='true'" v-on:click.stop="add_to_ready_quiz(props.item.id)" style="background-color: aliceblue;color: black;width: 100%;" class="btn my-2">Add to Ready Quiz</button>
-        <button v-on:click.stop="remove_from_ready_quiz(props.item.id)" v-else style="background-color: aliceblue;color: black;width: 100%;" class="btn my-2">Go Back</button>
+        <div v-if="props.display_button==true">
+          <button v-if="isready!='true'" v-on:click.stop="add_to_ready_quiz(props.item.id)" style="background-color: aliceblue;color: black;width: 100%;" class="btn my-2">Add to Ready Quiz</button>
+          <button v-on:click.stop="remove_from_ready_quiz(props.item.id)" v-else style="background-color: aliceblue;color: black;width: 100%;" class="btn my-2">Go Back</button>
+        </div>
       </div>
     </div>
   </div>
