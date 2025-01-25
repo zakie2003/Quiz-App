@@ -54,6 +54,5 @@ watch(() => props.line_data, (newVal) => {
 });
 </script>
 <template>
-  <h1 class="mx-4">User Registration Trend</h1>
   <canvas id="myChart" class="mx-4" style="width:100%;max-width:600px"></canvas>
 </template>

@@ -54,7 +54,7 @@ def user_authorize():
         else:
             user_login_acitivity.count+=1
             db.session.commit()
-        return jsonify({"status":200,"password":user.password,"token":token,"name":user.name,"id":user.id,"message":"User logged in"})
+        return jsonify({"status":200,"password":user.password,"token":token,"email":user.email,"name":user.name,"id":user.id,"message":"User logged in"})
     except Exception as e:
         return jsonify({"status":404,"message":f"{e}"})
     
@@ -164,7 +164,7 @@ def get_my_quizes():
         return jsonify({"status": 200, "quiz_library_data": arr})
     except Exception as e:
         return jsonify({"status": 500, "message": f"{e}"})
-
+    
 @userbp.route("/check_quiz_in_library", methods=["POST"])
 def check_quiz_in_library():
     try:
@@ -320,5 +320,57 @@ def get_pdf():
         pdf.multi_cell(0, 10, content)
         pdf.output("test.pdf")
         return send_file('test.pdf',as_attachment=True)
+    except Exception as e:
+        return jsonify({"status":500,"message":f"{e}"})
+    
+@userbp.route("/get_user_chart",methods=["POST"])
+def get_user_chart():
+    try:
+        data=request.json
+        user_score=Score.query.filter(Score.user_id==data["user_id"]).all()
+        score_dic={}
+        chapter_attempts = {}
+        for i in user_score:
+            if(f"{i.date}" in score_dic):
+                score_dic[f"{i.date}"]+=1
+            else:
+                score_dic[f"{i.date}"]=1
+            
+            quiz = Quiz.query.filter(Quiz.id == i.quiz_id).first()
+            if quiz:
+                chapter_name = quiz.chapter_name
+                if chapter_name in chapter_attempts:
+                    chapter_attempts[chapter_name] += 1
+                else:
+                    chapter_attempts[chapter_name] = 1
+        
+        score_list = [{"date": date, "count": count} for date, count in score_dic.items()]
+
+        top_quizes = Quiz_Library.query.filter(Quiz_Library.user_id == data["user_id"]).all()
+        top_chapter_names = {}
+        for tq in top_quizes:
+            quiz = Quiz.query.filter(Quiz.id == tq.quiz_id).first()
+            if quiz:
+                chapter_name = quiz.chapter_name
+                if chapter_name in top_chapter_names:
+                    top_chapter_names[chapter_name] += 1
+                else:
+                    top_chapter_names[chapter_name] = 1
+
+        chapter_attempts_list = [{"chapter_name": chapter_name, "attempts": attempts} for chapter_name, attempts in chapter_attempts.items()]
+
+        quiz_rigth_wrong = UserAnswerHistory.query.filter(UserAnswerHistory.user_id == data["user_id"]).all()
+        rigth=0
+        wrong=0
+        for i in quiz_rigth_wrong:
+            quiz = Quiz.query.filter(Quiz.id == i.quiz_id).first()
+            quiz_name = quiz.quiz_name if quiz else "Unknown"
+            chapter=quiz.chapter_name
+            # print(i.user_answer, i.correct_answer, quiz_name, chapter)
+            if(i.user_answer == i.correct_answer):
+                rigth+=1
+            else:
+                wrong+=1
+        return jsonify({"status":200,"line_chart":score_list, "top_chapter_names": top_chapter_names, "chapter_attempts": chapter_attempts_list, "right": rigth, "wrong": wrong})
     except Exception as e:
         return jsonify({"status":500,"message":f"{e}"})

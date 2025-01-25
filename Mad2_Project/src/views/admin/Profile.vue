@@ -54,6 +54,7 @@ onMounted(() => {
               </div>
             </div>
             <div class="col-md-6">
+              <h1 class="mx-4">User Login Activity</h1>
               <LineChart :line_data="chart_data.user_activity_data"/>
             </div>
           </div>
@@ -62,6 +63,7 @@ onMounted(() => {
               <PieChart :pie_data="chart_data.piechart_data"/>
             </div>
             <div class="col-md-6">
+              <h1 class="m-4">Top Quizes</h1>
               <BarChart :bar_data="chart_data.top_quiz_names"/>
             </div>
           </div>

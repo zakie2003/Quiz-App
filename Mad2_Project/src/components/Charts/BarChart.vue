@@ -42,6 +42,5 @@ watch(() => props.bar_data, () => {
 </script>
 
 <template>
-  <h1 class="m-4">Top Quizes</h1>
   <canvas id="barChart" style="width:100%;max-width:600px"></canvas>
 </template>

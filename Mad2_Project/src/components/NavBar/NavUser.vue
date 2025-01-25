@@ -10,6 +10,7 @@ function logout() {
 import { onMounted, ref } from 'vue';
 const user_data=ref({
     name:sessionStorage.getItem('name'),
+    email:sessionStorage.getItem('email')
 })
 
 
@@ -43,7 +44,7 @@ onMounted(() => {
           <a href="/user/home" class="nav_link"> <i class='bx bx-home nav_icon'></i> <span class="nav_name">Home</span> </a>
           <a href="/user/library" class="nav_link"><i class='bx bx-library nav_icon'></i> <span class="nav_name">Library</span> </a>
           <a href="/user/score" class="nav_link"><i class='bx bx-file-blank nav_icon'></i> <span class="nav_name">Score</span> </a>
-          <a href="#" class="nav_link"><i class='bx bx-bar-chart-square nav_icon'></i> <span class="nav_name">Statistics</span> </a>
+          <a :href="'/user/profile/' + user_data.email" class="nav_link"><i class='bx bx-bar-chart-square nav_icon'></i> <span class="nav_name">Statistics</span> </a>
           <button style="background: none;border: none;" class="nav_link "><i class='bx bx-moon' ></i> <span>Theme</span></button>
           <button @click="logout" style="background: none;border: none;" class="nav_link "><i class='bx bx-door-open' ></i> <span>Logout</span></button>
           <button  style="background: none;border: none;" class="nav_close nav_link" id="nav-close"> <i  class='bx bx-x nav_icon'></i> Close</button>
