@@ -2,6 +2,7 @@
 import LineChart from '@/components/Charts/LineChart.vue';
 import Accuracy from '@/components/Charts/Accuracy.vue';
 import BarChart from '@/components/Charts/BarChart.vue';
+import Footer from '@/components/Footer/Footer.vue';
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
 import NavUser from '@/components/NavBar/NavUser.vue';
@@ -82,6 +83,7 @@ onMounted(()=>{
       </div>
     </div>
   </nav>
+  <Footer/>
 </template>
 
 <style>

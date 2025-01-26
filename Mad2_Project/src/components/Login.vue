@@ -2,6 +2,7 @@
     import { onMounted, reactive,ref } from 'vue';
     import axios from "axios";
     import ErrorMessage from "./Message/ErrorMessage.vue";
+    import Footer from './Footer/Footer.vue';
     const device_data=ref({});
     function detectDeviceType() {
         if (navigator.userAgentData) {
@@ -123,13 +124,13 @@ onMounted(()=>{
 
                         <div class="d-flex justify-content-between align-items-center">
                             <!-- Checkbox -->
-                            <div class="form-check mb-0">
+                            <!-- <div class="form-check mb-0">
                                 <input class="form-check-input me-2" type="checkbox" value="" id="rememberMeCheckbox" />
                                 <label class="form-check-label" for="rememberMeCheckbox">
                                     Remember me
                                 </label>
-                            </div>
-                            <a href="#!" class="text-body">Forgot password?</a>
+                            </div> -->
+                            <!-- <a href="#!" class="text-body">Forgot password?</a> -->
                         </div>
 
                         <div class="text-center text-lg-start mt-4 pt-2">
@@ -142,30 +143,7 @@ onMounted(()=>{
                 </div>
             </div>
         </div>
-        <div style="background-color: #4723d9;" class="d-flex flex-column flex-md-row text-center text-md-start justify-content-between py-4 px-4 px-xl-5 ">
-            <!-- Copyright -->
-            <div class="text-white mb-3 mb-md-0">
-                Copyright © 2020. All rights reserved.
-            </div>
-            <!-- Copyright -->
-
-            <!-- Right -->
-            <div>
-                <a href="#!" class="text-white me-4">
-                    <i class="fab fa-facebook-f"></i>
-                </a>
-                <a href="#!" class="text-white me-4">
-                    <i class="fab fa-twitter"></i>
-                </a>
-                <a href="#!" class="text-white me-4">
-                    <i class="fab fa-google"></i>
-                </a>
-                <a href="#!" class="text-white">
-                    <i class="fab fa-linkedin-in"></i>
-                </a>
-            </div>
-            <!-- Right -->
-        </div>
+        <Footer/>
     </section>
 </template>
 <style>

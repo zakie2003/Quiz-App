@@ -8,6 +8,7 @@ function logout() {
 
 // Add mounted lifecycle hook
 import { onMounted, ref } from 'vue';
+import User_Search from "../SearchBar/User_Search.vue";
 const user_data=ref({
     name:sessionStorage.getItem('name'),
     email:sessionStorage.getItem('email')
@@ -33,7 +34,7 @@ onMounted(() => {
 <template>
   <header class="header" id="header">
     <div class="header_toggle"> <i class='bx bx-menu' id="header-toggle"></i> </div>
-    <div class="header_name">Welcome,{{ user_data.name }}</div>
+    <User_Search/>
     <div class="header_img"> <img src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png" alt=""> </div>
   </header>
   <div class="l-navbar" id="nav-bar">
@@ -45,7 +46,7 @@ onMounted(() => {
           <a href="/user/library" class="nav_link"><i class='bx bx-library nav_icon'></i> <span class="nav_name">Library</span> </a>
           <a href="/user/score" class="nav_link"><i class='bx bx-file-blank nav_icon'></i> <span class="nav_name">Score</span> </a>
           <a :href="'/user/profile/' + user_data.email" class="nav_link"><i class='bx bx-bar-chart-square nav_icon'></i> <span class="nav_name">Statistics</span> </a>
-          <button style="background: none;border: none;" class="nav_link "><i class='bx bx-moon' ></i> <span>Theme</span></button>
+          <!-- <button style="background: none;border: none;" class="nav_link "><i class='bx bx-moon' ></i> <span>Theme</span></button> -->
           <button @click="logout" style="background: none;border: none;" class="nav_link "><i class='bx bx-door-open' ></i> <span>Logout</span></button>
           <button  style="background: none;border: none;" class="nav_close nav_link" id="nav-close"> <i  class='bx bx-x nav_icon'></i> Close</button>
         </div>

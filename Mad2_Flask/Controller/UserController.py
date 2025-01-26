@@ -148,7 +148,7 @@ def add_to_library():
         return jsonify({"status":200,"message":"Quiz added to library"})
     except Exception as e:
         return jsonify({"status":500,"message":f"{e}"})
-
+    
 @userbp.route("/get_my_quizes",methods=["POST"])
 def get_my_quizes():
     try:
@@ -372,5 +372,29 @@ def get_user_chart():
             else:
                 wrong+=1
         return jsonify({"status":200,"line_chart":score_list, "top_chapter_names": top_chapter_names, "chapter_attempts": chapter_attempts_list, "right": rigth, "wrong": wrong})
+    except Exception as e:
+        return jsonify({"status":500,"message":f"{e}"})
+    
+@userbp.route("/search",methods=["POST"])
+def search():
+    try:
+        data=request.json
+        search=data["search"]
+        quizes=Quiz.query.filter(Quiz.quiz_name.like(f"%{search}%")).all()
+        temp=[]
+        for i in quizes:
+            row=row2dict(i)
+            temp.append(row)
+
+        quiz_library=Quiz_Library.query.filter(Quiz_Library.user_id==data["user_id"]).all()
+        lib=[]
+        for i in quiz_library:
+            quiz = Quiz.query.filter(and_(Quiz.id == i.quiz_id, Quiz.quiz_name.like(f"%{search}%"))).first()
+            if quiz:
+                row=row2dict(i)
+                row["quiz_name"] = quiz.quiz_name
+                lib.append(row)
+        
+        return jsonify({"status":200,"quiz":temp,"quiz_library":lib})
     except Exception as e:
         return jsonify({"status":500,"message":f"{e}"})

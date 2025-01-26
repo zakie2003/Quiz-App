@@ -13,7 +13,7 @@ import "@/assets/JS/nav.js"
         <div class="nav_list">
           <a href="/" class="nav_link"> <i class='bx bx-user-check nav_icon'></i> <span class="nav_name">Login</span> </a>
           <a href="/signin" class="nav_link"><i class='bx bx-user nav_icon'></i> <span class="nav_name">SignUp</span> </a>
-          <button style="background: none;border: none;" class="nav_link "><i class='bx bx-moon' ></i> <span>Theme</span></button>
+          <!-- <button style="background: none;border: none;" class="nav_link "><i class='bx bx-moon' ></i> <span>Theme</span></button> -->
         </div>
       </div>
     </nav>

@@ -140,14 +140,19 @@ const go_to_this_question=(index)=>{
   pointer.value.index=index;
 }
 
-
+const submit_button=()=>{
+  clearInterval(timer);
+  submit_quiz();
+  window.location.href = "/user/library";
+}
 
 </script>
 <template>
   <header  class="header bg-light p-3 mb-3 nav_bar text-white" id="header">
-    <h3 class="pt-2">Quiz Preview: {{ quiz_data.quiz.quiz_name }} </h3>
-    <h3 class="pt-2">Time: {{ minute }}:{{ second }}</h3>
+    <h3 class="pt-2">Quiz Preview: {{ quiz_data.quiz.quiz_name }}  </h3>
+    <h3 class="pt-2">Time: {{ minute }}:{{ second }} <button class="btn pt-2 subit_option" v-on:click="submit_button">Submit</button></h3>
     <h3 class="pt-2">Chapter Name: {{ quiz_data.quiz.chapter_name }}</h3>
+
   </header>
   <div class="row" style="align-items: center;justify-content: center;display: flex;height: 100vh;" v-if="loading">
     <Loader/>
@@ -215,6 +220,16 @@ const go_to_this_question=(index)=>{
 
 .option input[type="radio"] {
   margin-right: 10px;
+}
+
+.subit_option{
+  background-color: black;
+  color: aliceblue;
+}
+
+.subit_option:hover{
+  background-color: aliceblue;
+  color: black;
 }
 
 .option label {

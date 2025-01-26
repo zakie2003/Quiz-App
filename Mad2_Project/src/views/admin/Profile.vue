@@ -3,6 +3,7 @@ import LineChart from '@/components/Charts/LineChart.vue';
 import NavAdmin from '@/components/NavBar/NavAdmin.vue';
 import PieChart from '@/components/Charts/PieChart.vue';
 import BarChart from '@/components/Charts/BarChart.vue';
+import Footer from '@/components/Footer/Footer.vue';
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
 
@@ -70,6 +71,7 @@ onMounted(() => {
         </div>
       </div>
     </nav>
+    <Footer/>
 </template>
 <style>
 .profile_img {

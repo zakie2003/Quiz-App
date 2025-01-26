@@ -33,12 +33,12 @@ onMounted(()=>{
                 <UserCard :item="item"/>
             </div> 
         </div>
-        <h3 class="p-4">Paid Quizzes</h3>
+        <!-- <h3 class="p-4">Paid Quizzes</h3>
         <div class="ag-courses_box">
             <div v-for="i in 4" :key="i">
                 <UserCard color='yellow'/>
             </div> 
-        </div>
+        </div> -->
         </div>
       </div>
     </nav>
