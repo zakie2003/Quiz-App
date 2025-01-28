@@ -1,7 +1,20 @@
 <script setup>
+import axios from 'axios';
+
 const props = defineProps({
   item: Object
 });
+
+
+const delete_user=async(id)=>{
+  await axios("http://localhost:5000/admin/delete_user?email="+id).then((res)=>{
+    console.log(res);
+  }).catch((err)=>{
+    console.log(err);
+  })
+}
+
+
 </script>
 <template>
     <div class="ag-courses_item">
@@ -14,7 +27,7 @@ const props = defineProps({
                     <h3>{{ item.name }}</h3>
                     <p>{{ item.email }}</p>
                 </div>
-                <button style="height: 50px;width: 50px;" class="btn delete-button"><i class='bx bxs-trash'></i></button>
+                <button v-on:click="delete_user(item.email)" style="height: 50px;width: 50px;" class="btn delete-button"><i class='bx bxs-trash'></i></button>
             </div>
         </div>
         <div class="profile-details">

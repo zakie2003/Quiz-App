@@ -4,7 +4,7 @@ from sqlalchemy import and_
 import jwt
 from Model.DataBase import db
 from flask_session import Session
-from Model.Model import Quiz,Question,User,ReadyQuiz,Quiz_Library,QuizSession,UserAnswerHistory,Score,DeviceTypeCount,UserSinginActivity
+from Model.Model import Quiz,Question,User,ReadyQuiz,Quiz_Library,QuizSession,UserAnswerHistory,Score,DeviceTypeCount,UserSinginActivity,user_otp
 from Model.PDF import PDF
 from Model.cache_config import cache
 
@@ -42,6 +42,9 @@ def user_authorize():
         user=User.query.filter(and_(User.email==data["email"],User.password==data["password"])).first()
         if(user is None):
             return jsonify({"status":404,"message":"User not found"})
+        user_otp=user_otp.query.filter_by(email=data["email"]).first()
+        if user_otp!=data["otp"]:
+            return jsonify({"status":404,"message":"OTP not matched"})
         session["user_id"] = user.id
         token = jwt.encode({'user_id': user.id,'exp': datetime.now() + timedelta(hours=1)}, "secret", algorithm='HS256')
         session["token"] = token
@@ -54,7 +57,7 @@ def user_authorize():
         else:
             user_login_acitivity.count+=1
             db.session.commit()
-        return jsonify({"status":200,"password":user.password,"token":token,"email":user.email,"name":user.name,"id":user.id,"message":"User logged in"})
+        return jsonify({"status":200,"password":user.password,"token":token,"email":user.email,"name":user.name,"id":user.id,"profile_url":user.profile_url,"message":"User logged in"})
     except Exception as e:
         return jsonify({"status":404,"message":f"{e}"})
     
@@ -398,3 +401,19 @@ def search():
         return jsonify({"status":200,"quiz":temp,"quiz_library":lib})
     except Exception as e:
         return jsonify({"status":500,"message":f"{e}"})
+    
+@userbp.route("/save_img",methods=["POST"])
+
+def save_img():
+    try:
+        data=request.json
+        img=data["img"]
+        user=User.query.filter(User.id==data["user_id"]).first()
+        if(user is None):
+            return jsonify({"status":404,"message":"User not found"})
+        user.profile_url=img
+        db.session.commit()
+        return jsonify({"status":200,"message":"Image saved"})
+    except Exception as e:
+        return jsonify({"status":500,"message":f"{e}"})
+    

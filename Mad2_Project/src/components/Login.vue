@@ -70,6 +70,7 @@ onMounted(()=>{
                 sessionStorage.setItem('id', res.data.id);
                 sessionStorage.setItem('password', res.data.password);
                 sessionStorage.setItem('email', res.data.email);
+                sessionStorage.setItem('profile_url', res.data.profile_url);
                 window.location.href = location;
             } else {
                 data.message = res.data.message;

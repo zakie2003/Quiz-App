@@ -9,8 +9,35 @@ const data=reactive({
     dob:"",
     qualification:"",
     name:"",
-    profile_url:""
+    profile_url:"",
+    otp:"",
+    isoptsent:false
 })
+
+
+const generate_opt=()=>{
+    let str="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    var otp="";
+    for(var i=0;i<6;i++){
+        otp+=str.charAt(Math.floor(Math.random()*str.length));
+    }
+    return otp;
+}
+
+const send_opt=async()=>{
+    var otp=generate_opt();
+    await axios.post("http://localhost:5000/user/send_otp",{"email":data.email,"otp":otp}).then((res)=>{
+        console.log(res);
+    }).catch((err)=>{
+        console.log(err);
+    })
+    data.isoptsent=true;
+    // await axios.post("http://localhost:5000/user/send_otp",{"email":data.email,"otp":otp}).then((res)=>{
+    //     console.log(res);
+    // }).catch((err)=>{
+    //     console.log(err);
+    // })
+}
 
 const handle_submit=async()=>{
     await axios.post("http://localhost:5000/user/create_user",data).then((res)=>{
@@ -69,7 +96,11 @@ const handle_submit=async()=>{
             </div>
 
 
-
+            <div v-if="data.isoptsent" data-mdb-input-init class="form-outline mb-4">
+                <input v-model="data.otp" type="text" id="otp" class="form-control form-control-lg"
+                placeholder="Enter OTP" />
+                <label class="form-label" for="otp">Otp</label>
+            </div>
 
             <div class="d-flex justify-content-between align-items-center">
                 <!-- Checkbox
@@ -83,8 +114,10 @@ const handle_submit=async()=>{
             </div>
 
             <div class="text-center text-lg-start mt-4 pt-2">
-                <button  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-lg" v-on:click="handle_submit()"
+                <button v-if="data.isoptsent"  type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-lg" v-on:click="handle_submit()"
                 style="padding-left: 2.5rem; padding-right: 2.5rem; background-color:#4723d9;color: aliceblue;">Signin</button>
+                <button v-else type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-lg" v-on:click="send_opt()"
+                style="padding-left: 2.5rem; padding-right: 2.5rem; background-color:#4723d9;color: aliceblue;">Send OTP</button>
                 <p class="small fw-bold mt-2 pt-1 mb-0">Already have an account? <a href="/"
                     class="link-danger">Login</a>
                 </p>

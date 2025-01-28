@@ -25,7 +25,7 @@ class User(db.Model):
     __tablename__ = "user"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(50), nullable=False)
-    profile_url = db.Column(db.String(50), nullable=True)
+    profile_url = db.Column(db.String(300), nullable=True)
     email = db.Column(db.String(50), nullable=False)
     password = db.Column(db.String(50), nullable=False)
     dob = db.Column(db.Date, nullable=False)
@@ -222,3 +222,15 @@ class UserSinginActivity(db.Model):
     def __init__(self, date, count):
         self.date = date
         self.count = count
+
+class user_otp(db.Model):
+    __tablename__ = "user_otp"
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    email = db.Column(db.String(50), nullable=False)
+    otp = db.Column(db.String(50), nullable=False)
+    def __init__(self, email, otp):
+        self.email = email
+        self.otp = otp
+
+    def __repr__(self):
+        return '<User_otp %r>' % self.id

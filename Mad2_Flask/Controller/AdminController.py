@@ -306,5 +306,12 @@ def search():
     except Exception as e:
         return jsonify({"status": 500, "Error": f"{e}"})
 
-# Register the blueprint in the main app file
-# app.register_blueprint(adminbp, url_prefix='/admin')
+@adminbp.route("/delete_user",methods=["GET"])
+def delete_user():
+    try:
+        user=User.query.filter(User.email==request.args.get("email")).first()
+        db.session.delete(user)
+        db.session.commit()
+        return jsonify({"status":200,"message":"User Deleted"})
+    except Exception as e:
+        return jsonify({"status":404,"message":f"{e}"})

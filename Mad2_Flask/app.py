@@ -12,7 +12,7 @@ from Model.celery_config import make_celery
 from Model.tasks import init_tasks
 from flask_caching import Cache
 from Model.cache_config import cache
-
+from Model.Model import user_otp
 app = Flask(__name__)
 
 # Initialize CORS with proper configuration
@@ -68,6 +68,32 @@ def celery_get_csv_data():
     result = celery.tasks['get_csv_data'].delay(user_id=user_id, quiz_id=quiz_id,date=date,time=time)
     file_path = result.get()
     return send_file(file_path, as_attachment=True)
+
+@app.route("/user/send_otp",methods=["POST"])
+def save_otp():
+    try:
+        data=request.json
+        otp=data["otp"]
+        email=data["email"]
+        user=user_otp.query.filter_by(email=email).first()
+        if user:
+            user.otp=otp
+            db.session.commit()
+            mail=Mail(app)
+            msg=Message("OTP Verification",sender=os.environ.get("EMAIL"),recipients=[email],body=f"Your OTP is {otp}")
+            mail.send(msg)
+            
+            return jsonify({"status":200,"message":"OTP updated"})
+        otp=user_otp(email=email,otp=otp)
+        db.session.add(otp)
+        db.session.commit()
+        mail=Mail(app)
+        msg=Message("OTP Verification",sender=os.environ.get("EMAIL"),recipients=[email],body=f"Your OTP is {otp}")
+        mail.send(msg)
+        
+        return jsonify({"status":200,"message":"OTP saved"})
+    except Exception as e:
+        return jsonify({"status":500,"message":f"{e}"})
 
 Session(app)
 db.init_app(app)
