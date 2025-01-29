@@ -98,12 +98,14 @@ onMounted(() => {
               <div class="row g-3 align-items-center mt-4 mb-5">
                 <div class="col-4 text-center">
                   <input type="file" @change="upload_image" style="display: none;" ref="fileInput">
-                  <img
-                    class="profile_img"
-                    :src="user_data.img_url || default_img_url"
-                    alt="Profile"
-                    @click="$refs.fileInput.click()"
-                  />
+                  <div class="profile_img_container" @click="$refs.fileInput.click()">
+                    <img
+                      class="profile_img"
+                      :src="user_data.img_url || default_img_url"
+                      alt="Profile"
+                    />
+                    <div class="edit_overlay">Edit</div>
+                  </div>
                 </div>
                 <div class="col-8 profile-text">
                   <div class="mb-2"><strong>Name:</strong> {{ user_data.name }}</div>
@@ -139,10 +141,35 @@ onMounted(() => {
 </template>
 
 <style>
+.profile_img_container {
+  position: relative;
+  display: inline-block;
+}
+
 .profile_img {
   width: 125px;
   border-radius: 50%;
   background-color: aliceblue;
+}
+
+.edit_overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.profile_img_container:hover .edit_overlay {
+  opacity: 1;
 }
 
 .col-8 {

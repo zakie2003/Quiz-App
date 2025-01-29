@@ -97,9 +97,9 @@ const handle_submit=async()=>{
 
 
             <div v-if="data.isoptsent" data-mdb-input-init class="form-outline mb-4">
-                <input v-model="data.otp" type="text" id="otp" class="form-control form-control-lg"
+                <input v-model="data.otp" type="text" id="otp" class="otp_form form-control form-control-lg"
                 placeholder="Enter OTP" />
-                <label class="form-label" for="otp">Otp</label>
+                <label class="form-label" style="color: #4723d9;" for="otp">Otp</label>
             </div>
 
             <div class="d-flex justify-content-between align-items-center">
@@ -132,4 +132,8 @@ const handle_submit=async()=>{
 </template>
 <style>
     @import "../assets/CSS/login.css";
+    .otp_form{
+        border-color: #4723d9 !important;
+        background-color: #f4f1ff !important;   
+    }
 </style>
