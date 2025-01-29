@@ -99,7 +99,7 @@ const handle_submit=async()=>{
             <div v-if="data.isoptsent" data-mdb-input-init class="form-outline mb-4">
                 <div style="display: flex;">
                     <input v-model="data.otp" type="text" id="otp" style="border-radius: 0;" class="otp_form form-control form-control-lg" placeholder="Enter OTP" />
-                    <button class="btn" style="background-color: #4723d9;color: aliceblue;border-radius: 0;">Resend</button>
+                    <button v-on:click="send_opt()" class="btn" style="background-color: #4723d9;color: aliceblue;border-radius: 0;">Resend</button>
                 </div>
                 <label class="form-label" style="color: #4723d9;" for="otp">Otp</label>
             </div>

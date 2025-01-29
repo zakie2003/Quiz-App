@@ -29,6 +29,20 @@ def init_tasks(celery):
                 writer.writerow([answer.user_id, answer.quiz_id, answer.question_id, answer.user_answer, answer.correct_answer])
         return file_path
 
+    @celery.task(name="send_monthy_report")
+    def send_monthy_report():
+        try:
+            logging.info("Attempting to send email...")
+            mail = Mail(current_app)
+            sender_email = os.getenv("EMAIL")
+            msg = Message("Monthly Report", sender=sender_email, recipients=["sXm0g@example.com"])
+            msg.body = "Monthly Report"
+            mail.send(msg)
+            return "Mail successfully sent by Celery"
+        except Exception as e:
+            logging.error(f"Failed to send email: {e}")
+            return f"Failed to send email: {e}"
+
     @celery.task(name='send_mail')
     def send_mail(text):
         print("send_mail task started")
@@ -56,7 +70,7 @@ def init_tasks(celery):
                             Take Today's Quiz
                             </a>
                         </p>
-                        <p>Happy Quizzing!<br>The Quiz Master Team</p>
+                        <p>Happy Quizzing!<br>The MindSpark Team</p>
                     </body>
                 </html>
                 """
@@ -73,6 +87,8 @@ def init_tasks(celery):
             except Exception as e:
                 logging.error(f"Failed to send email: {e}")
                 return f"Failed to send email: {e}"
+            
+
 
     celery.conf.beat_schedule = {
         "email-task": {
