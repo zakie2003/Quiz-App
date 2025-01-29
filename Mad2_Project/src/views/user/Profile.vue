@@ -47,7 +47,7 @@ const save_img=async()=>{
         user_id: sessionStorage.getItem("id"),
         img_url: user_data.value.img_url
       }
-    }).finally((res)=>{
+    }).then((res)=>{
       console.log(res.data);
     });
   }catch(err){
@@ -63,7 +63,7 @@ const upload_image = async (event) => {
   }
   const form_data = new FormData();
   form_data.append('file', img1);
-  form_data.append('upload_preset', 'unsigned_upload');
+  form_data.append('upload_preset', 'cloud_demo'); 
   form_data.append('cloud_name', 'dyt00fcs6');
   try {
     const res = await axios.post("https://api.cloudinary.com/v1_1/dyt00fcs6/image/upload", form_data, {
@@ -73,7 +73,7 @@ const upload_image = async (event) => {
     save_img();
     sessionStorage.setItem('profile_url', res.data.secure_url);
   } catch (error) {
-    console.error('Error uploading image:', error);
+    console.error('Error uploading image:', error.response ? error.response.data : error.message);
   }
 };
 

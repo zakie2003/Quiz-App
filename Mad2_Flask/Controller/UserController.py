@@ -24,6 +24,9 @@ def create_user():
         prev_user=User.query.filter(User.email==data["email"]).first()
         if(prev_user is not None):
             return jsonify({"status":404,"message":"User already exists"})
+        user_otp=user_otp.query.filter_by(email=data["email"]).first()
+        if user_otp!=data["otp"]:
+            return jsonify({"status":404,"message":"OTP not matched"})
         for(key,value) in data.items():
             if(data[key]=="" and key!="profile_url"):
                 return jsonify({"status":404,"message":f"{key} is required"})
@@ -42,9 +45,6 @@ def user_authorize():
         user=User.query.filter(and_(User.email==data["email"],User.password==data["password"])).first()
         if(user is None):
             return jsonify({"status":404,"message":"User not found"})
-        user_otp=user_otp.query.filter_by(email=data["email"]).first()
-        if user_otp!=data["otp"]:
-            return jsonify({"status":404,"message":"OTP not matched"})
         session["user_id"] = user.id
         token = jwt.encode({'user_id': user.id,'exp': datetime.now() + timedelta(hours=1)}, "secret", algorithm='HS256')
         session["token"] = token
@@ -407,7 +407,7 @@ def search():
 def save_img():
     try:
         data=request.json
-        img=data["img"]
+        img=data["img_url"]
         user=User.query.filter(User.id==data["user_id"]).first()
         if(user is None):
             return jsonify({"status":404,"message":"User not found"})

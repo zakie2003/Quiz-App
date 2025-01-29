@@ -88,7 +88,7 @@ def save_otp():
         db.session.add(otp)
         db.session.commit()
         mail=Mail(app)
-        msg=Message("OTP Verification",sender=os.environ.get("EMAIL"),recipients=[email],body=f"Your OTP is {otp}")
+        msg=Message("OTP Verification",sender=os.environ.get("EMAIL"),recipients=[email],body=f"Your OTP is {otp.otp}")
         mail.send(msg)
         
         return jsonify({"status":200,"message":"OTP saved"})

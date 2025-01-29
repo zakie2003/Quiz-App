@@ -11,7 +11,8 @@ import { onMounted, ref } from 'vue';
 import User_Search from "../SearchBar/User_Search.vue";
 const user_data=ref({
     name:sessionStorage.getItem('name'),
-    email:sessionStorage.getItem('email')
+    email:sessionStorage.getItem('email'),
+    profile_url:sessionStorage.getItem('profile_url') || "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png"
 })
 
 
@@ -35,7 +36,7 @@ onMounted(() => {
   <header class="header" id="header">
     <div class="header_toggle"> <i class='bx bx-menu' id="header-toggle"></i> </div>
     <User_Search/>
-    <div class="header_img"> <img src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png" alt=""> </div>
+    <div class="header_img"> <img :src="user_data.profile_url" alt="Err"> </div>
   </header>
   <div class="l-navbar" id="nav-bar">
     <nav class="nav">
