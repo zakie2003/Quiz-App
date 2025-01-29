@@ -82,7 +82,7 @@ onMounted(()=>{
     }
 </script>
 <template>
-    <section class="vh-100">
+    <section class="vh_custom">
         <div class="container-fluid h-custom">
             <div>
                 <ErrorMessage v-if="data.message" :message="data.message" />
@@ -149,4 +149,10 @@ onMounted(()=>{
 </template>
 <style>
     @import "../assets/CSS/login.css";
+    @media screen and (min-width: 1000px) {
+        .vh_custom{
+            height: 100vh;
+        }
+        
+    }
 </style>

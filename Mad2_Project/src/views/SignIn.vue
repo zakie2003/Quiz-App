@@ -6,7 +6,7 @@ import NavBar from "@/components/NavBar/Nav.vue"; // Import NavBar component
 <template>
   <nav class="pb-0 navbar navbar-expand-lg bg-body-tertiary">
     <NavBar /> <!-- Use NavBar component -->
-    <div class="height-100 bg-light w-100">
+    <div class="bg-light w-100">
       <Signin/>
     </div>
   </nav>

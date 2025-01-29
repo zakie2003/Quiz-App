@@ -14,7 +14,7 @@ const renderChart = () => {
   const barColors = ["green", "red"];
 
   new Chart(ctx, {
-    type: "bar",
+    type: "doughnut",
     data: {
       labels: labels,
       datasets: [{
@@ -23,16 +23,17 @@ const renderChart = () => {
       }]
     },
     options: {
-      scales: {
-        yAxes: [{
-          ticks: {
-                beginAtZero:true
-            }
-        }]
-      },
-      legend: {
-        display: false
-      }
+      options: {
+            rotation: 1 * Math.PI,/** This is where you need to work out where 89% is */
+            circumference: 1 * Math.PI,/** put in a much smaller amount  so it does not take up an entire semi circle */
+            legend: {
+                display: false
+            },
+            tooltip: {
+                enabled: false
+            },
+            cutoutPercentage: 95
+        }
     }
   });
 };
