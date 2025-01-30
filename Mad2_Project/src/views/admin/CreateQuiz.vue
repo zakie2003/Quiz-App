@@ -7,7 +7,8 @@ const data={
   quiz_name:"",
   chapter_name:"",
   date_of_conduction:"",
-  duration:"",
+  minute:"",
+  second:"",
   remark:""
 }
 
@@ -19,7 +20,7 @@ const add_quiz=async(data)=>{
     data:JSON.stringify(data),
     headers:{"Content-Type":"application/json"}
   }).then((res)=>{
-    // console.log(res);
+    console.log(res);
     window.location.href="/admin/quiz_dashboard";
   }).catch((err)=>{
     console.log(err);
@@ -65,7 +66,10 @@ onMounted(()=>{
             </div>
             <div class="mb-3">
                 <label style="font-size: 20px;" class="form-label " for="subject">Quiz Duration</label>
-                <input v-model="data.duration" style="font-size: 20px;" type="time" name="subject" required class="form-control" placeholder="Enter Quiz Duration">
+                <div class="d-flex">
+                    <input v-model="data.minute" style="font-size: 20px;" type="number" required name="subject" class="form-control" placeholder="Enter Minute">
+                    <input v-model="data.second" style="font-size: 20px;" type="number" required name="subject" class="form-control" max="60" placeholder="Enter Second">
+                </div>
             </div>
             <div class="mb-3">
                 <label style="font-size: 20px;" class="form-label " for="remark">Quiz Remark</label>

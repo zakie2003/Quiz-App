@@ -133,17 +133,27 @@ def delete_chapter():
     except Exception as e:
         return jsonify({"status":404,"message":f"{e}"})
     
-@adminbp.route("/add_quiz",methods=["POST"])
+@adminbp.route("/add_quiz", methods=["POST"])
 def add_quiz():
     try:
-        data=request.json
-        date = datetime.strptime(data["date_of_conduction"], "%Y-%m-%d").date()
-        quiz=Quiz(quiz_name=data["quiz_name"],chapter_name=data["chapter_name"],date_of_quiz=date,time_duration=data["duration"],remark=data["remark"])
+        data = request.json
+        if(int(data["second"])>59):
+            return jsonify({"status":404,"message":"Invalid time"})
+        time_duration = f"{int(data['minute']):02}:{int(data['second']):02}"
+        date_of_quiz = datetime.now().date()
+        quiz = Quiz(
+            quiz_name=data["quiz_name"],
+            chapter_name=data["chapter_name"],
+            date_of_quiz=date_of_quiz,
+            time_duration=time_duration,
+            remark=data["remark"]
+        )
         db.session.add(quiz)
         db.session.commit()
-        return jsonify({"status":200,"message":"Request Sent"})
+        return jsonify({"status": 200, "message": "Request Sent"})
     except Exception as e:
-        return jsonify({"status":404,"message":f"{e}"})
+        print(e)
+        return jsonify({"status": 404, "message": f"{e}"})
     
 @adminbp.route("/get_quizes")
 def get_quizes():
