@@ -148,11 +148,12 @@ const submit_button=()=>{
 
 </script>
 <template>
-  <header  class="header bg-light p-3 mb-3 nav_bar text-white" id="header">
-    <h3 class="pt-2">Quiz Preview: {{ quiz_data.quiz.quiz_name }}  </h3>
-    <h3 class="pt-2">Time: {{ minute }}:{{ second }} <button class="btn pt-2 subit_option" v-on:click="submit_button">Submit</button></h3>
-    <h3 class="pt-2">Chapter Name: {{ quiz_data.quiz.chapter_name }}</h3>
-
+  <header class="header bg-light p-3 mb-3 nav_bar text-white" id="header">
+    <h3 class="pt-2 is_visible">Quiz Preview: {{ quiz_data.quiz.quiz_name }}</h3>
+    <div class="make_center">
+      <h3 class="pt-2">Time: {{ minute }}:{{ second }} <button class="btn pt-2 subit_option" v-on:click="submit_button">Submit</button></h3>
+    </div>
+    <h3 class="pt-2 is_visible">Chapter Name: {{ quiz_data.quiz.chapter_name }}</h3>
   </header>
   <div class="row" style="align-items: center;justify-content: center;display: flex;height: 100vh;" v-if="loading">
     <Loader/>
@@ -162,46 +163,46 @@ const submit_button=()=>{
       <h3 class="col-7 mx-2 my-4 rounded p-4 bg-light" style="text-align: center;">No questions found</h3>  
     </div>
     <div class="row" v-else>
-    <div  class="col-7 mx-1 my-4 rounded p-4 bg-light">
-      <div class="py-4 text-left">
-        <div class="d-flex justify-content-between align-items-center">
-          <h3>Question No {{ pointer.index+1 }}</h3>
+        <div class="col-12 col-md-7 mx-1 my-4 rounded p-4 bg-light">
+          <div class="py-4 text-left">
+            <div class="d-flex justify-content-between align-items-center">
+              <h3>Question No {{ pointer.index + 1 }}</h3>
+            </div>
+            <span class="p-2 d-block" style="font-size: larger;">
+              {{ quiz_data.questions[pointer.index].question }}
+            </span>
+            <h3 class="pt-4">Options</h3>
+            <div class="py-2">
+              <div class="option">
+                <input type="radio" id="option_a" name="option" :value="'1'" v-model="user_option[pointer.index]" @change="click_option(pointer.index, '1')">
+                <label for="option_a">{{ quiz_data.questions[pointer.index].option_a }}</label>
+              </div>
+              <div class="option">
+                <input type="radio" id="option_b" name="option" :value="'2'" v-model="user_option[pointer.index]" @change="click_option(pointer.index, '2')">
+                <label for="option_b">{{ quiz_data.questions[pointer.index].option_b }}</label>
+              </div>
+              <div class="option">
+                <input type="radio" id="option_c" name="option" :value="'3'" v-model="user_option[pointer.index]" @change="click_option(pointer.index, '3')">
+                <label for="option_c">{{ quiz_data.questions[pointer.index].option_c }}</label>
+              </div>
+              <div class="option">
+                <input type="radio" id="option_d" name="option" :value="'4'" v-model="user_option[pointer.index]" @change="click_option(pointer.index, '4')">
+                <label for="option_d">{{ quiz_data.questions[pointer.index].option_d }}</label>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between pt-4">
+              <button class="btn nav_bar text-white" v-on:click="prev">Previous</button>
+              <button class="btn nav_bar text-white" v-on:click="next">Next</button>
+            </div>
+          </div>
         </div>
-        <span class="p-2 d-block" style="font-size: larger;">
-           {{ quiz_data.questions[pointer.index].question }}
-        </span>
-        <h3 class="pt-4">Options</h3>
-        <div class="py-2">
-          <div class="option">
-            <input type="radio" id="option_a" name="option" :value="'1'" v-model="user_option[pointer.index]" @change="click_option(pointer.index, '1')">
-            <label for="option_a">{{ quiz_data.questions[pointer.index].option_a }}</label>
+        <div class="col-12 col-md-4 mx-1 my-4 rounded p-4 bg-light">
+          <h3 class="py-4">Questions</h3>
+          <div class="row justify-content-center">
+            <button v-on:click="go_to_this_question(i - 1)" class="btn col-3 py-3 m-2 border" :class="{'nav_bar': pointer.index == i - 1}" v-for="i in quiz_data.questions.length" :key="i">{{ i }}</button>
           </div>
-          <div class="option">
-            <input type="radio" id="option_b" name="option" :value="'2'" v-model="user_option[pointer.index]" @change="click_option(pointer.index, '2')">
-            <label for="option_b">{{ quiz_data.questions[pointer.index].option_b }}</label>
-          </div>
-          <div class="option">
-            <input type="radio" id="option_c" name="option" :value="'3'" v-model="user_option[pointer.index]" @change="click_option(pointer.index, '3')">
-            <label for="option_c">{{ quiz_data.questions[pointer.index].option_c }}</label>
-          </div>
-          <div class="option">
-            <input type="radio" id="option_d" name="option" :value="'4'" v-model="user_option[pointer.index]" @change="click_option(pointer.index, '4')">
-            <label for="option_d">{{ quiz_data.questions[pointer.index].option_d }}</label>
-          </div>
-        </div>
-        <div class="d-flex justify-content-between pt-4">
-          <button class="btn nav_bar text-white" v-on:click="prev">Previous</button>
-          <button class="btn nav_bar text-white" v-on:click="next">Next</button>
         </div>
       </div>
-    </div>
-    <div class="col-4 mx-1 my-4 rounded p-4 bg-light">
-      <h3 class="py-4">Questions</h3>
-      <div class="row justify-content-center">
-        <button v-on:click="go_to_this_question(i-1)" class="btn col-3 py-3 m-2 border" :class="{'nav_bar':pointer.index==i-1}"  v-for="i in quiz_data.questions.length" :key="i">{{ i }}</button>
-      </div>
-    </div>
-    </div>
   </div>
 </template>
 <style>
@@ -245,5 +246,17 @@ const submit_button=()=>{
   background-color: #4723D9;
   color: aliceblue;
   border-color: #4723D9;
+}
+
+@media screen and (max-width:730px) {
+  .is_visible{
+    display: none;
+  }
+  .make_center{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
 }
 </style>
