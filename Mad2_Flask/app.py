@@ -12,7 +12,7 @@ from Model.celery_config import make_celery
 from Model.tasks import init_tasks
 from flask_caching import Cache
 from Model.cache_config import cache
-from Model.Model import user_otp
+from Model.Model import User_otp
 app = Flask(__name__)
 
 # Initialize CORS with proper configuration
@@ -75,7 +75,7 @@ def save_otp():
         data=request.json
         otp=data["otp"]
         email=data["email"]
-        user=user_otp.query.filter_by(email=email).first()
+        user=User_otp.query.filter_by(email=email).first()
         if user:
             user.otp=otp
             db.session.commit()
@@ -84,7 +84,7 @@ def save_otp():
             mail.send(msg)
             
             return jsonify({"status":200,"message":"OTP updated"})
-        otp=user_otp(email=email,otp=otp)
+        otp=User_otp(email=email,otp=otp)
         db.session.add(otp)
         db.session.commit()
         mail=Mail(app)

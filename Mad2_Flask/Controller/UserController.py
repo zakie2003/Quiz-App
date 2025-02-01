@@ -4,7 +4,7 @@ from sqlalchemy import and_
 import jwt
 from Model.DataBase import db
 from flask_session import Session
-from Model.Model import Quiz,Question,User,ReadyQuiz,Quiz_Library,QuizSession,UserAnswerHistory,Score,DeviceTypeCount,UserSinginActivity,user_otp
+from Model.Model import Quiz,Question,User,ReadyQuiz,Quiz_Library,QuizSession,UserAnswerHistory,Score,DeviceTypeCount,UserSinginActivity,User_otp
 from Model.PDF import PDF
 from Model.cache_config import cache
 
@@ -24,8 +24,9 @@ def create_user():
         prev_user=User.query.filter(User.email==data["email"]).first()
         if(prev_user is not None):
             return jsonify({"status":404,"message":"User already exists"})
-        user_otp=user_otp.query.filter_by(email=data["email"]).first()
-        if user_otp!=data["otp"]:
+        user_otp=User_otp.query.filter_by(email=data["email"]).first()
+        print(user_otp,data["otp"])
+        if user_otp.otp!=data["otp"]:
             return jsonify({"status":404,"message":"OTP not matched"})
         for(key,value) in data.items():
             if(data[key]=="" and key!="profile_url"):

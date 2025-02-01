@@ -5,6 +5,7 @@ import axios from "axios";
 import NavAdmin from '@/components/NavBar/NavAdmin.vue';
 import Cards from '@/components/Cards/Cards.vue';
 import Loader from '@/components/Loader/Loader.vue';
+import ErrorMessage from '@/components/Message/ErrorMessage.vue';
 
 // Example of making an authenticated request
 const token = sessionStorage.getItem('token');
@@ -30,6 +31,11 @@ const dynamicHeight = computed(() => {
 
 axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 
+const response_status = ref({
+  status: "",
+  message: ""
+});
+
 defineExpose({
   data,
   isLoading,
@@ -50,7 +56,10 @@ const fetchChapters = async () => {
     data.value.chapters = res.data.data;
     isLoading.value = false;
   } catch (err) {
+    response_status.value.status = err.response.status;
+    response_status.value.message = err.response.data.message;
     isLoading.value = false;
+
     console.log('Error:', err);
   }
 };
@@ -66,6 +75,9 @@ onMounted(() => {
     <div :style="{ minHeight: dynamicHeight }" class="bg-light w-100">
       <div v-if="isLoading" style="display: flex;justify-content: center;align-items: center;height: 100vh;"><Loader/></div>
       <div v-else>
+        <div class="container">
+          <ErrorMessage v-if="response_status.status" :status="response_status.status" :message="response_status.message"/>
+        </div>
         <h1 class="m-4">Welcome to Admin Dashboard, {{ data.name }}</h1> 
         <button v-on:click="go_to_create" type="button" style="background-color: #4723d9;color: aliceblue;" class="btn  m-4">Add Subject</button>
         <div v-for="(item, index) in data.chapters" :key="index">

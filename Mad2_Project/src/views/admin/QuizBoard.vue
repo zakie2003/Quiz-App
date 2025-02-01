@@ -35,6 +35,7 @@ const fetch_ready_quiz = async () => {
       console.log(data.value.ready_quiz_data);
     })
     .catch((err) => {
+      data.value.alert_msg = err.response.data.message;
       console.log(err);
     });
 };
@@ -46,10 +47,6 @@ const refresh_quizzes = () => {
 
 onMounted(() => {
   refresh_quizzes();
-  const referrer = document.referrer;
-  if (referrer.includes("/admin/create_quiz")) {
-    data.value.alert_msg = "Quiz created successfully";
-  }
 });
 
 </script>
@@ -61,13 +58,13 @@ onMounted(() => {
       <h1 class="m-4">Quiz Dashboard  <button v-on:click="go_to_create_quiz" style="background-color: #4723d9;color: aliceblue;" class="btn">Create Quiz</button></h1> 
       <div class="ag-courses_box row">
         <div v-for="(item, index) in data.quiz_data" :key="index" class="col-md-4">
-          <QuizCards :display_button=true :item="item"/>
+          <QuizCards :display_button="true" :item="item" :isready="false"/>
         </div>
       </div>
       <h1 class="p-4">Ready Quiz</h1>
       <div class="ag-courses_box row">
         <div v-for="(item, index) in data.ready_quiz_data" :key="index" class="col-md-4">
-          <QuizCards isready="true" :item="item"/>
+          <QuizCards :display_button=true :item="item" :isready="true"/>
         </div>
       </div>
     </div>

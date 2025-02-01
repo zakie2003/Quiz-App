@@ -1,7 +1,7 @@
 <script setup>
 import axios from "axios";
 import NavAdmin from "@/components/NavBar/NavAdmin.vue";
-import { onMounted, ref } from 'vue';
+import { ErrorCodes, onMounted, ref } from 'vue';
 
 const data={
   quiz_name:"",
@@ -14,6 +14,10 @@ const data={
 
 let chapter=ref({});
 
+const resp_status=ref({
+  status:"",message:""
+})
+
 const add_quiz=async(data)=>{
   await axios("http://localhost:5000/admin/add_quiz",{
     method:"POST",
@@ -23,6 +27,8 @@ const add_quiz=async(data)=>{
     console.log(res);
     window.location.href="/admin/quiz_dashboard";
   }).catch((err)=>{
+    resp_status.value.status=err.response.status;
+    resp_status.value.message=err.response.data.message;
     console.log(err);
   })
 }
@@ -46,6 +52,9 @@ onMounted(()=>{
   <nav class="navbar navbar-expand-lg pb-0 bg-body-tertiary">
     <NavAdmin /> 
     <div style="min-height: 100vh;" class="bg-light w-100">
+      <div class="container">
+        <ErrorCodes v-if="resp_status.status" :message="resp_status.message" />
+      </div>
       <h1 class="m-4">Create Quiz</h1>
       <div class="container">
         <form class="d-flex flex-column w-90" action="" @submit.prevent="add_quiz(data)">

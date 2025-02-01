@@ -2,6 +2,7 @@
 import axios from 'axios';
 import Footer from './Footer/Footer.vue';
 import { reactive } from 'vue';
+import ErrorMessage from './Message/ErrorMessage.vue';
 const data=reactive({
     email:"",
     password:"",
@@ -14,6 +15,9 @@ const data=reactive({
     isoptsent:false
 })
 
+const resp_status=reactive({
+    status:"",message:""
+})
 
 const generate_opt=()=>{
     let str="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -28,6 +32,8 @@ const send_opt=async()=>{
     var otp=generate_opt();
     await axios.post("http://localhost:5000/user/send_otp",{"email":data.email,"otp":otp}).then((res)=>{
         console.log(res);
+        resp_status.status=res.data.status;
+        resp_status.message=res.data.message;
     }).catch((err)=>{
         console.log(err);
     })
@@ -42,6 +48,8 @@ const send_opt=async()=>{
 const handle_submit=async()=>{
     await axios.post("http://localhost:5000/user/create_user",data).then((res)=>{
         console.log(res);
+        resp_status.status=res.data.status;
+        resp_status.message=res.data.message;
     }).catch((err)=>{
         console.log(err);
     })
@@ -50,6 +58,9 @@ const handle_submit=async()=>{
 
 <template>
     <section style="min-height: 100vh;">
+    <div class="container">
+        <ErrorMessage v-if="resp_status.status" :status="resp_status.status" :message="resp_status.message"/>
+    </div>
     <div class="container-fluid h-custom"> 
         <div style="min-height: 100vh;" class="row d-flex justify-content-center align-items-center ">
         <div class="col-md-9 col-lg-6 col-xl-5">

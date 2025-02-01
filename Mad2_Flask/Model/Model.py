@@ -223,7 +223,7 @@ class UserSinginActivity(db.Model):
         self.date = date
         self.count = count
 
-class user_otp(db.Model):
+class User_otp(db.Model):
     __tablename__ = "user_otp"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     email = db.Column(db.String(50), nullable=False)
