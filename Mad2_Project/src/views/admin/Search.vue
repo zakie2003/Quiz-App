@@ -7,6 +7,7 @@ import Cards from '@/components/Cards/Cards.vue';
 import Loader from '@/components/Loader/Loader.vue';
 import QuizCards from '@/components/Cards/QuizCards.vue';
 import User_Profile_Card from '@/components/Cards/User_Profile_Card.vue';
+import Footer from '@/components/Footer/Footer.vue';
 
 const search_results = ref({});
 let isLoading = ref(true);
@@ -42,6 +43,10 @@ const change_arr=(value)=>{
 }
 
 let option=ref("quiz");
+
+const go_to_profile=(email)=>{
+    window.location.href="/admin/user_profile/"+email;
+}
 
 onMounted(() => {
     get_results();
@@ -79,7 +84,7 @@ onMounted(() => {
                                 <QuizCards :display_button="false" :item="item"/>
                             </div>
                             <div v-else-if="option=='user'" v-for="(item, index) in arr" :key="'user-' + index" class="col-md-4" style="width: 100%;">
-                                <User_Profile_Card :item="item"/>
+                                <User_Profile_Card v-on:click.stop="go_to_profile(item.email)" :item="item"/>
                             </div>
                             <div v-else-if="option=='subject'" v-for="(item, index) in arr" :key="'subject-' + index" class="col-md-4" style="width: 100%;">
                                 <Cards :item="item"/>
@@ -91,6 +96,7 @@ onMounted(() => {
         </div>
       </div>
     </nav>
+    <Footer/>
 </template>
 <style>
 @import "../../assets/CSS/nav.css";

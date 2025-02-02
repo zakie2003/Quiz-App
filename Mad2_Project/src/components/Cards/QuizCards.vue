@@ -89,8 +89,8 @@ const remove_from_ready_quiz = async (id) => {
               <td>{{ item.id }}</td>
               <td>{{ item.question }}</td>
               <td v-if="!props.isready">
-                <button style="background-color: #f38d04;" v-on:click.stop="go_to_edit_question(item.id)" class="btn my-1">Edit</button> &nbsp;
-                <button style="background-color: #f38d04;" v-on:click.stop="delete_question(item.id)" class="btn my-1">Delete</button>
+                <button style="background-color: aliceblue;" v-on:click.stop="go_to_edit_question(item.id)" class="btn my-1"><i class='bx bxs-edit-alt'></i></button> &nbsp;
+                <button style="background-color: aliceblue;" v-on:click.stop="delete_question(item.id)" class="btn my-1"><i class='bx bx-trash'></i></button>
               </td>
             </tr>
           </tbody>

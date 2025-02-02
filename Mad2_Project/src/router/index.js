@@ -128,6 +128,10 @@ const router = createRouter({
       name: 'Search',
       component: ()=> import('../views/admin/Search.vue'),
       meta: { requiresAuth: true }
+    },{
+      path: '/admin/user_profile/:id',
+      name: 'ShowProfile',
+      component: ()=> import('../views/admin/ShowUserProfile.vue'),
     }
 
     

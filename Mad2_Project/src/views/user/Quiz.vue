@@ -140,11 +140,11 @@ const go_to_this_question=(index)=>{
   pointer.value.index=index;
 }
 
-const submit_button=()=>{
+const submit_button = async () => {
+  await submit_quiz();
   clearInterval(timer);
-  submit_quiz();
   window.location.href = "/user/library";
-}
+};
 
 </script>
 <template>

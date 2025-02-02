@@ -325,3 +325,13 @@ def delete_user():
         return jsonify({"status":200,"message":"User Deleted"})
     except Exception as e:
         return jsonify({"status":404,"message":f"{e}"})
+    
+@adminbp.route("/get_user_data",methods=["POST"])
+def get_user_data():
+    try:
+        data=request.json
+        user=User.query.filter(User.email==data["email"]).first()
+        row=row2dict(user)
+        return jsonify({"status":200,"message":"Data received","user_data":row})
+    except Exception as e:
+        return jsonify({"status":404,"message":f"{e}"})

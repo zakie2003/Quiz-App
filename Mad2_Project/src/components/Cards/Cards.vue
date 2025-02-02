@@ -63,8 +63,8 @@ const url=ref(`/admin/create_chapter/?id=${props.item.id}`);
               <td>{{item.name}}</td>
               <td>{{item.number_of_questions}}</td>
               <td>
-                <button v-on:click="go_to_edit(item.name,item.number_of_questions)" style="background-color: #f38d04;" class="btn my-1">Edit</button> &nbsp;
-                <button v-on:click="delete_chapter(item.name)" style="background-color: #f38d04;" class="btn my-1">Delete</button>
+                <button v-on:click="go_to_edit(item.name,item.number_of_questions)" class="btn my-1 button_option"><i class='bx bxs-edit-alt'></i></button> &nbsp;
+                <button v-on:click="delete_chapter(item.name)" class="btn my-1 button_option"><i class='bx bx-trash'></i></button>
               </td>
             </tr>
           </tbody>
@@ -75,4 +75,15 @@ const url=ref(`/admin/create_chapter/?id=${props.item.id}`);
 </template>
 <style>
 @import "../../assets/CSS/card.css";
+
+.button_option{
+  background-color: aliceblue;
+  color: black;
+}
+
+.button_option:hover{
+  background-color: black;
+  color: aliceblue;
+}
+
 </style>

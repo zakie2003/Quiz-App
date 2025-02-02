@@ -1,5 +1,6 @@
 <script setup>
 import axios from 'axios';
+import { onMounted } from 'vue';
 
 const props = defineProps({
   item: Object
@@ -14,6 +15,13 @@ const delete_user=async(id)=>{
   })
 }
 
+onMounted(()=>{
+  console.log(props.item)
+  if(props.item.profile_url==""){
+    props.item.profile_url="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png";
+  }
+})
+
 
 </script>
 <template>
@@ -22,7 +30,7 @@ const delete_user=async(id)=>{
         <div class="ag-courses-item_bg"></div>
         <div class="ag-courses-item_title">
             <div class="profile-container">
-                <img class="profile-image" src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png" alt="">
+                <img class="profile-image" :src="props.item.profile_url" alt="">
                 <div class="profile-info">
                     <h3>{{ item.name }}</h3>
                     <p>{{ item.email }}</p>
