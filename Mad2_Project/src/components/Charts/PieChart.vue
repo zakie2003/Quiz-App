@@ -1,14 +1,18 @@
 <script setup>
 import { onMounted } from 'vue';
+import { defineProps } from 'vue';
 
 const props = defineProps({
-    pie_data: Object
+  pie_data: {
+    type: Array,
+    default: () => []
+  }
 });
 
 onMounted(() => {
     if (props.pie_data) {
         var xValues = ["Laptop", "Phone", "Others"];
-        var yValues = [props.pie_data[0].count, props.pie_data[1].count, props.pie_data[2].count];
+        var yValues = props.pie_data.map(item => item.count || 0);
         var barColors = [
             "#6C63FF",
             "#e8c3b9",

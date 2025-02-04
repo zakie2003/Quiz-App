@@ -193,10 +193,12 @@ def check_quiz_in_library():
 def get_questions():
     try:
        data=request.json
+       print(data["chapter_name"],data["quiz_id"])
        questions=Question.query.filter(Question.chapter_name==data["chapter_name"] , Question.quiz_id==data["quiz_id"]).all()
        quest_list=[]
        for row in questions:
            row=row2dict(row)
+           print("Question:",row)
            quest_list.append(row)
        return jsonify({"message":"Got Questions","data":quest_list,"status_code":"200"})
     except Exception as e:

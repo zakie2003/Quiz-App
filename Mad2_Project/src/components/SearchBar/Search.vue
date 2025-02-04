@@ -48,8 +48,8 @@ const search=async()=>{
 
 .search button[type="submit"]:hover {
   transform: scale(1.1);
-  color: rgb(255, 255, 255);
-  background-color: rgb(132, 0, 255);
+  color: aliceblue;
+  background-color: rgba(116,63,213,1);
 }
 
 </style>

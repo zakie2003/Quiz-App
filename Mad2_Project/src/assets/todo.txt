@@ -1,2 +1,4 @@
 improve search functionality
 email monthly activity
+direct quiz attemp functionality
+recent quiz attempt section in home

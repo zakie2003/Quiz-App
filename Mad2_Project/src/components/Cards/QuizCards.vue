@@ -106,6 +106,6 @@ const remove_from_ready_quiz = async (id) => {
 <style>
 @import "../../assets/CSS/card.css";
 .ag-courses-item_bg{
-  background-color: #2399d9 !important;
+  background: rgb(116,63,213);background: radial-gradient(circle, rgba(116,63,213,1) 0%, rgba(0,248,251,1) 90%);
 }
 </style>

@@ -85,5 +85,8 @@ const url=ref(`/admin/create_chapter/?id=${props.item.id}`);
   background-color: black;
   color: aliceblue;
 }
+.ag-courses-item_bg{
+  background: rgb(116,63,213);background: radial-gradient(circle, rgba(116,63,213,1) 0%, rgba(0,248,251,1) 90%) !important;
+}
 
 </style>

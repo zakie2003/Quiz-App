@@ -38,13 +38,13 @@ const get_questions=async()=>{
   const urlParams=window.location.pathname;
   const parts=urlParams.split('/');
   const quiz_id=parts[parts.length-1];
-  const chapter_name=parts[parts.length-2];
+  const chapter_name=decodeURIComponent(parts[parts.length-2]);
   await axios.post("http://localhost:5000/user/get_questions",{"chapter_name":chapter_name,"quiz_id":quiz_id}).then((res)=>{
+    console.log(res.data.data);
     quiz_data.value.questions=res.data.data;
     correct_options.value=quiz_data.value.questions.map((question) => question.correct_option);
     user_option.value=quiz_data.value.questions.map((question) => '');
     question_ids.value=quiz_data.value.questions.map((question) => question.id);
-    console.log(correct_options.value);
   }).catch((err)=>{
     console.log(err);
   })

@@ -8,8 +8,9 @@ import { onMounted, ref } from 'vue';
 import axios from 'axios';
 
 const chart_data = ref({
-  piechart_data: {},
-  user_activity_data: {}
+  piechart_data: { count: 0 }, // Initialize with default values
+  user_activity_data: { count: 0 },
+  top_quiz_names: { count: 0 }
 });
 
 const isLoading = ref(true);
@@ -20,7 +21,7 @@ const fetchData = async () => {
     chart_data.value.top_quiz_names = res.data.top_quiz_names;
     chart_data.value.user_activity_data = res.data.user_activity_data;
     isLoading.value = false;
-    console.log("Fetched data:", res.data);
+    console.log("Fetched data: ", res.data);
   }).catch((err) => {
     console.log(err);
   });
@@ -38,7 +39,7 @@ onMounted(() => {
         <div v-if="isLoading" class="text-center mt-5">
           <p>Loading...</p>
         </div>
-        <div v-else>
+        <div v-else-if="chart_data.piechart_data && chart_data.user_activity_data && chart_data.top_quiz_names">
           <div class="row m-4">
             <div class="col-md-6">
               <div class="p-2 rounded mt-4 text-white"  style="background-color: #4723d9;">
