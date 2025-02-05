@@ -3,6 +3,7 @@ import "@/assets/JS/nav.js";
 import Loader from "@/components/Loader/Loader.vue";
 import axios from "axios";
 import { onMounted,ref } from "vue";
+import Footer from "@/components/Footer/Footer.vue";
 
 const quiz_data=ref({
   quiz: {
@@ -22,6 +23,12 @@ const correct_options=ref([]);
 const user_option=ref([]);
 const question_ids=ref([]);
 let timer;
+
+const sidebarVisible = ref(false);
+
+const toggleSidebar = () => {
+  sidebarVisible.value = !sidebarVisible.value;
+};
 
 const get_quiz=async()=>{
   const urlParams=window.location.pathname;
@@ -151,9 +158,10 @@ const submit_button = async () => {
   <header class="header bg-light p-3 mb-3 nav_bar text-white" id="header">
     <h3 class="pt-2 is_visible">Quiz Preview: {{ quiz_data.quiz.quiz_name }}</h3>
     <div class="make_center">
-      <h3 class="pt-2">Time: {{ minute }}:{{ second }} <button class="btn pt-2 subit_option" v-on:click="submit_button">Submit</button></h3>
+      <h3 class="pt-2">Time: {{ minute }}:{{ second }} <button class="btn pt-2 subit_option" style="font-weight: bold;" v-on:click="submit_button">Submit</button></h3>
     </div>
     <h3 class="pt-2 is_visible">Chapter Name: {{ quiz_data.quiz.chapter_name }}</h3>
+    <button class="btn nav_bar text-white toggle-sidebar d-md-none" v-on:click="toggleSidebar"><i class='bx bx-menu mt-1'></i></button>
   </header>
   <div class="row" style="align-items: center;justify-content: center;display: flex;height: 100vh;" v-if="loading">
     <Loader/>
@@ -192,14 +200,27 @@ const submit_button = async () => {
             </div>
             <div class="d-flex justify-content-between pt-4">
               <button class="btn nav_bar text-white" v-on:click="prev">Previous</button>
-              <button class="btn nav_bar text-white" v-on:click="next">Next</button>
+              <button class="btn nav_bar text-white" v-on:click="next">Save and Next</button>
             </div>
           </div>
         </div>
-        <div class="col-12 col-md-4 mx-1 my-4 rounded p-4 bg-light">
-          <h3 class="py-4">Questions</h3>
-          <div class="row justify-content-center">
-            <button v-on:click="go_to_this_question(i - 1)" class="btn col-3 py-3 m-2 border" :class="{'nav_bar': pointer.index == i - 1}" v-for="i in quiz_data.questions.length" :key="i">{{ i }}</button>
+        <div class="col-12 col-md-4 mx-1 rounded p-4 sidebar" :class="{ 'sidebar-visible': sidebarVisible }">
+          <div class="profile_box p-4 rounded">
+            <div class="d-flex justify-content-center align-items-center">
+              <img class="profile_img" src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png" alt="error">
+              <h4 class="my-3 mx-4" style="font-weight: bold;">Zakie Khan</h4>
+            </div>
+            <div class="mt-4 mb-3">
+              <p><strong>No of Questions Left:</strong> <span class="box white text-right">{{ quiz_data.questions.length - pointer.index - 1 }}</span></p>
+              <p><strong>No of Questions Attempted:</strong> <span class="box green text-right">{{ pointer.index + 1 }}</span></p>
+              <p><strong>No of Questions Unattempted:</strong> <span class="box red text-right">{{ quiz_data.questions.length - pointer.index - 1 }}</span></p>
+            </div>
+          </div>
+          <div class="index_box p-2 rounded my-4">
+            <h3 class="py-4">Questions</h3>
+            <div class="row justify-content-center">
+              <button v-on:click="go_to_this_question(i - 1)" class="btn col-3 py-3 m-2 border" :class="{'nav_bar': pointer.index == i - 1}" v-for="i in quiz_data.questions.length" :key="i">{{ i }}</button>
+            </div>
           </div>
         </div>
       </div>
@@ -258,5 +279,81 @@ const submit_button = async () => {
     align-items: center;
     width: 100%;
   }
+  .toggle-sidebar {
+    display: block;
+  }
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100%;
+    background-color: #000;
+    color: #fff;
+    z-index: 1000;
+    overflow-y: auto;
+    padding: 20px;
+    transition: left 0.3s ease;
+  }
+  .sidebar-visible {
+    left: 0;
+  }
+  .sidebar .profile_box, .sidebar .index_box {
+    background-color: #000;
+  }
+  .sidebar .profile_img {
+    width: 50px;
+    height: 50px;
+  }
 }
+
+@media screen and (min-width: 731px) {
+  .toggle-sidebar {
+    display: none;
+  }
+}
+
+.profile_img{
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: #fff;
+  }
+
+.profile_box{
+  background-color: #000000;
+  color: aliceblue;
+}
+
+.index_box{
+  background-color: #F8F9FA;
+}
+
+.box {
+  display: inline-block;
+  padding: 5px 10px;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: bold;
+  text-align: right;
+}
+
+.box.white {
+  background-color: #ffffff;
+  color: #000;
+  border: 1px solid #ccc;
+}
+
+.box.green {
+  background-color: #28a745;
+}
+
+.box.red {
+  background-color: #dc3545;
+}
+
+.text-right {
+  float: right;
+}
+
 </style>
