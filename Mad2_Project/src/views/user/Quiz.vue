@@ -14,6 +14,11 @@ const quiz_data=ref({
   }
 });
 
+const user_data=ref({
+  name:sessionStorage.getItem('name'),
+  profile_url:sessionStorage.getItem('profile_url') || "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png"
+})
+
 const pointer=ref({index:0});
 const loading = ref(true);
 const remainingTime = ref(0);
@@ -158,44 +163,32 @@ const submit_button = async () => {
   <header class="header bg-light p-3 mb-3 nav_bar text-white" id="header">
     <h3 class="pt-2 is_visible">Quiz Preview: {{ quiz_data.quiz.quiz_name }}</h3>
     <div class="make_center">
-      <h3 class="pt-2">Time: {{ minute }}:{{ second }} <button class="btn pt-2 subit_option" style="font-weight: bold;" v-on:click="submit_button">Submit</button></h3>
+      <h3 class="pt-2">Time: {{ minute }}:{{ second }} <button class="btn pt-2 submit_option" style="font-weight: bold;" v-on:click="submit_button">Submit</button></h3>
     </div>
     <h3 class="pt-2 is_visible">Chapter Name: {{ quiz_data.quiz.chapter_name }}</h3>
     <button class="btn nav_bar text-white toggle-sidebar d-md-none" v-on:click="toggleSidebar"><i class='bx bx-menu mt-1'></i></button>
   </header>
-  <div class="row" style="align-items: center;justify-content: center;display: flex;height: 100vh;" v-if="loading">
+  <div class="row loader-container" v-if="loading">
     <Loader/>
   </div>
   <div class="row" v-else>
-    <div class="row" style="display: flex;justify-content: center;align-items: center;height: 80vh;" v-if="quiz_data.questions.length==0">
-      <h3 class="col-7 mx-2 my-4 rounded p-4 bg-light" style="text-align: center;">No questions found</h3>  
+    <div class="row no-questions" v-if="quiz_data.questions.length==0">
+      <h3 class="col-7 mx-2 my-4 rounded p-4 bg-light text-center">No questions found</h3>  
     </div>
     <div class="row" v-else>
-        <div class="col-12 col-md-7 mx-1 my-4 rounded p-4 bg-light">
+        <div class="col-12 col-md-7 mx-1 my-4 rounded p-4 bg-light question-container">
           <div class="py-4 text-left">
             <div class="d-flex justify-content-between align-items-center">
               <h3>Question No {{ pointer.index + 1 }}</h3>
             </div>
-            <span class="p-2 d-block" style="font-size: larger;">
+            <span class="p-2 d-block question-text">
               {{ quiz_data.questions[pointer.index].question }}
             </span>
             <h3 class="pt-4">Options</h3>
             <div class="py-2">
-              <div class="option">
-                <input type="radio" id="option_a" name="option" :value="'1'" v-model="user_option[pointer.index]" @change="click_option(pointer.index, '1')">
-                <label for="option_a">{{ quiz_data.questions[pointer.index].option_a }}</label>
-              </div>
-              <div class="option">
-                <input type="radio" id="option_b" name="option" :value="'2'" v-model="user_option[pointer.index]" @change="click_option(pointer.index, '2')">
-                <label for="option_b">{{ quiz_data.questions[pointer.index].option_b }}</label>
-              </div>
-              <div class="option">
-                <input type="radio" id="option_c" name="option" :value="'3'" v-model="user_option[pointer.index]" @change="click_option(pointer.index, '3')">
-                <label for="option_c">{{ quiz_data.questions[pointer.index].option_c }}</label>
-              </div>
-              <div class="option">
-                <input type="radio" id="option_d" name="option" :value="'4'" v-model="user_option[pointer.index]" @change="click_option(pointer.index, '4')">
-                <label for="option_d">{{ quiz_data.questions[pointer.index].option_d }}</label>
+              <div class="option" v-for="(option, index) in ['a', 'b', 'c', 'd']" :key="index">
+                <input type="radio" :id="'option_' + option" name="option" :value="index + 1" v-model="user_option[pointer.index]" @change="click_option(pointer.index, (index + 1).toString())">
+                <label :for="'option_' + option">{{ quiz_data.questions[pointer.index]['option_' + option] }}</label>
               </div>
             </div>
             <div class="d-flex justify-content-between pt-4">
@@ -207,8 +200,8 @@ const submit_button = async () => {
         <div class="col-12 col-md-4 mx-1 rounded p-4 sidebar" :class="{ 'sidebar-visible': sidebarVisible }">
           <div class="profile_box p-4 rounded">
             <div class="d-flex justify-content-center align-items-center">
-              <img class="profile_img" src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png" alt="error">
-              <h4 class="my-3 mx-4" style="font-weight: bold;">Zakie Khan</h4>
+              <img class="profile_img" :src="user_data.profile_url" alt="error">
+              <h4 class="my-3 mx-4" style="font-weight: bold;">{{ user_data.name }}</h4>
             </div>
             <div class="mt-4 mb-3">
               <p><strong>No of Questions Left:</strong> <span class="box white text-right">{{ quiz_data.questions.length - pointer.index - 1 }}</span></p>
@@ -228,10 +221,39 @@ const submit_button = async () => {
 </template>
 <style>
 @import "../../assets/CSS/nav.css";
-.nav_bar{
+
+.nav_bar {
   background-color: #4723D9 !important;
   color: aliceblue !important;
-  border:2px solid #fff !important;
+  border: 2px solid #fff !important;
+}
+
+.loader-container {
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  height: 100vh;
+}
+
+.no-questions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 80vh;
+}
+
+.question-container {
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.question-text {
+  font-size: larger;
+  padding: 10px;
+  background-color: #fff;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .option {
@@ -244,12 +266,12 @@ const submit_button = async () => {
   margin-right: 10px;
 }
 
-.subit_option{
+.submit_option {
   background-color: black;
   color: aliceblue;
 }
 
-.subit_option:hover{
+.submit_option:hover {
   background-color: aliceblue;
   color: black;
 }
@@ -269,11 +291,11 @@ const submit_button = async () => {
   border-color: #4723D9;
 }
 
-@media screen and (max-width:730px) {
-  .is_visible{
+@media screen and (max-width: 730px) {
+  .is_visible {
     display: none;
   }
-  .make_center{
+  .make_center {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -313,19 +335,19 @@ const submit_button = async () => {
   }
 }
 
-.profile_img{
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    background-color: #fff;
-  }
+.profile_img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background-color: #fff;
+}
 
-.profile_box{
+.profile_box {
   background-color: #000000;
   color: aliceblue;
 }
 
-.index_box{
+.index_box {
   background-color: #F8F9FA;
 }
 
@@ -355,5 +377,4 @@ const submit_button = async () => {
 .text-right {
   float: right;
 }
-
 </style>

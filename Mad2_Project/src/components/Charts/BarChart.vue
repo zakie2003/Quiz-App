@@ -24,11 +24,20 @@ const renderChart = () => {
         data: data
       }]
     },
-      options: {
-          legend: {
-            display: false
+    options: {
+      legend: {
+        display: false
+      },
+      scales: {
+        yAxes: [{
+          ticks: {
+            beginAtZero: true,
+            callback: function(value) { if (Number.isInteger(value)) { return value; }
+            }
           }
+        }]
       }
+    }
   });
 };
 

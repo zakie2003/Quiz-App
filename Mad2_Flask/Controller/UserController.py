@@ -305,12 +305,17 @@ def get_score():
         if(score == []):
             return jsonify({"status":404,"message":"Score not found"})
         temp=[]
+        paginated_data={}
         for i in score:
             quiz=Quiz.query.filter(Quiz.id==i.quiz_id).first()
             row=row2dict(i)
             row.update(row2dict(quiz))
             temp.append(row)
-        return jsonify({"status":200,"Score_list":temp})
+            if(len(temp)==5):
+                paginated_data[len(paginated_data)+1]=temp
+                temp=[]
+
+        return jsonify({"status":200,"Score_list":paginated_data})
     except Exception as e:
         return jsonify({"status":500,"message":f"{e}"})
     
@@ -336,6 +341,8 @@ def get_user_chart():
         user_score=Score.query.filter(Score.user_id==data["user_id"]).all()
         score_dic={}
         chapter_attempts = {}
+        radar_chart_data = {}
+        
         for i in user_score:
             if(f"{i.date}" in score_dic):
                 score_dic[f"{i.date}"]+=1
@@ -349,6 +356,12 @@ def get_user_chart():
                     chapter_attempts[chapter_name] += 1
                 else:
                     chapter_attempts[chapter_name] = 1
+                
+                quiz_name = quiz.quiz_name
+                if quiz_name in radar_chart_data:
+                    radar_chart_data[quiz_name].append(i.score)
+                else:
+                    radar_chart_data[quiz_name] = [i.score]
         
         score_list = [{"date": date, "count": count} for date, count in score_dic.items()]
 
@@ -377,7 +390,17 @@ def get_user_chart():
                 rigth+=1
             else:
                 wrong+=1
-        return jsonify({"status":200,"line_chart":score_list, "top_chapter_names": top_chapter_names, "chapter_attempts": chapter_attempts_list, "right": rigth, "wrong": wrong})
+        
+        radar_chart_list = [{"quiz_name": quiz_name, "average_score": int(sum(scores) / len(scores))} for quiz_name, scores in radar_chart_data.items()]
+        # print("Radar Chart Data", radar_chart_list)
+        return jsonify({
+            "status":200,
+            "line_chart":score_list, 
+            "top_chapter_names": top_chapter_names, 
+            "chapter_attempts": chapter_attempts_list, 
+            "right": rigth, 
+            "wrong": wrong,
+            "radar_chart": radar_chart_list})
     except Exception as e:
         return jsonify({"status":500,"message":f"{e}"})
     
@@ -420,3 +443,23 @@ def save_img():
     except Exception as e:
         return jsonify({"status":500,"message":f"{e}"})
     
+
+
+@userbp.route("/get_radar_chart",methods=["POST"])
+def get_radar_chart():
+    try:
+        data=request.json
+        user_score=Score.query.filter(Score.user_id==data["user_id"]).all()
+        score_dic={}
+        for i in user_score:
+            quiz = Quiz.query.filter(Quiz.id == i.quiz_id).first()
+            if quiz:
+                quiz_name = quiz.quiz_name
+                if quiz_name in score_dic:
+                    score_dic[quiz_name] += 1
+                else:
+                    score_dic[quiz_name] = 1
+        score_list=[{"quiz_name": quiz_name, "count": count} for quiz_name, count in score_dic.items()]
+        return jsonify({"status":200,"radar_chart":score_list})
+    except Exception as e:
+        return jsonify({"status":500,"message":f"{e}"})

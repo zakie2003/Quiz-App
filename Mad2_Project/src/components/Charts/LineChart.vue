@@ -1,4 +1,5 @@
 <script setup>
+import { responsive } from '@cloudinary/vue';
 import { onMounted, watch } from 'vue';
 
 const props = defineProps({
@@ -31,6 +32,7 @@ const updateChart = () => {
         }]
       },
       options: {
+        
         scales: {
             yAxes: [{
               ticks: {

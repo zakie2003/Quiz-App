@@ -28,6 +28,7 @@ onMounted(() => {
                 }]
             },
             options: {
+                
                 title: {
                     display: true,
                     text: "Users Devices"

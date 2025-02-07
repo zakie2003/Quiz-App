@@ -2,67 +2,123 @@
 import axios from 'axios';
 import NavUser from '@/components/NavBar/NavUser.vue';
 import Loader from '@/components/Loader/Loader.vue';
-import { onMounted, ref } from 'vue';
-import UserLibraryCard from '@/components/Cards/UserLibraryCard.vue';
 import Footer from '@/components/Footer/Footer.vue';
-const data=ref({
+import { onMounted, ref, computed, watch } from 'vue';
+
+const data = ref({
     isLoading: false,
-    scores:[],
-    user_id:sessionStorage.getItem("id")
-})
+    scores: [],
+    user_id: sessionStorage.getItem("id"),
+});
 
-const get_reports=async()=>{
-    data.value.isLoading=true;
-    axios.post("http://localhost:5000/user/get_score",{"user_id":sessionStorage.getItem("id")}).then((res)=>{
-        console.log(res.data);
-        data.value.scores=res.data.Score_list;
-        data.value.isLoading=false;
-    }).catch((err)=>{
-      console.log(err);
-    })
-}
+const currentPage = ref(1);
+const itemsPerPage = ref(5);
+const paginatedScores = ref({});
+let index = ref(1);
 
-onMounted(()=>{
-  get_reports();
-})
+const get_reports = async () => {
+    data.value.isLoading = true;
+    try {
+        const res = await axios.post("http://localhost:5000/user/get_score", { "user_id": data.value.user_id });
+//        console.log(res.data);
+        paginatedScores.value = res.data.Score_list;
+        totalPages.value.total= Object.keys(paginatedScores.value).length;
+    } catch (err) {
+        console.error(err);
+        data.value.scores = [];
+    } finally {
+        data.value.isLoading = false;
+    }
+};
 
+
+const updatePaginatedScores = () => {
+    const start = (currentPage.value - 1) * itemsPerPage.value;
+    paginatedScores.value = data.value.scores.slice(start, start + itemsPerPage.value);
+};
+
+watch([data, currentPage, itemsPerPage], updatePaginatedScores, { immediate: true });
+
+const totalPages = ref({});
+
+
+const changePage = (direction) => {
+  console.log("Index",index.value);
+    if (direction === "next" ) {
+      index.value= index.value+1;
+    } else if (direction === "prev") {
+      index.value= index.value-1;
+    }
+};
+
+onMounted(() => {
+    get_reports();
+    console.log("Scores",paginatedScores);
+});
 </script>
+
 <template>
     <nav class="navbar navbar-expand-lg pb-0 bg-body-tertiary">
-      <NavUser/> 
-      <div style="min-height: 100vh;" class="bg-light w-100">
-        <div v-if="data.isLoading" style="display: flex;justify-content: center;align-items: center;height: 100vh;"><Loader/></div>
-        <div v-else>
-          <h3 class="p-4">Score Dashboard</h3>
-          <table class="table container rounded">
-            <thead>
-              <tr>
-                <th class="row_table" scope="col">Quiz Name</th>
-                <th class="row_table" scope="col">Date</th>
-                <th class="row_table" scope="col">Score</th>
-                <th class="row_table" scope="col">Action</th>
-              </tr>
-            </thead>
-            <tbody>
-                <tr v-for="(item, index) in data.scores" :key="index">
-                  <td scope="row">{{ item.quiz_name }}</td>
-                  <td scope="row">{{ item.date }}</td>
-                  <td scope="row">{{ Math.round(item.score) }}</td>
-                  <td>
-                    <a :href="'http://localhost:5000/celery/get_csv_data?user_id='+ data.user_id +'&quiz_id=' + item.id+'&time='+item.time+'&date='+item.date">Download Transcript</a>
-                  </td>
-                </tr>
-            </tbody>
-          </table>
+        <NavUser />
+        <div style="min-height: 100vh;" class="bg-light w-100">
+            <div v-if="data.isLoading" class="loader-container">
+                <Loader />
+            </div>
+            <div v-else>
+                <h3 class="p-4">Score Dashboard</h3>
+                <table class="table container rounded">
+                    <thead>
+                        <tr>
+                            <th class="row_table" scope="col">Quiz Name</th>
+                            <th class="row_table" scope="col">Date</th>
+                            <th class="row_table" scope="col">Score</th>
+                            <th class="row_table" scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item) in paginatedScores[index]" :key="index">
+                            <td scope="row">{{ item.chapter_name }}</td>
+                            <td scope="row">{{ item.date }}</td>
+                            <td scope="row">{{ Math.round(item.score) }}</td>
+                            <td>
+                                <a :href="'http://localhost:5000/celery/get_csv_data?user_id='+ data.user_id +'&quiz_id=' + item.id+'&time='+item.time+'&date='+item.date">Download Transcript</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <!-- Pagination Controls -->
+                <div class="pagination-container">
+                    <button class="btn btn-primary" :disabled="index === 1" v-on:click="changePage('prev')">Previous</button>
+                    <span>Page {{ index }} of {{ totalPages.total }}</span>
+                    <button class="btn btn-primary" :disabled="index === totalPages.total" v-on:click="changePage('next')">Next</button>
+                </div>
+            </div>
         </div>
-      </div>
     </nav>
-    <Footer/>
-  </template>
-  <style>
-  @import "../../assets/CSS/nav.css";
-.row_table{
+    <Footer />
+</template>
+
+<style>
+@import "../../assets/CSS/nav.css";
+
+.row_table {
     color: aliceblue !important;
     background-color: #4723d9 !important;
 }
-  </style>
+
+.loader-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 20px;
+}
+</style>

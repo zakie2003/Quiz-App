@@ -6,6 +6,7 @@ import Footer from '@/components/Footer/Footer.vue';
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
 import NavUser from '@/components/NavBar/NavUser.vue';
+import Radar from '@/components/Charts/Radar.vue';
 
 const chart_data = ref({
   line_data: {},
@@ -33,7 +34,8 @@ const get_user_chart = async () => {
     chart_data.value.top_chapter_names = res.data.top_chapter_names;
     chart_data.value.right = res.data.right;
     chart_data.value.wrong = res.data.wrong;
-    console.log(chart_data.value);
+    chart_data.value.radar_chart=res.data.radar_chart;
+    // console.log(chart_data.value);
   } catch (err) {
     console.error(err);
   }
@@ -90,13 +92,16 @@ onMounted(() => {
         <p>Loading...</p>
       </div>
       <div v-else>
-        <div class="row m-4">
+        <div class="row m-4 w-100" >
           <!-- Profile Card -->
           <div class="col-md-6">
             <div class="p-2 rounded mt-4 text-white profile-card" style="background-color: #4723d9;">
-              <h1 class="mx-4 mt-4">Profile</h1>
+              <div class="d-flex justify-content-between align-items-center">
+                <h1 class="mx-4 mt-4">Profile</h1>
+                <button class="btn edit-button"><i class='bx bx-edit-alt'></i></button>
+              </div>
               <div class="row g-3 align-items-center mt-4 mb-5">
-                <div class="col-4 text-center">
+                <div  class="col-4 text-center">
                   <input type="file" @change="upload_image" style="display: none;" ref="fileInput">
                   <div class="profile_img_container" @click="$refs.fileInput.click()">
                     <img
@@ -107,10 +112,10 @@ onMounted(() => {
                     <div class="edit_overlay">Edit</div>
                   </div>
                 </div>
-                <div class="col-8 profile-text">
+                <div class="col-8 profile-text" style="font-size:x-large;">
                   <div class="mb-2"><strong>Name:</strong> {{ user_data.name }}</div>
-                  <div><strong>User Type:</strong> Student</div>
-                  <div><strong>Email:</strong> {{ user_data.email }}</div>
+                  <div class="mb-2"><strong>User Type:</strong> Student</div>
+                  <div class="mb-2"><strong>Email:</strong> {{ user_data.email }}</div>
                 </div>
               </div>
             </div>
@@ -125,12 +130,19 @@ onMounted(() => {
 
         <!-- Additional Charts -->
         <div class="row m-4">
-          <div class="col-md-6">
+          <div class="col-md-4">
             <h1 class="mx-4 mb-5">Student Accuracy</h1>
             <Accuracy :wrong="chart_data.wrong" :right="chart_data.right" />
           </div>
-          <div class="col-md-6">
-            <h1 class="mx-4 mb-5">Your Popular Chapters</h1>
+          <div class="col-md-4">
+            <h1 class="mx-4 mb-5">Domain Growth</h1>
+            <div style="width: 300px;">
+                <Radar :radar_data="chart_data.radar_chart"/>
+            </div>
+          </div>
+
+          <div class="col-md-4">
+            <h1 class="mx-4 mb-5">Popular Chapters</h1>
             <BarChart :bar_data="chart_data.top_chapter_names" />
           </div>
         </div>
@@ -184,6 +196,17 @@ onMounted(() => {
   font-size: xx-large;
 }
 
+.edit-button {
+  color: aliceblue;
+  border: 1px solid aliceblue;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right:15px;
+}
+
 @media (max-width: 768px) {
   .profile-card {
     font-size: medium;
@@ -192,7 +215,7 @@ onMounted(() => {
     font-size: large;
   }
   .profile_img {
-    width: 75px;
+    width: 55px;
   }
 }
 </style>

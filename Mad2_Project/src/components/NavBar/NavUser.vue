@@ -31,12 +31,17 @@ onMounted(() => {
         });
     }
 });
+
+const go_to_profile=()=>{
+  window.location.href='/user/profile/' + user_data.email;
+}
+
 </script>
 <template>
   <header class="header" id="header">
     <div class="header_toggle"> <i class='bx bx-menu' id="header-toggle"></i> </div>
     <User_Search/>
-    <div class="header_img"> <img :src="user_data.profile_url" alt="Err"> </div>
+    <div v-on:click="go_to_profile" class="header_img"> <img :src="user_data.profile_url" alt="Err"> </div>
   </header>
   <div class="l-navbar" id="nav-bar">
     <nav class="nav">
