@@ -79,6 +79,10 @@ const upload_image = async (event) => {
   }
 };
 
+const go_to_edit=()=>{
+  window.location.href="/user/edit_profile";
+}
+
 onMounted(() => {
   get_user_chart();
 });
@@ -92,13 +96,13 @@ onMounted(() => {
         <p>Loading...</p>
       </div>
       <div v-else>
-        <div class="row m-4 w-100" >
+        <div class="row m-0 m-md-4 w-100" >
           <!-- Profile Card -->
           <div class="col-md-6">
             <div class="p-2 rounded mt-4 text-white profile-card" style="background-color: #4723d9;">
               <div class="d-flex justify-content-between align-items-center">
                 <h1 class="mx-4 mt-4">Profile</h1>
-                <button class="btn edit-button"><i class='bx bx-edit-alt'></i></button>
+                <button v-on:click="go_to_edit" class="btn edit-button"><i class='bx bx-edit-alt'></i></button>
               </div>
               <div class="row g-3 align-items-center mt-4 mb-5">
                 <div  class="col-4 text-center">
@@ -132,18 +136,21 @@ onMounted(() => {
         <div class="row m-4">
           <div class="col-md-4">
             <h1 class="mx-4 mb-5">Student Accuracy</h1>
-            <Accuracy :wrong="chart_data.wrong" :right="chart_data.right" />
+            <div class="chart-container">
+              <Accuracy :wrong="chart_data.wrong" :right="chart_data.right" />
+            </div>
           </div>
           <div class="col-md-4">
             <h1 class="mx-4 mb-5">Domain Growth</h1>
-            <div style="width: 300px;">
-                <Radar :radar_data="chart_data.radar_chart"/>
+            <div class="chart-container">
+              <Radar :radar_data="chart_data.radar_chart"/>
             </div>
           </div>
-
           <div class="col-md-4">
             <h1 class="mx-4 mb-5">Popular Chapters</h1>
-            <BarChart :bar_data="chart_data.top_chapter_names" />
+            <div class="chart-container">
+              <BarChart :bar_data="chart_data.top_chapter_names" />
+            </div>
           </div>
         </div>
       </div>
@@ -205,6 +212,13 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   margin-right:15px;
+}
+
+.chart-container {
+  width: 100%;
+  max-width: 400px;
+  height: 400px;
+  margin: 0 auto;
 }
 
 @media (max-width: 768px) {

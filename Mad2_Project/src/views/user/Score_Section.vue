@@ -22,6 +22,7 @@ const get_reports = async () => {
         const res = await axios.post("http://localhost:5000/user/get_score", { "user_id": data.value.user_id });
 //        console.log(res.data);
         paginatedScores.value = res.data.Score_list;
+        console.log(res.data.Score_list);
         totalPages.value.total= Object.keys(paginatedScores.value).length;
     } catch (err) {
         console.error(err);
@@ -51,9 +52,12 @@ const changePage = (direction) => {
     }
 };
 
+const go_to_preview = (chapter_name, quiz_id, date_of_quiz, time) => {
+    window.location.href = `/user/quiz_preview/${chapter_name}/${quiz_id}?date=${date_of_quiz}&time=${time}`;
+};
+
 onMounted(() => {
     get_reports();
-    console.log("Scores",paginatedScores);
 });
 </script>
 
@@ -69,9 +73,10 @@ onMounted(() => {
                 <table class="table container rounded">
                     <thead>
                         <tr>
-                            <th class="row_table" scope="col">Quiz Name</th>
+                            <th class="row_table" scope="col">Chapter</th>
                             <th class="row_table" scope="col">Date</th>
                             <th class="row_table" scope="col">Score</th>
+                            <th class="row_table" scope="col">Download</th>
                             <th class="row_table" scope="col">Action</th>
                         </tr>
                     </thead>
@@ -79,19 +84,20 @@ onMounted(() => {
                         <tr v-for="(item) in paginatedScores[index]" :key="index">
                             <td scope="row">{{ item.chapter_name }}</td>
                             <td scope="row">{{ item.date }}</td>
-                            <td scope="row">{{ Math.round(item.score) }}</td>
+                            <td style="font-weight: bold;" scope="row">{{ Math.round(item.score) }}/100</td>
                             <td>
                                 <a :href="'http://localhost:5000/celery/get_csv_data?user_id='+ data.user_id +'&quiz_id=' + item.id+'&time='+item.time+'&date='+item.date">Download Transcript</a>
                             </td>
+                            <td scope="row"><button v-on:click="go_to_preview(item.chapter_name, item.id, item.date, item.time)" class="btn btn_score">OverView</button></td>
                         </tr>
                     </tbody>
                 </table>
 
                 <!-- Pagination Controls -->
                 <div class="pagination-container">
-                    <button class="btn btn-primary" :disabled="index === 1" v-on:click="changePage('prev')">Previous</button>
+                    <button class="btn btn_score" :disabled="index === 1" v-on:click="changePage('prev')">Previous</button>
                     <span>Page {{ index }} of {{ totalPages.total }}</span>
-                    <button class="btn btn-primary" :disabled="index === totalPages.total" v-on:click="changePage('next')">Next</button>
+                    <button class="btn btn_score" :disabled="index === totalPages.total" v-on:click="changePage('next')">Next</button>
                 </div>
             </div>
         </div>
@@ -120,5 +126,10 @@ onMounted(() => {
     align-items: center;
     gap: 10px;
     padding: 20px;
+}
+
+.btn_score{
+    background-color: #4723d9 !important;
+    color: aliceblue !important;
 }
 </style>

@@ -57,8 +57,16 @@ watch(() => props.radar_data, () => {
 </script>
 
 <template>
-  <!-- Wrap your canvas in a container with a defined height -->
-  <div style="width:100%;max-width:600px;height:400px;">
+  <div class="chart-container">
     <canvas id="radarChart"></canvas>
   </div>
 </template>
+
+<style>
+.chart-container {
+  width: 100%;
+  max-width: 200px;
+  height: 200px;
+  margin: 0 auto;
+}
+</style>

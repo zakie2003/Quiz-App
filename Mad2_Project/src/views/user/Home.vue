@@ -27,7 +27,7 @@ onMounted(()=>{
       <div style="min-height: 100vh;" class="bg-light w-100">
         <div v-if="data.isLoading" style="display: flex;justify-content: center;align-items: center;height: 100vh;"><Loader/></div>
         <div v-else>
-          <h3 class="p-4">Quiz Recommendations</h3>
+          <h3 class="p-4">All Quizes</h3>
           <div class="ag-courses_box px-4">
             <div v-for="item in data.free_quizes" :key="item.id">
                 <UserCard :item="item"/>

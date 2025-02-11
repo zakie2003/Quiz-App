@@ -301,9 +301,10 @@ def submit_quiz():
 def get_score():
     try:
         data=request.json
-        score=Score.query.filter(Score.user_id==data["user_id"]).all()
+        score=Score.query.filter(Score.user_id==data["user_id"]).order_by(Score.date.desc(),Score.time.desc()).all()
         if(score == []):
             return jsonify({"status":404,"message":"Score not found"})
+        
         temp=[]
         paginated_data={}
         for i in score:
@@ -313,8 +314,12 @@ def get_score():
             temp.append(row)
             if(len(temp)==5):
                 paginated_data[len(paginated_data)+1]=temp
+                print(paginated_data[len(paginated_data)])
+                print(" ")
+                print(" ")
                 temp=[]
-
+        if(len(temp)!=0):
+            paginated_data[len(paginated_data)+1]=temp
         return jsonify({"status":200,"Score_list":paginated_data})
     except Exception as e:
         return jsonify({"status":500,"message":f"{e}"})
@@ -461,5 +466,45 @@ def get_radar_chart():
                     score_dic[quiz_name] = 1
         score_list=[{"quiz_name": quiz_name, "count": count} for quiz_name, count in score_dic.items()]
         return jsonify({"status":200,"radar_chart":score_list})
+    except Exception as e:
+        return jsonify({"status":500,"message":f"{e}"})
+    
+
+@userbp.route("/get_user_answer",methods=["POST"])
+def get_user_ansers():
+    try:
+        data=request.json
+        user=UserAnswerHistory.query.filter(UserAnswerHistory.user_id==data["user_id"],UserAnswerHistory.quiz_id==data["quiz_id"],UserAnswerHistory.date_of_attempt==data["date"],UserAnswerHistory.time_of_attempt==data["time"]).all()
+        temp=[]
+        for i in user:
+            row=row2dict(i)
+            temp.append(row)
+        return jsonify({"status":200,"user_answers":temp})
+    except Exception as e:
+        return jsonify({"status":500,"message":f"{e}"})
+
+@userbp.route("/get_user_data",methods=["POST"])
+def get_user_data():
+    try:
+        data=request.json
+        print("Email",data)
+        user=User.query.filter(User.email==data["email"]).first()
+        row=row2dict(user)
+        return jsonify({"status":200,"message":"Data received","user_data":row})
+    except Exception as e:
+        return jsonify({"status":500,"message":f"{e}"})
+    
+@userbp.route("/edit_profile",methods=["POST"])
+def edit_profile():
+    try:
+        data=request.json
+        user=User.query.filter(User.email==data["email"]).first()
+        if(user is None):
+            return jsonify({"status":404,"message":"User not found"})
+        user.name=data["name"]
+        user.dob=datetime.strptime(data["dob"], "%Y-%m-%d").date()  # Convert to date object
+        user.qualification=data["qualification"]
+        db.session.commit()
+        return jsonify({"status":200,"message":"Profile updated"})
     except Exception as e:
         return jsonify({"status":500,"message":f"{e}"})

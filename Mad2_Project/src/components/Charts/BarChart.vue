@@ -51,5 +51,16 @@ watch(() => props.bar_data, () => {
 </script>
 
 <template>
-  <canvas id="barChart" style="width:100%;max-width:600px"></canvas>
+  <div class="chart-container">
+    <canvas id="barChart"></canvas>
+  </div>
 </template>
+
+<style>
+.chart-container {
+  width: 100%;
+  max-width: 400px;
+  height: 400px;
+  margin: 0 auto;
+}
+</style>

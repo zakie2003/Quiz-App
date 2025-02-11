@@ -28,7 +28,7 @@ onMounted(() => {
                 }]
             },
             options: {
-                
+                maintainAspectRatio: false,
                 title: {
                     display: true,
                     text: "Users Devices"
@@ -42,6 +42,17 @@ onMounted(() => {
 });
 </script>
 <template>
-    <h1 class="m-4">Session Devices</h1>
-    <canvas id="pieChart" style="width:100%;max-width:600px"></canvas>
+  <h1 class="m-4">Session Devices</h1>
+  <div class="chart-container">
+    <canvas id="pieChart"></canvas>
+  </div>
 </template>
+
+<style>
+.chart-container {
+  width: 100%;
+  max-width: 400px;
+  height: 400px;
+  margin: 0 auto;
+}
+</style>
