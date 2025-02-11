@@ -7,6 +7,7 @@ import { onMounted, ref } from 'vue';
 import axios from 'axios';
 import NavUser from '@/components/NavBar/NavUser.vue';
 import Radar from '@/components/Charts/Radar.vue';
+import Base_Stats from '@/components/Charts/Base_Stats.vue';
 
 const chart_data = ref({
   line_data: {},
@@ -131,6 +132,8 @@ onMounted(() => {
             <LineChart :line_data="chart_data.line_data" />
           </div>
         </div>
+
+        <Base_Stats/>
 
         <!-- Additional Charts -->
         <div class="row m-4">

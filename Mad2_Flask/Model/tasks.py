@@ -5,8 +5,9 @@ from celery.schedules import crontab
 from flask_mail import Mail, Message
 from flask import current_app, request,send_file
 from dotenv import load_dotenv
-from Model.Model import UserAnswerHistory
+from Model.Model import UserAnswerHistory,User,Score
 import csv
+import datetime
 load_dotenv()
 
 def init_tasks(celery):
@@ -35,10 +36,37 @@ def init_tasks(celery):
             logging.info("Attempting to send email...")
             mail = Mail(current_app)
             sender_email = os.getenv("EMAIL")
-            msg = Message("Monthly Report", sender=sender_email, recipients=["sXm0g@example.com"])
-            msg.body = "Monthly Report"
-            mail.send(msg)
-            return "Mail successfully sent by Celery"
+            end_date = datetime.datetime.now()
+            start_date = end_date - datetime.timedelta(days=30)
+
+            # Get all users
+            users = User.query.all()
+
+            for user in users:
+                # Fetch quiz results for the user in the last month
+                quizzes = Score.query.filter(
+                    Score.user_id == user.id,
+                    Score.date >= start_date,
+                    Score.date <= end_date
+                ).all()
+
+                if not quizzes:
+                    continue  # Skip if the user has no quizzes in the last month
+
+                # Generate report summary
+                report_text = f"Hello {user.name},\n\nHere is your monthly quiz performance summary:\n\n"
+
+                for quiz in quizzes:
+                    report_text += f"Quiz: {quiz.quiz_id}, Score: {quiz.score}\n"
+
+                report_text += "\nKeep up the good work!\n\nBest Regards,\nYour Quiz Team"
+
+                # Send email
+                msg = Message("Your Monthly Quiz Report", sender=sender_email, recipients=[user.email])
+                msg.body = report_text
+                mail.send(msg)
+
+            return "Monthly reports successfully sent"
         except Exception as e:
             logging.error(f"Failed to send email: {e}")
             return f"Failed to send email: {e}"
@@ -78,8 +106,8 @@ def init_tasks(celery):
                 msg = Message("Your Daily Challenge Awaits! 🌟 Take Today's Quiz Now",
                             sender=sender_email,
                             recipients=["zak2022.khan@gmail.com"])
-                msg.body = text  # Plain text fallback
-                msg.html = html_content  # HTML formatted email
+                msg.body = text  
+                msg.html = html_content  
                 mail.send(msg)
 
                 print("Mail successfully sent by Celery")
@@ -96,12 +124,15 @@ def init_tasks(celery):
             "schedule": crontab(day_of_week="*"),
             "args": (
                 """Ready to test your knowledge and level up your skills? 🎓
-    Your daily quiz is live! Here's your chance to:
-        - Sharpen your mind.
-        - Earn points and climb the leaderboard.
-        - Track your progress over time.""",
+                    Your daily quiz is live! Here's your chance to:
+                        - Sharpen your mind.
+                        - Earn points and climb the leaderboard.
+                        - Track your progress over time.""",
             )
+        },
+        "send-monthly-report": {
+            "task": "send_monthy_report",
+            "schedule": crontab(minute=0, hour=0),
         }
-
     }
     celery.conf.timezone = 'Asia/Kolkata'

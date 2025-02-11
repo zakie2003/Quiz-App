@@ -1,11 +1,17 @@
 <script setup>
 import axios from "axios";
 import NavAdmin from "@/components/NavBar/NavAdmin.vue";
-
+import ErrorMessage from "@/components/Message/ErrorMessage.vue";
+import { ref } from "vue";
 const data={
   name:"",
   description:"",
 }
+
+const message=ref({
+  "message":"",
+  "status":""
+})
 
 const addSubject = async(data)=>{
   await axios("http://localhost:5000/admin/add_subject",{
@@ -16,6 +22,10 @@ const addSubject = async(data)=>{
     console.log(res.data);
     if(res.data.status===200){
       window.location.href="/admin/home";
+    }
+    if(res.data.message=="Subject already exists"){
+      message.value.message=res.data.message;
+      message.value.status="401";
     }
   }).catch((err)=>{
     console.log(err);
@@ -28,6 +38,7 @@ const addSubject = async(data)=>{
     <div style="height: 100vh;" class="bg-light w-100">
       <h1 class="m-4">Create Chapter</h1>
       <div class="container">
+        <ErrorMessage v-if="message.message" :message="message.message" :status="message.status"/>
         <form class="d-flex flex-column w-90" @submit.prevent="addSubject(data)" action="">
           <div class="mb-3">
             <label style="font-size: 30px;" class="form-label my-2" for="chapter">Chapter</label>

@@ -1,10 +1,12 @@
 <script setup>
 import axios from 'axios';
-import { onMounted } from 'vue';
+import { onMounted,ref } from 'vue';
 
 const props = defineProps({
   item: Object
 });
+
+const role=ref(sessionStorage.getItem('role'));
 
 
 const delete_user=async(id)=>{
@@ -35,7 +37,7 @@ onMounted(()=>{
                     <h3>{{ item.name }}</h3>
                     <p>{{ item.email }}</p>
                 </div>
-                <button v-on:click="delete_user(item.email)" style="height: 50px;width: 50px;" class="btn delete-button"><i class='bx bxs-trash'></i></button>
+                <button v-if="role!='user'" v-on:click="delete_user(item.email)" style="height: 50px;width: 50px;" class="btn delete-button"><i class='bx bxs-trash'></i></button>
             </div>
         </div>
         <div class="profile-details">

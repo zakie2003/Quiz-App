@@ -58,7 +58,7 @@ def user_authorize():
         else:
             user_login_acitivity.count+=1
             db.session.commit()
-        return jsonify({"status":200,"password":user.password,"token":token,"email":user.email,"name":user.name,"id":user.id,"profile_url":user.profile_url,"message":"User logged in"})
+        return jsonify({"status":200,"password":user.password,"token":token,"email":user.email,"name":user.name,"id":user.id,"profile_url":user.profile_url,"message":"User logged in","role":"user"})
     except Exception as e:
         return jsonify({"status":404,"message":f"{e}"})
     
@@ -428,8 +428,13 @@ def search():
                 row=row2dict(i)
                 row["quiz_name"] = quiz.quiz_name
                 lib.append(row)
+        user=[]
+        users=User.query.filter(User.name.like(f"%{search}%") | User.email.like(f"%{search}%")).all()
+        for i in users:
+            row=row2dict(i)
+            user.append(row)
         
-        return jsonify({"status":200,"quiz":temp,"quiz_library":lib})
+        return jsonify({"status":200,"quiz":temp,"quiz_library":lib,"user":user})
     except Exception as e:
         return jsonify({"status":500,"message":f"{e}"})
     
@@ -508,3 +513,20 @@ def edit_profile():
         return jsonify({"status":200,"message":"Profile updated"})
     except Exception as e:
         return jsonify({"status":500,"message":f"{e}"})
+    
+@userbp.route("/get_stats",methods=["POST"])
+def get_stats():
+    try:
+        data=request.json
+        user=User.query.filter(User.email==data["email"]).first()
+        if(user is None):
+            return jsonify({"status":404,"message":"User not found"})
+        user_correct=len(UserAnswerHistory.query.filter(UserAnswerHistory.user_id==user.id,UserAnswerHistory.correct_answer==UserAnswerHistory.user_answer).all())
+        user_wrong=len(UserAnswerHistory.query.filter(UserAnswerHistory.user_id==user.id,UserAnswerHistory.correct_answer!=UserAnswerHistory.user_answer).all())
+        accuracy=int((user_correct/(user_correct+user_wrong))*100)
+        quiz_attempted=Score.query.filter(Score.user_id==user.id).all()
+        quiz_user_id=[ i.quiz_id for i in quiz_attempted if i.quiz_id in quiz_user_id]
+        print(quiz_user_id)
+        return jsonify({"status":200,"message":"Data received","user_data":row2dict(user),"stats":{"accuracy":accuracy}})
+    except Exception as e:
+        return jsonify({"status":500,"error":f"Error {e}"})

@@ -69,6 +69,11 @@ def celery_get_csv_data():
     file_path = result.get()
     return send_file(file_path, as_attachment=True)
 
+@app.route("/celery/send_report",methods=["GET"])
+def celery_send_report():
+    result = celery.tasks['send_monthy_report'].delay()
+    return jsonify(result=result.get())
+
 @app.route("/user/send_otp",methods=["POST"])
 def save_otp():
     try:

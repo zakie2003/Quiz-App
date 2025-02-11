@@ -28,6 +28,10 @@ const get_results = async () => {
     });
 }
 
+const go_to_profile=(id)=>{
+    window.location.href="/user/user_profile/"+id;
+}
+
 const change_arr=(value)=>{
     if(value=="quiz"){
         arr.value=search_results.value.quiz;
@@ -72,6 +76,11 @@ onMounted(() => {
                             <h5>Library {{ search_results.quiz_library.length }}</h5>
                         </div>
 
+                        <div v-on:click="change_arr('user')" class="result-item rounded-bottom text-center text-white p-3 border" style="background-color: #4723D9;">
+                            <!-- <h5>Subject {{ search_results.subject.length }}</h5> -->
+                            <h5>User {{ search_results.user.length }}</h5>
+                        </div>
+
                     </div>
                 </div>
                 <div class="col-9">
@@ -83,7 +92,7 @@ onMounted(() => {
                             <div v-if="option=='quiz'" v-for="(item, index) in arr" :key="'quiz-' + index" class="col-md-4" style="width: 100%;">
                                 <UserCard :display_button="false" :item="item"/>
                             </div>
-                            <div v-else-if="option=='user'" v-for="(item, index) in arr" :key="'user-' + index" class="col-md-4" style="width: 100%;">
+                            <div v-on:click="go_to_profile(item.email)" v-else-if="option=='user'" v-for="(item, index) in arr" :key="'user-' + index" class="col-md-4" style="width: 100%;">
                                 <User_Profile_Card :item="item"/>
                             </div>
                             <div v-else-if="option=='library'" v-for="(item, index) in arr" :key="'library-' + index" class="col-md-4" style="width: 100%;">

@@ -31,6 +31,22 @@ const delete_chapter=async(name)=>{
   })
 }
 
+const delete_subject=async(chap_name)=>{
+  console.log(chap_name);
+  await axios.post("http://localhost:5000/admin/delete_subject",{"name":chap_name}).then((res)=>{
+    console.log(res);
+    if(res.data.message=="Can't delete subject with Chapters,delete Chapters first"){
+      alert(res.data.message);
+    }
+    else{
+      alert(res.data.message);
+      window.location.reload();
+    }
+  }).catch((err)=>{
+    console.log(err);
+  })
+}
+
 onMounted(()=>{
   get_chapters();
 })
@@ -47,6 +63,7 @@ const url=ref(`/admin/create_chapter/?id=${props.item.id}`);
         <a :href="url">
           <button style="background-color: aliceblue;color: black;" class="btn m-2">Add Chapter</button>
         </a>
+        <button v-on:click="delete_subject(props.item.name)" style="background-color: aliceblue;color: black;" class="btn m-2">Delete</button>
       </div>
       <div style="z-index: 2;position: relative;" class="text-white">
         <table style="background: none; width: 100%;">

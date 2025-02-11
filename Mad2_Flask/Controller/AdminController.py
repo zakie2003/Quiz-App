@@ -34,7 +34,7 @@ def authorize():
         session["token"] = token
         session["name"] = admin_data[0].name
         db.session.commit()
-        return jsonify({'status':200,'token':token,"id":admin_data[0].id,"email":admin_data[0].email,"name":admin_data[0].name,"password":admin_data[0].password,"message":"Admin found"})
+        return jsonify({'status':200,'token':token,"id":admin_data[0].id,"email":admin_data[0].email,"name":admin_data[0].name,"password":admin_data[0].password,"role":"admin","message":"Admin found"})
     else:
         return jsonify({'status':404,"message":"Admin not found"})
     
@@ -71,13 +71,42 @@ def get_subjects():
 def create_subject():
     try:
         data=request.json
+        existing_subject=Subject.query.filter(Subject.name==data["name"]).first()
+        if(existing_subject is not None):
+            return jsonify({"status":404,"message":"Subject already exists"})
         subject=Subject(data["name"],data["description"])
         db.session.add(subject)
         db.session.commit()
         return jsonify({"status":200,"message":"Subject created"})
     except Exception as e:
         return jsonify({"status":404,"message":f"{e}"})
+    
+@adminbp.route("/delete_subject",methods=['POST'])
+def delete_subject():
+    try:
+        data=request.json
+        print(data["name"])
+        subject_id=Subject.query.filter(Subject.name==data["name"]).first().id
+        chapter=Chapter.query.filter(Chapter.subject_id==subject_id).all()
+        print(chapter)
+        if(len(chapter)>0):
+            return jsonify({"status":404,"message":"Can't delete subject with Chapters,delete Chapters first"})
+        subject=Subject.query.filter(Subject.name==data["name"]).first()
+        db.session.delete(subject)
+        db.session.commit()
+        return jsonify({"status":200,"message":"Subject deleted"})
+    except Exception as e:
+        return jsonify({"status":404,"message":f"{e}"})
 
+# @adminbp.route("/setting",methods=['GET'])
+# def setting():
+#     try:
+#         subject=Subject.query.filter(Subject.name=="Vue JS").first()
+#         subject.id=1
+#         db.session.commit()
+#         return jsonify({"status":200,"message":"Subject Updated"})
+#     except Exception as e:
+#         return jsonify({"status":404,"message":f"{e}"})
 
 @adminbp.route("/add_chapter",methods=['POST'])
 def create_chapter():
