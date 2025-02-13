@@ -2,31 +2,31 @@
 import "@/assets/JS/nav.js";
 import Loader from "@/components/Loader/Loader.vue";
 import axios from "axios";
-import { onMounted,ref } from "vue";
+import { onMounted, ref, computed } from "vue";
 import Footer from "@/components/Footer/Footer.vue";
 
-const quiz_data=ref({
+const quiz_data = ref({
   quiz: {
     quiz_name: '',
     time_duration: '',
     chapter_name: '',
-    questions:[]
+    questions: []
   }
 });
 
-const user_data=ref({
-  name:sessionStorage.getItem('name'),
-  profile_url:sessionStorage.getItem('profile_url') || "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png"
-})
+const user_data = ref({
+  name: sessionStorage.getItem('name'),
+  profile_url: sessionStorage.getItem('profile_url') || "https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png"
+});
 
-const pointer=ref({index:0});
+const pointer = ref({ index: 0 });
 const loading = ref(true);
 const remainingTime = ref(0);
-const minute=ref(0);
-const second=ref(0);
-const correct_options=ref([]);
-const user_option=ref([]);
-const question_ids=ref([]);
+const minute = ref(0);
+const second = ref(0);
+const correct_options = ref([]);
+const user_option = ref([]);
+const question_ids = ref([]);
 let timer;
 
 const sidebarVisible = ref(false);
@@ -35,44 +35,43 @@ const toggleSidebar = () => {
   sidebarVisible.value = !sidebarVisible.value;
 };
 
-const get_quiz=async()=>{
-  const urlParams=window.location.pathname;
-  const parts=urlParams.split('/');
-  const quiz_id=parts[parts.length-1];
-  await axios.post("http://localhost:5000/admin/get_quiz",{"quiz_id":quiz_id}).then((res)=>{
-    quiz_data.value=res.data;
-  }).catch((err)=>{
+const get_quiz = async () => {
+  const urlParams = window.location.pathname;
+  const parts = urlParams.split('/');
+  const quiz_id = parts[parts.length - 1];
+  await axios.post("http://localhost:5000/admin/get_quiz", { "quiz_id": quiz_id }).then((res) => {
+    quiz_data.value = res.data;
+  }).catch((err) => {
     console.log(err);
-  })
-}
+  });
+};
 
-const get_questions=async()=>{
-  const urlParams=window.location.pathname;
-  const parts=urlParams.split('/');
-  const quiz_id=parts[parts.length-1];
-  const chapter_name=decodeURIComponent(parts[parts.length-2]);
-  await axios.post("http://localhost:5000/user/get_questions",{"chapter_name":chapter_name,"quiz_id":quiz_id}).then((res)=>{
-    console.log(res.data.data);
-    quiz_data.value.questions=res.data.data;
-    correct_options.value=quiz_data.value.questions.map((question) => question.correct_option);
-    user_option.value=quiz_data.value.questions.map((question) => '');
-    question_ids.value=quiz_data.value.questions.map((question) => question.id);
-  }).catch((err)=>{
+const get_questions = async () => {
+  const urlParams = window.location.pathname;
+  const parts = urlParams.split('/');
+  const quiz_id = parts[parts.length - 1];
+  const chapter_name = decodeURIComponent(parts[parts.length - 2]);
+  await axios.post("http://localhost:5000/user/get_questions", { "chapter_name": chapter_name, "quiz_id": quiz_id }).then((res) => {
+    quiz_data.value.questions = res.data.data.map(question => ({ ...question, isVisited: false }));
+    correct_options.value = quiz_data.value.questions.map((question) => question.correct_option);
+    user_option.value = quiz_data.value.questions.map((question) => '');
+    question_ids.value = quiz_data.value.questions.map((question) => question.id);
+  }).catch((err) => {
     console.log(err);
-  })
-}
+  });
+};
 
-const start_quiz=async()=>{
-  await axios.post("http://localhost:5000/user/start_quiz",{
+const start_quiz = async () => {
+  await axios.post("http://localhost:5000/user/start_quiz", {
     "quiz_id": quiz_data.value.quiz.id,
     "time_duration": quiz_data.value.quiz.time_duration,
     "user_id": sessionStorage.getItem("id")
-  }).then((res)=>{
+  }).then((res) => {
     console.log(res);
-  }).catch((err)=>{
+  }).catch((err) => {
     console.log(err);
-  })
-}
+  });
+};
 
 const fetchRemainingTime = async () => {
   try {
@@ -93,7 +92,7 @@ const fetchRemainingTime = async () => {
   } catch (err) {
     console.log(err);
   }
-}
+};
 
 const submit_quiz = async () => {
   try {
@@ -111,52 +110,67 @@ const submit_quiz = async () => {
   } catch (err) {
     console.log(err);
   }
-}
+};
 
 const startLocalCountdown = () => {
   if (remainingTime.value > 0) {
     remainingTime.value = (remainingTime.value - 1);
   }
-}
+};
 
 const click_option = (index, value) => {
   user_option.value[index] = value;
+  quiz_data.value.questions[index].isVisited = true;
   console.log(user_option.value);
-}
+};
 
-onMounted(async()=>{
+onMounted(async () => {
   await get_quiz();
   await get_questions();
   await start_quiz();
-  loading.value = false; 
+  loading.value = false;
   timer = setInterval(() => {
     startLocalCountdown();
   }, 1000);
-  setInterval(fetchRemainingTime, 2000); 
-})
+  setInterval(fetchRemainingTime, 2000);
+});
 
-
-const next=()=>{
-  if(pointer.value.index<quiz_data.value.questions.length-1){
-    pointer.value.index=pointer.value.index+1;
+const next = () => {
+  if (pointer.value.index < quiz_data.value.questions.length - 1) {
+    pointer.value.index = pointer.value.index + 1;
+    quiz_data.value.questions[pointer.value.index].isVisited = true;
   }
-}
+};
 
-const prev=()=>{
-  if(pointer.value.index>0){
-    pointer.value.index=pointer.value.index-1;
+const prev = () => {
+  if (pointer.value.index > 0) {
+    pointer.value.index = pointer.value.index - 1;
+    quiz_data.value.questions[pointer.value.index].isVisited = true;
   }
-}
+};
 
-const go_to_this_question=(index)=>{
-  pointer.value.index=index;
-}
+const go_to_this_question = (index) => {
+  pointer.value.index = index;
+  quiz_data.value.questions[index].isVisited = true;
+};
 
 const submit_button = async () => {
   await submit_quiz();
   clearInterval(timer);
   window.location.href = "/user/library";
 };
+
+const questionsLeft = computed(() => {
+  return quiz_data.value.questions.filter(question => !question.isVisited).length;
+});
+
+const questionsAttempted = computed(() => {
+  return quiz_data.value.questions.filter(question => question.isVisited && user_option.value[quiz_data.value.questions.indexOf(question)] !== '').length;
+});
+
+const questionsUnattempted = computed(() => {
+  return quiz_data.value.questions.filter(question => question.isVisited && user_option.value[quiz_data.value.questions.indexOf(question)] === '').length;
+});
 
 </script>
 <template>
@@ -204,9 +218,9 @@ const submit_button = async () => {
               <h4 class="my-3 mx-4" style="font-weight: bold;">{{ user_data.name }}</h4>
             </div>
             <div class="mt-4 mb-3">
-              <p><strong>No of Questions Left:</strong> <span class="box white text-right">{{ quiz_data.questions.length - pointer.index - 1 }}</span></p>
-              <p><strong>No of Questions Attempted:</strong> <span class="box green text-right">{{ pointer.index + 1 }}</span></p>
-              <p><strong>No of Questions Unattempted:</strong> <span class="box red text-right">{{ quiz_data.questions.length - pointer.index - 1 }}</span></p>
+              <p><strong>No of Questions Left:</strong> <span class="box white text-right">{{ questionsLeft }}</span></p>
+              <p><strong>No of Questions Attempted:</strong> <span class="box green text-right">{{ questionsAttempted }}</span></p>
+              <p><strong>No of Questions Unattempted:</strong> <span class="box red text-right">{{ questionsUnattempted }}</span></p>
             </div>
           </div>
           <div class="index_box p-2 rounded my-4">

@@ -7,12 +7,14 @@ const user_stats=ref({
     "email":sessionStorage.getItem("email"),
     "visits":0,
     "accuracy":0,
-    "assignment_completed":0
+    "quiz_attempted":0
 })
 
 const get_stats=async()=>{
     await axios.post("http://localhost:5000/user/get_stats",{"email":user_stats.value.email}).then((res)=>{
+        console.log(res.data);
         user_stats.value.accuracy=res.data.stats.accuracy;
+        user_stats.value.quiz_attempted=res.data.stats.quiz_attempted;
     }).catch((err)=>{
         console.log(err);
     })
@@ -32,7 +34,7 @@ onMounted(()=>{
                         <div class="d-flex align-items-center">
                             <i style="color: blue;" class="bx bx-line-chart display-1"></i>
                             <div class="ms-3">
-                                <p class="h1 mb-0">423</p>
+                                <p class="h1 mb-0">23</p>
                                 <p class="h4 text-muted mb-0">Total Visits</p>
                             </div>
                         </div>
@@ -62,9 +64,9 @@ onMounted(()=>{
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <div class="d-flex align-items-center">
-                          <i class='bx bxs-edit-alt display-1'></i>
+                          <i style="color: green;" class='bx bxs-edit-alt display-1'></i>
                             <div class="ms-3">
-                                <p class="h1 mb-0">423</p>
+                                <p class="h1 mb-0">{{ user_stats.quiz_attempted }}</p>
                                 <p class="h4 text-muted mb-0">Assignment Completed</p>
                             </div>
                         </div>

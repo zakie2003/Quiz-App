@@ -57,7 +57,7 @@ const handle_submit=async()=>{
 </script>
 
 <template>
-    <section style="min-height: 100vh;">
+    <section style="min-height: 100vh;margin-top: 60px;">
     <div class="container">
         <ErrorMessage v-if="resp_status.status" :status="resp_status.status" :message="resp_status.message"/>
     </div>
@@ -131,7 +131,7 @@ const handle_submit=async()=>{
                 style="padding-left: 2.5rem; padding-right: 2.5rem; background-color:#4723d9;color: aliceblue;">Signin</button>
                 <button v-else type="button" data-mdb-button-init data-mdb-ripple-init class="btn btn-lg" v-on:click="send_opt()"
                 style="padding-left: 2.5rem; padding-right: 2.5rem; background-color:#4723d9;color: aliceblue;">Send OTP</button>
-                <p class="small fw-bold mt-2 pt-1 mb-0">Already have an account? <a href="/"
+                <p class="small fw-bold mt-2 pt-1 mb-0">Already have an account? <a href="/login"
                     class="link-danger">Login</a>
                 </p>
             </div>

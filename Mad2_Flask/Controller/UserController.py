@@ -414,7 +414,7 @@ def search():
     try:
         data=request.json
         search=data["search"]
-        quizes=Quiz.query.filter(Quiz.quiz_name.like(f"%{search}%")).all()
+        quizes=Quiz.query.filter(Quiz.quiz_name.like(f"%{search}%") | Quiz.chapter_name.like(f"%{search}%")).all()
         temp=[]
         for i in quizes:
             row=row2dict(i)
@@ -423,7 +423,7 @@ def search():
         quiz_library=Quiz_Library.query.filter(Quiz_Library.user_id==data["user_id"]).all()
         lib=[]
         for i in quiz_library:
-            quiz = Quiz.query.filter(and_(Quiz.id == i.quiz_id, Quiz.quiz_name.like(f"%{search}%"))).first()
+            quiz = Quiz.query.filter(and_(Quiz.id == i.quiz_id, (Quiz.quiz_name.like(f"%{search}%")| Quiz.chapter_name.like(f"%{search}%")))).first()
             if quiz:
                 row=row2dict(i)
                 row["quiz_name"] = quiz.quiz_name
@@ -525,8 +525,10 @@ def get_stats():
         user_wrong=len(UserAnswerHistory.query.filter(UserAnswerHistory.user_id==user.id,UserAnswerHistory.correct_answer!=UserAnswerHistory.user_answer).all())
         accuracy=int((user_correct/(user_correct+user_wrong))*100)
         quiz_attempted=Score.query.filter(Score.user_id==user.id).all()
-        quiz_user_id=[ i.quiz_id for i in quiz_attempted if i.quiz_id in quiz_user_id]
-        print(quiz_user_id)
-        return jsonify({"status":200,"message":"Data received","user_data":row2dict(user),"stats":{"accuracy":accuracy}})
+        quiz_user_ids=[]
+        for i in quiz_attempted:
+            if i.quiz_id not in quiz_user_ids:
+                quiz_user_ids.append(i.quiz_id)
+        return jsonify({"status":200,"message":"Data received","user_data":row2dict(user),"stats":{"accuracy":accuracy,"quiz_attempted":len(quiz_user_ids)}})
     except Exception as e:
         return jsonify({"status":500,"error":f"Error {e}"})

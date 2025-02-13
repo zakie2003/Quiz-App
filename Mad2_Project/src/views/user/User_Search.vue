@@ -66,7 +66,7 @@ onMounted(() => {
         <div v-else>
             <h1 class="m-4">Search Results</h1>
             <div class="row">
-                <div class="col-3">
+                <div class="col-lg-3 col-sm-12">
                     <div class="search-results m-4 p-4">
                         <div v-on:click="change_arr('quiz')" class="result-item p-3 border text-center text-white" style="background-color: #4723D9;">
                             <h5>Quiz {{ search_results.quiz.length }}</h5>
@@ -83,7 +83,7 @@ onMounted(() => {
 
                     </div>
                 </div>
-                <div class="col-9">
+                <div class="col-lg-9 col-sm-12">
                     <div class="ag-courses_box row">
                         <div v-if="arr.length==0" class="text-center w-100">
                             <h1>No Results Found</h1>

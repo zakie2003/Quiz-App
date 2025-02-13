@@ -11,7 +11,8 @@ import "@/assets/JS/nav.js"
       <div>
         <a href="#" class="nav_logo"> <i class='bx bx-layer nav_logo-icon'></i> <span class="nav_logo-name">MindSpark</span> </a>
         <div class="nav_list">
-          <a href="/" class="nav_link"> <i class='bx bx-user-check nav_icon'></i> <span class="nav_name">Login</span> </a>
+          <a href="/" class="nav_link active"> <i class='bx bx-grid-alt nav_icon'></i> <span class="nav_name">Home</span> </a>
+          <a href="/login" class="nav_link"> <i class='bx bx-user-check nav_icon'></i> <span class="nav_name">Login</span> </a>
           <a href="/signin" class="nav_link"><i class='bx bx-user nav_icon'></i> <span class="nav_name">SignUp</span> </a>
           <!-- <button style="background: none;border: none;" class="nav_link "><i class='bx bx-moon' ></i> <span>Theme</span></button> -->
         </div>

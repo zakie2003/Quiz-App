@@ -152,6 +152,12 @@ const router = createRouter({
       name: "UserProfileSearch",
       component: ()=> import("../views/admin/ShowUserProfile.vue"),
       meta: { requiresAuth: true }
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: ()=> import("@/views/Login.vue"),
+      meta: { requiresAuth: false }
     }
 
     

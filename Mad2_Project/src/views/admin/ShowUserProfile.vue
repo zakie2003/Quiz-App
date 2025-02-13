@@ -6,6 +6,7 @@ import Footer from '@/components/Footer/Footer.vue';
 import { onMounted, ref } from 'vue';
 import axios from 'axios';
 import NavAdmin from '@/components/NavBar/NavAdmin.vue';
+import NavUser from '@/components/NavBar/NavUser.vue';
 
 const chart_data = ref({
   line_data: {},
@@ -21,7 +22,8 @@ const user_data = ref({
   name: '',
   email:'',
   img_url: default_img_url,
-  id:''
+  id:'',
+  role: sessionStorage.getItem('role')
 });
 
 
@@ -73,27 +75,6 @@ const save_img=async()=>{
   }
 }
 
-const upload_image = async (event) => {
-  const img1 = event.target.files[0];
-  if (!img1) {
-    console.error('No file selected');
-    return;
-  }
-  const form_data = new FormData();
-  form_data.append('file', img1);
-  form_data.append('upload_preset', 'cloud_demo'); 
-  form_data.append('cloud_name', 'dyt00fcs6');
-  try {
-    const res = await axios.post("https://api.cloudinary.com/v1_1/dyt00fcs6/image/upload", form_data, {
-      headers: { 'Content-Type': 'multipart/form-data' }
-    });
-    user_data.value.img_url = res.data.secure_url;
-    save_img();
-    sessionStorage.setItem('profile_url', res.data.secure_url);
-  } catch (error) {
-    console.error('Error uploading image:', error.response ? error.response.data : error.message);
-  }
-};
 
 onMounted(async () => {
   await get_user_data();
@@ -103,7 +84,12 @@ onMounted(async () => {
 
 <template>
   <nav class="navbar navbar-expand-lg pb-0 bg-body-tertiary">
-    <NavAdmin />
+    <div v-if="user_data.role != 'admin'">
+      <NavUser />
+    </div>
+    <div v-else>
+      <NavAdmin />
+    </div>
     <div style="min-height: 100vh;" class="bg-light w-100">
       <div v-if="isLoading" class="text-center mt-5">
         <p>Loading...</p>
@@ -116,8 +102,8 @@ onMounted(async () => {
               <h1 class="mx-4 mt-4">Profile</h1>
               <div class="row g-3 align-items-center mt-4 mb-5">
                 <div class="col-4 text-center">
-                  <input type="file" @change="upload_image" style="display: none;" ref="fileInput">
-                  <div class="profile_img_container" @click="$refs.fileInput.click()">
+                  <input type="file"style="display: none;" ref="fileInput">
+                  <div class="profile_img_container" >
                     <img
                       class="profile_img"
                       :src="user_data.img_url || default_img_url"
