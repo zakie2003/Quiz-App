@@ -98,6 +98,10 @@ def save_otp():
     except Exception as e:
         return jsonify({"status":500,"message":f"{e}"})
 
+app.route("/hi",methods=["GET"])
+def hi():
+    return jsonify({"status":200,"message":"Hello"})
+
 Session(app)
 db.init_app(app)
 
