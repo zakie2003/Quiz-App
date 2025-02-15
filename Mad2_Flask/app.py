@@ -31,15 +31,13 @@ app.config["SECRET_KEY"] = "secret"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SESSION_USE_SIGNER"] = True
 app.config["SESSION_TYPE"] = "redis"
-app.config["SESSION_REDIS"] = Redis(
-    host='redis-19427.c322.us-east-1-2.ec2.redns.redis-cloud.com',port=19427,
-    password="v8xa7rg4kI2YvqlL4g9wYLTFScllIiVP",decode_responses=False)
+app.config["SESSION_REDIS"] = Redis(host=os.environ.get("REDIS_HOST"),port=19427,password=os.environ.get("REDIS_PASSWORD"),decode_responses=False)
 app.config['SESSION_COOKIE_SECURE'] = False
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'None'
 
-app.config['broker_url'] = 'redis://:v8xa7rg4kI2YvqlL4g9wYLTFScllIiVP@redis-19427.c322.us-east-1-2.ec2.redns.redis-cloud.com:19427/0'
-app.config['result_backend'] = 'redis://:v8xa7rg4kI2YvqlL4g9wYLTFScllIiVP@redis-19427.c322.us-east-1-2.ec2.redns.redis-cloud.com:19427/0'
+app.config['broker_url'] = os.environ.get("BROKER_URL")
+app.config['result_backend'] = os.environ.get("BROKER_URL")
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
