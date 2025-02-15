@@ -11,7 +11,7 @@ const data={
 
 const add_chapter=async(data)=>{
     console.log(data);
-    await axios("http://localhost:5000/admin/add_chapter",{
+    await axios("https://quiz-app-chz3.onrender.com/admin/add_chapter",{
         method:"POST",
         data:JSON.stringify(data),
         headers:{"Content-Type":"application/json"}

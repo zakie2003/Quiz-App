@@ -29,7 +29,7 @@ const user_data = ref({
 
 const get_user_chart = async () => {
   try {
-    const res = await axios.post("http://localhost:5000/user/get_user_chart", {
+    const res = await axios.post("https://quiz-app-chz3.onrender.com/user/get_user_chart", {
       user_id: user_data.value.id
     });
     chart_data.value.line_data = res.data.line_chart;
@@ -46,7 +46,7 @@ const get_user_data=async ()=>{
   const url=window.location.pathname;
   const parts=url.split('/');
   const user_mail=parts[parts.length-1];
-  await axios.post("http://localhost:5000/admin/get_user_data",{
+  await axios.post("https://quiz-app-chz3.onrender.com/admin/get_user_data",{
     email:user_mail
   }).then((res)=>{
     console.log(res.data);
@@ -61,7 +61,7 @@ const get_user_data=async ()=>{
 
 const save_img=async()=>{
   try{
-    await axios("http://localhost:5000/user/save_img",{
+    await axios("https://quiz-app-chz3.onrender.com/user/save_img",{
       method: 'POST',
       data: {
         user_id: user_data.value.id,

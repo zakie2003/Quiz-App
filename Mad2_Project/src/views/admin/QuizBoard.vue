@@ -18,7 +18,7 @@ const go_to_create_quiz = () => {
 };
 
 const fetch_quiz = async () => {
-  await axios("http://localhost:5000/admin/get_quizes")
+  await axios("https://quiz-app-chz3.onrender.com/admin/get_quizes")
     .then((res) => {
       data.value.quiz_data = res.data.quiz_data;
       console.log(data.value.quiz_data);
@@ -29,7 +29,7 @@ const fetch_quiz = async () => {
 };
 
 const fetch_ready_quiz = async () => {
-  await axios("http://localhost:5000/admin/get_ready_quizes")
+  await axios("https://quiz-app-chz3.onrender.com/admin/get_ready_quizes")
     .then((res) => {
       data.value.ready_quiz_data = res.data.ready_quiz_data;
       console.log(data.value.ready_quiz_data);

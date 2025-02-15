@@ -10,7 +10,7 @@ const data={
 }
 
 const edit_chapter=async(data)=>{
-    await axios("http://localhost:5000/admin/edit_chapter",{
+    await axios("https://quiz-app-chz3.onrender.com/admin/edit_chapter",{
         method:"POST",
         data:JSON.stringify(data),
         headers:{"Content-Type":"application/json"}

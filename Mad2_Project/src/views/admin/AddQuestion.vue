@@ -18,7 +18,7 @@ const data={
 const msg=ref({});
 
 const add_question=async(data)=>{
-  await axios.post("http://localhost:5000/admin/add_question",data).then((response)=>{
+  await axios.post("https://quiz-app-chz3.onrender.com/admin/add_question",data).then((response)=>{
     if(response.data.message=="Question limit reached"){
       msg.value.message=response.data.message;
     }

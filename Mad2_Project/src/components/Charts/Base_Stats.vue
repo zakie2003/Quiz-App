@@ -11,7 +11,7 @@ const user_stats=ref({
 })
 
 const get_stats=async()=>{
-    await axios.post("http://localhost:5000/user/get_stats",{"email":user_stats.value.email}).then((res)=>{
+    await axios.post("https://quiz-app-chz3.onrender.com/user/get_stats",{"email":user_stats.value.email}).then((res)=>{
         console.log(res.data);
         user_stats.value.accuracy=res.data.stats.accuracy;
         user_stats.value.quiz_attempted=res.data.stats.quiz_attempted;

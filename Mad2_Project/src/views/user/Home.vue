@@ -10,7 +10,7 @@ const data=ref({
     free_quizes:[]
 })
 const get_ready_quizes=async()=>{
-  await axios("http://localhost:5000/user/get_ready_quizes").then((res)=>{
+  await axios("https://quiz-app-chz3.onrender.com/user/get_ready_quizes").then((res)=>{
     data.value.free_quizes=res.data.ready_quiz_data;
   }).catch((err)=>{
     console.log(err);

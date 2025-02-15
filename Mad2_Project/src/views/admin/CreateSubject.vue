@@ -14,7 +14,7 @@ const message=ref({
 })
 
 const addSubject = async(data)=>{
-  await axios("http://localhost:5000/admin/add_subject",{
+  await axios("https://quiz-app-chz3.onrender.com/admin/add_subject",{
     method:"POST",
     data:JSON.stringify(data),
     headers:{"Content-Type":"application/json"}

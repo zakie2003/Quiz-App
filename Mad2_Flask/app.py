@@ -16,7 +16,7 @@ from Model.Model import User_otp
 app = Flask(__name__)
 
 # Initialize CORS with proper configuration
-CORS(app, resources={r"/*": {"origins": "http://localhost:5173"}}, supports_credentials=True)
+CORS(app, resources={r"/*": {"origins": ["http://localhost:5173","https://zingy-gelato-29d699.netlify.app"]}}, supports_credentials=True)
 
 cache.init_app(app)
 

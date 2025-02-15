@@ -22,7 +22,7 @@ const get_quiz=async()=>{
   const urlParams=window.location.pathname;
   const parts=urlParams.split('/');
   const quiz_id=parts[parts.length-1];
-  await axios.post("http://localhost:5000/admin/get_quiz",{"quiz_id":quiz_id}).then((res)=>{
+  await axios.post("https://quiz-app-chz3.onrender.com/admin/get_quiz",{"quiz_id":quiz_id}).then((res)=>{
     quiz_data.value=res.data;
     loading.value = false;
   }).catch((err)=>{
@@ -36,7 +36,7 @@ const get_questions=async()=>{
   const parts=urlParams.split('/');
   const quiz_id=parts[parts.length-1];
   const chapter_name=parts[parts.length-2];
-  await axios.post("http://localhost:5000/user/get_questions",{"chapter_name":decodeURI(chapter_name),"quiz_id":quiz_id}).then((res)=>{
+  await axios.post("https://quiz-app-chz3.onrender.com/user/get_questions",{"chapter_name":decodeURI(chapter_name),"quiz_id":quiz_id}).then((res)=>{
     quiz_data.value.questions=res.data.data;
     console.log(quiz_data.value);
     loading.value = false;
@@ -54,7 +54,7 @@ const get_user_anser = () => {
   const quiz_id = parts[parts.length - 1];
   const chapter_name = parts[parts.length - 2];
   console.log(sessionStorage.getItem("id"));
-  axios.post("http://localhost:5000/user/get_user_answer", {
+  axios.post("https://quiz-app-chz3.onrender.com/user/get_user_answer", {
     chapter_name: decodeURI(chapter_name),
     quiz_id: quiz_id,
     user_id: sessionStorage.getItem("id"),

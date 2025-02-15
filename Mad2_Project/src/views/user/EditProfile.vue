@@ -15,7 +15,7 @@ const data=ref({
 })
 
 const get_user_data=async()=>{
-  await axios.post("http://localhost:5000/user/get_user_data",{"email":user_data.value.email}).then((res)=>{
+  await axios.post("https://quiz-app-chz3.onrender.com/user/get_user_data",{"email":user_data.value.email}).then((res)=>{
     data.value.name=res.data.user_data.name;
     data.value.dob=res.data.user_data.dob;
     data.value.qualification=res.data.user_data.qualification;
@@ -25,7 +25,7 @@ const get_user_data=async()=>{
 }
 
 const edit_profile=async()=>{
-  await axios.post("http://localhost:5000/user/edit_profile",{"email":user_data.value.email,"name":data.value.name,"dob":data.value.dob,"qualification":data.value.qualification}).then((res)=>{
+  await axios.post("https://quiz-app-chz3.onrender.com/user/edit_profile",{"email":user_data.value.email,"name":data.value.name,"dob":data.value.dob,"qualification":data.value.qualification}).then((res)=>{
     console.log(res.data);
     sessionStorage.setItem('name',data.value.name);
     sessionStorage.setItem('dob',data.value.dob);

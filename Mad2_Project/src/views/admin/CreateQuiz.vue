@@ -19,7 +19,7 @@ const resp_status=ref({
 })
 
 const add_quiz=async(data)=>{
-  await axios("http://localhost:5000/admin/add_quiz",{
+  await axios("https://quiz-app-chz3.onrender.com/admin/add_quiz",{
     method:"POST",
     data:JSON.stringify(data),
     headers:{"Content-Type":"application/json"}
@@ -35,7 +35,7 @@ const add_quiz=async(data)=>{
 
 
 const get_chapter=async()=>{
-  await axios("http://localhost:5000/admin/get_chapter").then((res)=>{
+  await axios("https://quiz-app-chz3.onrender.com/admin/get_chapter").then((res)=>{
     chapter.value=res.data.data;
     console.log(chapter);
   }).catch((err)=>{
