@@ -5,7 +5,7 @@ from celery.schedules import crontab
 from flask_mail import Mail, Message
 from flask import current_app, request,send_file
 from dotenv import load_dotenv
-from Model.Model import UserAnswerHistory,User,Score
+from Model.Model import UserAnswerHistory,User,Score,Question
 import csv
 import datetime
 load_dotenv()
@@ -19,16 +19,20 @@ def init_tasks(celery):
     
     @celery.task(name="get_csv_data")
     def get_csv_data(user_id,quiz_id,date,time):
-        user_anserhistory=UserAnswerHistory.query.filter(UserAnswerHistory.user_id==user_id,UserAnswerHistory.quiz_id==quiz_id,UserAnswerHistory.date_of_attempt==date,UserAnswerHistory.time_of_attempt==time).all()
-        for answer in user_anserhistory:
-            print(answer.user_id,answer.quiz_id,answer.question_id,answer.user_answer,answer.correct_answer)
-        file_path = 'user_answer_history.csv'
-        with open(file_path, 'w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow(['user_id', 'quiz_id', 'question_id', 'user_answer', 'correct_answer'])
+        try:
+            user_anserhistory=UserAnswerHistory.query.filter(UserAnswerHistory.user_id==user_id,UserAnswerHistory.quiz_id==quiz_id,UserAnswerHistory.date_of_attempt==date,UserAnswerHistory.time_of_attempt==time).all()
             for answer in user_anserhistory:
-                writer.writerow([answer.user_id, answer.quiz_id, answer.question_id, answer.user_answer, answer.correct_answer])
-        return file_path
+                print(answer.user_id,answer.quiz_id,answer.question_id,answer.user_answer,answer.correct_answer)
+            file_path = 'user_answer_history.csv'
+            with open(file_path, 'w', newline='') as file:
+                writer = csv.writer(file)
+                writer.writerow(['User_id', 'Quiz_id', 'Question_id','Question Description', 'User_answer', 'Correct_answer'])
+                for answer in user_anserhistory:
+                    question_description=Question.query.filter(Question.id==answer.question_id,Question.quiz_id==answer.quiz_id).first().question
+                    writer.writerow([answer.user_id, answer.quiz_id, answer.question_id,question_description, answer.user_answer, answer.correct_answer])
+            return file_path
+        except Exception as e:
+            print(e)
 
     @celery.task(name="send_monthy_report")
     def send_monthy_report():
@@ -39,11 +43,10 @@ def init_tasks(celery):
             end_date = datetime.datetime.now()
             start_date = end_date - datetime.timedelta(days=30)
 
-            # Get all users
             users = User.query.all()
 
             for user in users:
-                # Fetch quiz results for the user in the last month
+
                 quizzes = Score.query.filter(
                     Score.user_id == user.id,
                     Score.date >= start_date,
@@ -51,9 +54,8 @@ def init_tasks(celery):
                 ).all()
 
                 if not quizzes:
-                    continue  # Skip if the user has no quizzes in the last month
+                    continue  
 
-                # Generate report summary
                 report_text = f"Hello {user.name},\n\nHere is your monthly quiz performance summary:\n\n"
 
                 for quiz in quizzes:
@@ -61,7 +63,6 @@ def init_tasks(celery):
 
                 report_text += "\nKeep up the good work!\n\nBest Regards,\nYour Quiz Team"
 
-                # Send email
                 msg = Message("Your Monthly Quiz Report", sender=sender_email, recipients=[user.email])
                 msg.body = report_text
                 mail.send(msg)
@@ -80,7 +81,6 @@ def init_tasks(celery):
                 mail = Mail(current_app)
                 sender_email = os.getenv("EMAIL")
                 
-                # Create an HTML formatted message
                 html_content = f"""
                 <html>
                     <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
