@@ -34,7 +34,7 @@ onMounted(()=>{
                         <div class="d-flex align-items-center">
                             <i style="color: blue;" class="bx bx-line-chart display-1"></i>
                             <div class="ms-3">
-                                <p class="h1 mb-0">23</p>
+                                <p class="h1 mb-0">3</p>
                                 <p class="h4 text-muted mb-0">Total Visits</p>
                             </div>
                         </div>

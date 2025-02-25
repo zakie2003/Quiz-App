@@ -38,11 +38,18 @@ const send_opt=async()=>{
         console.log(err);
     })
     data.isoptsent=true;
-    // await axios.post("https://quiz-app-chz3.onrender.com/user/send_otp",{"email":data.email,"otp":otp}).then((res)=>{
-    //     console.log(res);
-    // }).catch((err)=>{
-    //     console.log(err);
-    // })
+}
+
+const resend_opt=async()=>{
+    var otp=generate_opt();
+    await axios.post("https://quiz-app-chz3.onrender.com/user/resend_otp",{"email":data.email,"otp":otp}).then((res)=>{
+        console.log(res);
+        resp_status.status=res.data.status;
+        resp_status.message=res.data.message;
+    }).catch((err)=>{
+        console.log(err);
+    })
+    data.isoptsent=true;
 }
 
 const handle_submit=async()=>{
@@ -110,7 +117,7 @@ const handle_submit=async()=>{
             <div v-if="data.isoptsent" data-mdb-input-init class="form-outline mb-4">
                 <div style="display: flex;">
                     <input v-model="data.otp" type="text" id="otp" style="border-radius: 0;" class="otp_form form-control form-control-lg" placeholder="Enter OTP" />
-                    <button v-on:click="send_opt()" class="btn" style="background-color: #4723d9;color: aliceblue;border-radius: 0;">Resend</button>
+                    <button v-on:click.prevent="resend_opt()" class="btn" style="background-color: #4723d9;color: aliceblue;border-radius: 0;">Resend</button>
                 </div>
                 <label class="form-label" style="color: #4723d9;" for="otp">Otp</label>
             </div>

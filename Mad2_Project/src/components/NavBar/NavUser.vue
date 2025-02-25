@@ -33,7 +33,8 @@ onMounted(() => {
 });
 
 const go_to_profile=()=>{
-  window.location.href='/user/profile/' + user_data.email;
+  const email=sessionStorage.getItem("email");
+  window.location.href='/user/profile/' + email;
 }
 
 </script>

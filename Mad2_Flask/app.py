@@ -83,6 +83,7 @@ def save_otp():
             user.otp=otp
             db.session.commit()
             mail=Mail(app)
+            print(otp)
             msg=Message("OTP Verification",sender=os.environ.get("EMAIL"),recipients=[email],body=f"Your OTP is {otp}")
             mail.send(msg)
             
@@ -97,6 +98,27 @@ def save_otp():
         return jsonify({"status":200,"message":"OTP saved"})
     except Exception as e:
         return jsonify({"status":500,"message":f"{e}"})
+    
+@app.route("/user/resend_otp",methods=["POST"])
+def resend_otp():
+    try:
+        data=request.json
+        otp=data["otp"]
+        email=data["email"]
+        user=User_otp.query.filter_by(email=email).first()
+        if user:
+            user.otp=otp
+            db.session.commit()
+            mail=Mail(app)
+            print(otp)
+            msg=Message("OTP Verification",sender=os.environ.get("EMAIL"),recipients=[email],body=f"Your OTP is {otp}")
+            mail.send(msg)
+            return jsonify({"status":200,"message":"Otp Resent Again"})
+        else:
+            return jsonify({"status":500,"message":f"User Not Found"})
+    except Exception as e:
+        return jsonify({"status":500,"message":f"{e}"})
+        
 
 @app.route("/hi",methods=["GET"])
 def hi():

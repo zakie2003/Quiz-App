@@ -121,7 +121,7 @@ def init_tasks(celery):
     celery.conf.beat_schedule = {
         "email-task": {
             "task": "send_mail",
-            "schedule": crontab(day_of_week="*"),
+            "schedule": crontab(minute=1),
             "args": (
                 """Ready to test your knowledge and level up your skills? 🎓
                     Your daily quiz is live! Here's your chance to:
