@@ -1,6 +1,8 @@
 <script setup>
 import axios from "axios";
 import NavAdmin from "@/components/NavBar/NavAdmin.vue";
+import ErrorMessage from "@/components/Message/ErrorMessage.vue";
+import { ref } from "vue";
 
 let urlParams = new URLSearchParams(window.location.search);
 const data={
@@ -9,8 +11,10 @@ const data={
   subject_id:urlParams.get('id')
 }
 
+let alert_message=ref("");
+
 const edit_chapter=async(data)=>{
-    await axios("https://quiz-app-chz3.onrender.com/admin/edit_chapter",{
+    await axios("http://localhost:5000/admin/edit_chapter",{
         method:"POST",
         data:JSON.stringify(data),
         headers:{"Content-Type":"application/json"}
@@ -18,6 +22,9 @@ const edit_chapter=async(data)=>{
         console.log(res.data);
         if(res.data.status===200){
             window.location.href="/admin/home";
+        }
+        else{
+          alert_message.value=res.data.message;
         }
 
     }).catch((err)=>{
@@ -30,6 +37,9 @@ const edit_chapter=async(data)=>{
   <nav class="navbar navbar-expand-lg pb-0 bg-body-tertiary">
     <NavAdmin /> 
     <div style="height: 100vh;" class="bg-light w-100">
+      <div class="container">
+        <ErrorMessage v-if="alert_message" :message="alert_message"/>
+      </div>
       <h1 class="m-4">Edit Subject</h1>
       <div class="container">
         <form class="d-flex flex-column w-90" @submit.prevent="edit_chapter(data)" action="">

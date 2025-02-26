@@ -19,7 +19,7 @@ let index = ref(1);
 const get_reports = async () => {
     data.value.isLoading = true;
     try {
-        const res = await axios.post("https://quiz-app-chz3.onrender.com/user/get_score", { "user_id": data.value.user_id });
+        const res = await axios.post("http://localhost:5000/user/get_score", { "user_id": data.value.user_id });
 //        console.log(res.data);
         paginatedScores.value = res.data.Score_list;
         console.log(res.data.Score_list);
@@ -86,7 +86,7 @@ onMounted(() => {
                             <td scope="row">{{ item.date }}</td>
                             <td style="font-weight: bold;" scope="row">{{ Math.round(item.score) }}/100</td>
                             <td>
-                                <a :href="'https://quiz-app-chz3.onrender.com/celery/get_csv_data?user_id='+ data.user_id +'&quiz_id=' + item.id+'&time='+item.time+'&date='+item.date">Download Transcript</a>
+                                <a :href="'http://localhost:5000/celery/get_csv_data?user_id='+ data.user_id +'&quiz_id=' + item.id+'&time='+item.time+'&date='+item.date">Download Transcript</a>
                             </td>
                             <td scope="row"><button v-on:click="go_to_preview(item.chapter_name, item.id, item.date, item.time)" class="btn btn_score">OverView</button></td>
                         </tr>

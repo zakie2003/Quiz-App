@@ -15,7 +15,7 @@ const go_to_add_question = () => {
 }
 
 const get_questions = async () => {
-  await axios.post("https://quiz-app-chz3.onrender.com/admin/get_questions", { "quiz_id": props.item.id, "chapter_name": props.item.chapter_name }).then((res) => {
+  await axios.post("http://localhost:5000/admin/get_questions", { "quiz_id": props.item.id, "chapter_name": props.item.chapter_name }).then((res) => {
     data.value = res.data.data;
   }).then((err) => {
     console.log(err);
@@ -23,7 +23,7 @@ const get_questions = async () => {
 }
 
 const delete_question = async (id) => {
-  await axios.post("https://quiz-app-chz3.onrender.com/admin/delete_question", { "id": id }).then((res) => {
+  await axios.post("http://localhost:5000/admin/delete_question", { "id": id }).then((res) => {
     console.log(res);
     get_questions();
   }).then((err) => {
@@ -46,7 +46,7 @@ onMounted(() => {
 })
 
 const add_to_ready_quiz = async (id) => {
-  await axios.post("https://quiz-app-chz3.onrender.com/admin/add_ready_quiz", { "quiz_id": id }).then((res) => {
+  await axios.post("http://localhost:5000/admin/add_ready_quiz", { "quiz_id": id }).then((res) => {
     console.log(res);
     window.location.reload();
   }).then((err) => {
@@ -55,7 +55,7 @@ const add_to_ready_quiz = async (id) => {
 }
 
 const remove_from_ready_quiz = async (id) => {
-  await axios.post("https://quiz-app-chz3.onrender.com/admin/remove_ready_quiz", { "quiz_id": id }).then((res) => {
+  await axios.post("http://localhost:5000/admin/remove_ready_quiz", { "quiz_id": id }).then((res) => {
     console.log(res);
     window.location.reload();
   }).catch((err) => {

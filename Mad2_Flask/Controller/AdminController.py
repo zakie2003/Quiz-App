@@ -113,6 +113,9 @@ def create_chapter():
     try:
         data=request.json
         print(data["name"],data["subject_id"],data["numberofquestion"])
+        existing_chapter=Chapter.query.filter(Chapter.name==data["name"]).all()
+        if(len(existing_chapter)>=1):
+            return jsonify({"message":"Chapter Already Exist","status":"401"})
         chapter=Chapter(data["name"],data["subject_id"],data["numberofquestion"])
 
         db.session.add(chapter)
@@ -142,8 +145,8 @@ def edit_chapter():
         data=request.json
         chapter=Chapter.query.filter(Chapter.name==data["name"]).first()
         question=Question.query.filter(Question.chapter_name==data["name"]).all()
-        if(len(question)>data["numberofquestion"]):
-            return jsonify({"status":404,"message":"Can't edit number of question"})
+        if(len(question)>data["numberofquestion"] or data["numberofquestion"]<=0):
+            return jsonify({"status":404,"message":f"Cannot Edit as already {len(question)} question"})
 
         chapter.name=data["name"]
         chapter.number_of_questions=data["numberofquestion"]

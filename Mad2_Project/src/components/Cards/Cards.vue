@@ -11,7 +11,7 @@ const props=defineProps(
 const data=ref({})
 
 const get_chapters=async()=>{
-  await axios("https://quiz-app-chz3.onrender.com/admin/get_chapter?subject_id="+props.item.id).then((res)=>{
+  await axios("http://localhost:5000/admin/get_chapter?subject_id="+props.item.id).then((res)=>{
     console.log(res.data.data);
     data.value=res.data.data;
   }).catch((err)=>{
@@ -24,7 +24,7 @@ const go_to_edit=(name,numberofquestion)=>{
 }
 
 const delete_chapter=async(name)=>{
-  await axios("https://quiz-app-chz3.onrender.com/admin/delete_chapter?name="+name).then((res)=>{
+  await axios("http://localhost:5000/admin/delete_chapter?name="+name).then((res)=>{
     get_chapters();
   }).catch((err)=>{
     console.log(err);
@@ -33,7 +33,7 @@ const delete_chapter=async(name)=>{
 
 const delete_subject=async(chap_name)=>{
   console.log(chap_name);
-  await axios.post("https://quiz-app-chz3.onrender.com/admin/delete_subject",{"name":chap_name}).then((res)=>{
+  await axios.post("http://localhost:5000/admin/delete_subject",{"name":chap_name}).then((res)=>{
     console.log(res);
     if(res.data.message=="Can't delete subject with Chapters,delete Chapters first"){
       alert(res.data.message);

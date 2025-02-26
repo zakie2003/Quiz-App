@@ -28,7 +28,7 @@ const user_data = ref({
 
 const get_user_chart = async () => {
   try {
-    const res = await axios.post("https://quiz-app-chz3.onrender.com/user/get_user_chart", {
+    const res = await axios.post("http://localhost:5000/user/get_user_chart", {
       user_id: sessionStorage.getItem("id")
     });
     chart_data.value.line_data = res.data.line_chart;
@@ -44,7 +44,7 @@ const get_user_chart = async () => {
 
 const save_img=async()=>{
   try{
-    await axios("https://quiz-app-chz3.onrender.com/user/save_img",{
+    await axios("http://localhost:5000/user/save_img",{
       method: 'POST',
       data: {
         user_id: sessionStorage.getItem("id"),
@@ -138,19 +138,21 @@ onMounted(() => {
         <!-- Additional Charts -->
         <div class="row m-4">
           <div class="col-md-4">
-            <h1 class="mx-4 mb-5">Student Accuracy</h1>
+            <h1 class="mx-4 mb-1">Student Accuracy</h1>
             <div class="chart-container">
               <Accuracy :wrong="chart_data.wrong" :right="chart_data.right" />
             </div>
           </div>
+
           <div class="col-md-4">
-            <h1 class="mx-4 mb-5">Domain Growth</h1>
-            <div class="chart-container">
+            <h1 class="mx-4 mb-1">Domain Growth</h1>
+            <div class="chart-container2">
               <Radar :radar_data="chart_data.radar_chart"/>
             </div>
           </div>
+
           <div class="col-md-4">
-            <h1 class="mx-4 mb-5">Popular Chapters</h1>
+            <h1 class="mx-4 mb-1">Popular Chapters</h1>
             <div class="chart-container">
               <BarChart :bar_data="chart_data.top_chapter_names" />
             </div>
@@ -220,7 +222,7 @@ onMounted(() => {
 .chart-container {
   width: 100%;
   max-width: 400px;
-  height: 400px;
+  height: 220px;
   margin: 0 auto;
 }
 

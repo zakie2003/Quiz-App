@@ -49,7 +49,7 @@ function go_to_create(){
 const fetchChapters = async () => {
   isLoading.value = true;
   try {
-    const res = await axios("https://quiz-app-chz3.onrender.com/admin/get_subject", {
+    const res = await axios("http://localhost:5000/admin/get_subject", {
       method: "GET",
       headers: { "Content-Type": "application/json" }
     });

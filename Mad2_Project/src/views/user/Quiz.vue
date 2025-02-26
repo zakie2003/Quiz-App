@@ -39,7 +39,7 @@ const get_quiz = async () => {
   const urlParams = window.location.pathname;
   const parts = urlParams.split('/');
   const quiz_id = parts[parts.length - 1];
-  await axios.post("https://quiz-app-chz3.onrender.com/admin/get_quiz", { "quiz_id": quiz_id }).then((res) => {
+  await axios.post("http://localhost:5000/admin/get_quiz", { "quiz_id": quiz_id }).then((res) => {
     quiz_data.value = res.data;
   }).catch((err) => {
     console.log(err);
@@ -51,7 +51,7 @@ const get_questions = async () => {
   const parts = urlParams.split('/');
   const quiz_id = parts[parts.length - 1];
   const chapter_name = decodeURIComponent(parts[parts.length - 2]);
-  await axios.post("https://quiz-app-chz3.onrender.com/user/get_questions", { "chapter_name": chapter_name, "quiz_id": quiz_id }).then((res) => {
+  await axios.post("http://localhost:5000/user/get_questions", { "chapter_name": chapter_name, "quiz_id": quiz_id }).then((res) => {
     quiz_data.value.questions = res.data.data.map(question => ({ ...question, isVisited: false }));
     correct_options.value = quiz_data.value.questions.map((question) => question.correct_option);
     user_option.value = quiz_data.value.questions.map((question) => '');
@@ -62,7 +62,7 @@ const get_questions = async () => {
 };
 
 const start_quiz = async () => {
-  await axios.post("https://quiz-app-chz3.onrender.com/user/start_quiz", {
+  await axios.post("http://localhost:5000/user/start_quiz", {
     "quiz_id": quiz_data.value.quiz.id,
     "time_duration": quiz_data.value.quiz.time_duration,
     "user_id": sessionStorage.getItem("id")
@@ -75,7 +75,7 @@ const start_quiz = async () => {
 
 const fetchRemainingTime = async () => {
   try {
-    const response = await axios.post("https://quiz-app-chz3.onrender.com/user/remaining_time", {
+    const response = await axios.post("http://localhost:5000/user/remaining_time", {
       "user_id": sessionStorage.getItem("id"),
       "quiz_id": quiz_data.value.quiz.id
     });
@@ -96,7 +96,7 @@ const fetchRemainingTime = async () => {
 
 const submit_quiz = async () => {
   try {
-    await axios.post("https://quiz-app-chz3.onrender.com/user/submit_quiz", {
+    await axios.post("http://localhost:5000/user/submit_quiz", {
       "user_id": sessionStorage.getItem("id"),
       "quiz_id": quiz_data.value.quiz.id,
       "user_answers": user_option.value,

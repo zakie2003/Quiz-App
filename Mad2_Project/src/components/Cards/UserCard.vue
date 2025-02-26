@@ -12,7 +12,7 @@ const isInLibrary = ref(false);
 const isLoading = ref(true);
 
 const add_to_library = async () => {
-  await axios.post("https://quiz-app-chz3.onrender.com/user/add_to_library", {
+  await axios.post("http://localhost:5000/user/add_to_library", {
     "quiz_id": props.item.id,
     "user_id": sessionStorage.getItem("id")
   }).then((res) => {
@@ -25,7 +25,7 @@ const add_to_library = async () => {
 
 const checkLibrary = async () => {
   try {
-    await axios.post("https://quiz-app-chz3.onrender.com/user/check_quiz_in_library", {
+    await axios.post("http://localhost:5000/user/check_quiz_in_library", {
       "user_id": sessionStorage.getItem("id"),
       "quiz_id": props.item.id
     }).then((res) => {

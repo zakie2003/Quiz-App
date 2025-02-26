@@ -17,7 +17,7 @@ let arr=ref([]);
 const get_results = async () => {
     let currentLocation = window.location.href.split("/");
     const search = decodeURIComponent(currentLocation[currentLocation.length-1]);
-    await axios.post(`https://quiz-app-chz3.onrender.com/admin/search`, { "search": search }).then((res) => {
+    await axios.post(`http://localhost:5000/admin/search`, { "search": search }).then((res) => {
         search_results.value = res.data;
         arr.value=search_results.value.quiz;
         isLoading.value = false;

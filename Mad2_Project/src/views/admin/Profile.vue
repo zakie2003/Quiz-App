@@ -16,7 +16,7 @@ const chart_data = ref({
 const isLoading = ref(true);
 
 const fetchData = async () => {
-  await axios.get('https://quiz-app-chz3.onrender.com/user/get_profile_data').then((res) => {
+  await axios.get('http://localhost:5000/user/get_profile_data').then((res) => {
     chart_data.value.piechart_data = res.data.device_data;
     chart_data.value.top_quiz_names = res.data.top_quiz_names;
     chart_data.value.user_activity_data = res.data.user_activity_data;

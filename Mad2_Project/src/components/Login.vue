@@ -42,7 +42,7 @@ onMounted(()=>{
     async function login(data) {
         sessionStorage.clear();
 
-        await axios.post("https://quiz-app-chz3.onrender.com/user/add_device",{"device":device_data.value}).then((res) => {
+        await axios.post("http://localhost:5000/user/add_device",{"device":device_data.value}).then((res) => {
             console.log(res);
         }).catch((err) => {
             console.log(err);
@@ -50,11 +50,11 @@ onMounted(()=>{
         var url="";
         var location="";
         if(data.type==="Admin"){
-            url="https://quiz-app-chz3.onrender.com/admin/authorize";
+            url="http://localhost:5000/admin/authorize";
             location="/admin/home";
         }
         else{
-            url="https://quiz-app-chz3.onrender.com/user/user_authorize";
+            url="http://localhost:5000/user/user_authorize";
             location="/user/home";
         }
 

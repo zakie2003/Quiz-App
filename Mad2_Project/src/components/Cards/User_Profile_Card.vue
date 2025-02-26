@@ -10,7 +10,7 @@ const role=ref(sessionStorage.getItem('role'));
 
 
 const delete_user=async(id)=>{
-  await axios("https://quiz-app-chz3.onrender.com/admin/delete_user?email="+id).then((res)=>{
+  await axios("http://localhost:5000/admin/delete_user?email="+id).then((res)=>{
     console.log(res);
   }).catch((err)=>{
     console.log(err);

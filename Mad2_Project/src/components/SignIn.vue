@@ -30,7 +30,7 @@ const generate_opt=()=>{
 
 const send_opt=async()=>{
     var otp=generate_opt();
-    await axios.post("https://quiz-app-chz3.onrender.com/user/send_otp",{"email":data.email,"otp":otp}).then((res)=>{
+    await axios.post("http://localhost:5000/user/send_otp",{"email":data.email,"otp":otp}).then((res)=>{
         console.log(res);
         resp_status.status=res.data.status;
         resp_status.message=res.data.message;
@@ -42,7 +42,7 @@ const send_opt=async()=>{
 
 const resend_opt=async()=>{
     var otp=generate_opt();
-    await axios.post("https://quiz-app-chz3.onrender.com/user/resend_otp",{"email":data.email,"otp":otp}).then((res)=>{
+    await axios.post("http://localhost:5000/user/resend_otp",{"email":data.email,"otp":otp}).then((res)=>{
         console.log(res);
         resp_status.status=res.data.status;
         resp_status.message=res.data.message;
@@ -53,7 +53,7 @@ const resend_opt=async()=>{
 }
 
 const handle_submit=async()=>{
-    await axios.post("https://quiz-app-chz3.onrender.com/user/create_user",data).then((res)=>{
+    await axios.post("http://localhost:5000/user/create_user",data).then((res)=>{
         console.log(res);
         resp_status.status=res.data.status;
         resp_status.message=res.data.message;

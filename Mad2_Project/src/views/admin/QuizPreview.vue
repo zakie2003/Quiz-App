@@ -20,7 +20,7 @@ const get_quiz=async()=>{
   const urlParams=window.location.pathname;
   const parts=urlParams.split('/');
   const quiz_id=parts[parts.length-1];
-  await axios.post("https://quiz-app-chz3.onrender.com/admin/get_quiz",{"quiz_id":quiz_id}).then((res)=>{
+  await axios.post("http://localhost:5000/admin/get_quiz",{"quiz_id":quiz_id}).then((res)=>{
     quiz_data.value=res.data;
     loading.value = false;
   }).catch((err)=>{
@@ -34,7 +34,7 @@ const get_questions=async()=>{
   const parts=urlParams.split('/');
   const quiz_id=parts[parts.length-1];
   const chapter_name=parts[parts.length-2];
-  await axios.post("https://quiz-app-chz3.onrender.com/admin/get_questions",{"chapter_name":chapter_name,"quiz_id":quiz_id}).then((res)=>{
+  await axios.post("http://localhost:5000/admin/get_questions",{"chapter_name":chapter_name,"quiz_id":quiz_id}).then((res)=>{
     quiz_data.value.questions=res.data.data;
     console.log(quiz_data.value);
     loading.value = false;
@@ -71,7 +71,7 @@ const edit_question=(id)=>{
 }
 
 const delete_question=async(id)=>{
-  await axios.post("https://quiz-app-chz3.onrender.com/admin/delete_question",{"id":id}).then((res)=>{
+  await axios.post("http://localhost:5000/admin/delete_question",{"id":id}).then((res)=>{
     console.log(res);
     get_questions();
   }).then((err)=>{

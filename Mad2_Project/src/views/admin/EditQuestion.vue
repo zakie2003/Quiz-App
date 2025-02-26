@@ -21,7 +21,7 @@ const get_question = async () => {
   const question_id = parts[parts.length - 1]; // Extract the question_id
 
   try {
-    const res = await axios.post("https://quiz-app-chz3.onrender.com/admin/get_question", { question_id });
+    const res = await axios.post("http://localhost:5000/admin/get_question", { question_id });
     // Ensure the API response matches the structure of `data`
     if (res.data && res.data.data) {
       Object.assign(data, res.data.data);
@@ -51,7 +51,7 @@ const add_question = async () => {
   };
 
   try {
-     await axios.post("https://quiz-app-chz3.onrender.com/admin/edit_question", formData).then((res) => {
+     await axios.post("http://localhost:5000/admin/edit_question", formData).then((res) => {
        console.log(res);
        window.location.href = "/admin/quiz_dashboard";
      }).catch((err) => {

@@ -14,7 +14,7 @@ const message=ref({
 })
 
 const addSubject = async(data)=>{
-  await axios("https://quiz-app-chz3.onrender.com/admin/add_subject",{
+  await axios("http://localhost:5000/admin/add_subject",{
     method:"POST",
     data:JSON.stringify(data),
     headers:{"Content-Type":"application/json"}
@@ -36,7 +36,7 @@ const addSubject = async(data)=>{
   <nav class="navbar navbar-expand-lg pb-0 bg-body-tertiary">
     <NavAdmin /> 
     <div style="height: 100vh;" class="bg-light w-100">
-      <h1 class="m-4">Create Chapter</h1>
+      <h1 class="m-4">Create Subject</h1>
       <div class="container">
         <ErrorMessage v-if="message.message" :message="message.message" :status="message.status"/>
         <form class="d-flex flex-column w-90" @submit.prevent="addSubject(data)" action="">

@@ -13,7 +13,7 @@ const isLoading = ref(true);
 
 const checkLibrary = async () => {
   try {
-    await axios.post("https://quiz-app-chz3.onrender.com/user/check_quiz_in_library", {
+    await axios.post("http://localhost:5000/user/check_quiz_in_library", {
       "user_id": sessionStorage.getItem("id"),
       "quiz_id": props.item.quiz_id
     }).then((res) => {

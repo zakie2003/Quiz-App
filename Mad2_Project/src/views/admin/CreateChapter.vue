@@ -1,7 +1,8 @@
 <script setup>
 import axios from "axios";
 import NavAdmin from "@/components/NavBar/NavAdmin.vue";
-
+import { ref } from "vue";
+import ErrorMessage from "@/components/Message/ErrorMessage.vue";
 let urlParams = new URLSearchParams(window.location.search);
 const data={
   name:"",
@@ -9,15 +10,22 @@ const data={
   subject_id:urlParams.get('id')
 }
 
+const alert_msg=ref("");
+
 const add_chapter=async(data)=>{
     console.log(data);
-    await axios("https://quiz-app-chz3.onrender.com/admin/add_chapter",{
+    await axios("http://localhost:5000/admin/add_chapter",{
         method:"POST",
         data:JSON.stringify(data),
         headers:{"Content-Type":"application/json"}
     }).then((res)=>{
+      if(res.data.status==200){
         console.log(res.data);
         window.location.href="/admin/home";
+      }
+      else{
+        alert_msg.value=res.data.message;
+      }
     }).catch((err)=>{
         window.alert(err);
     })
@@ -28,7 +36,10 @@ const add_chapter=async(data)=>{
   <nav class="navbar navbar-expand-lg pb-0 bg-body-tertiary">
     <NavAdmin /> 
     <div style="height: 100vh;" class="bg-light w-100">
-      <h1 class="m-4">Create Subject</h1>
+      <div class="container">
+        <ErrorMessage v-if="alert_msg" :message="alert_msg"/>
+      </div>
+      <h1 class="m-4">Create Chapter</h1>
       <div class="container">
         <form class="d-flex flex-column w-90" @submit.prevent="add_chapter(data)" action="">
           <div class="mb-3">

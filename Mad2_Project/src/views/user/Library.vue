@@ -13,7 +13,7 @@ const data=ref({
 const get_my_quizes=async()=>{
   data.value.isLoading=true;
   try {
-    const res = await axios("https://quiz-app-chz3.onrender.com/user/get_my_quizes", {
+    const res = await axios("http://localhost:5000/user/get_my_quizes", {
       method: "POST",
       data:{"user_id":sessionStorage.getItem("id")},
       headers: { "Content-Type": "application/json" }
