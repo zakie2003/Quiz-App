@@ -140,7 +140,7 @@ onMounted(()=>{
                         </div>
                         <div id="collapseOne" class="collapse show w-100" aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
                             <div class="card-body faq_large">
-                                To create a quiz, simply sign up for an account, navigate to the "Create Quiz" section, and follow the prompts to add your questions and answers.
+                                Only admin can create quizes as of now.
                             </div>
                         </div>
                     </div>
@@ -148,13 +148,13 @@ onMounted(()=>{
                         <div class="card-header" id="headingTwo">
                             <h5 class="mb-0">
                                 <button class="btn btn-link collapsed faq_large" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-                                    Can I share my quizzes with others?
+                                    Is the platform fully free?
                                 </button>
                             </h5>
                         </div>
                         <div id="collapseTwo" class="collapse w-100" aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
                             <div class="card-body faq_large">
-                                Yes, you can easily share your quizzes with others by sending them a link or sharing it on social media.
+                                Yes, the platform is currently free, but it may introduce paid features or plans in the future.
                             </div>
                         </div>
                     </div>
@@ -162,19 +162,20 @@ onMounted(()=>{
                         <div class="card-header" id="headingThree">
                             <h5 class="mb-0">
                                 <button class="btn btn-link collapsed faq_large" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
-                                    Is there a limit to the number of quizzes I can create?
+                                    Is there a limit to the number of quizzes I can attempt?
                                 </button>
                             </h5>
                         </div>
                         <div id="collapseThree" class="collapse w-100" aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
                             <div class="card-body faq_large">
-                                No, there is no limit to the number of quizzes you can create. Feel free to create as many quizzes as you like!
+                                No, there is no limit to the number of quizzes you can attempt. Feel free to attempt as many quizzes as you like!
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
+
 
     </div>
     <div id="contact">
@@ -226,6 +227,7 @@ onMounted(()=>{
 }
 
 .card-body:hover {
+    background-color: #4723d9;
     color: aliceblue;
     transition: transform 0.3s ease-in-out;
 }

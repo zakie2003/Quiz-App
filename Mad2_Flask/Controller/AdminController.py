@@ -4,7 +4,7 @@ from sqlalchemy import and_
 import jwt
 from Model.DataBase import db
 from flask_session import Session
-from Model.Model import Admin,Subject,Chapter,Quiz,Question,ReadyQuiz,User
+from Model.Model import Admin,Subject,Chapter,Quiz,Question,ReadyQuiz,User,Quiz_Library,Score
 
 adminbp=Blueprint('adminbp',__name__)
 
@@ -351,12 +351,25 @@ def search():
 @adminbp.route("/delete_user",methods=["GET"])
 def delete_user():
     try:
-        user=User.query.filter(User.email==request.args.get("email")).first()
+        email = request.args.get("email")
+        user = User.query.filter_by(email=email).first()
+
+        if not user:
+            return jsonify({"status": 404, "message": "User not found"})
+
+        Quiz_Library.query.filter_by(user_id=user.id).delete(synchronize_session=False)
+        Score.query.filter_by(user_id=user.id).delete(synchronize_session=False)
+
         db.session.delete(user)
+
+        # Commit changes once
         db.session.commit()
-        return jsonify({"status":200,"message":"User Deleted"})
+
+        return jsonify({"status": 200, "message": "User Deleted"})
+
     except Exception as e:
-        return jsonify({"status":404,"message":f"{e}"})
+        db.session.rollback()  # Rollback in case of any error
+        return jsonify({"status": 500, "message": str(e)})
     
 @adminbp.route("/get_user_data",methods=["POST"])
 def get_user_data():

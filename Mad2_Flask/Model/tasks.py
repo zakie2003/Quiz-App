@@ -59,7 +59,7 @@ def init_tasks(celery):
                 report_text = f"Hello {user.name},\n\nHere is your monthly quiz performance summary:\n\n"
 
                 for quiz in quizzes:
-                    report_text += f"Quiz: {quiz.quiz_id}, Score: {quiz.score}\n"
+                    report_text += f"Date: {quiz.date},Quiz: {quiz.quiz_id}, Score: {quiz.score}\n"
 
                 report_text += "\nKeep up the good work!\n\nBest Regards,\nYour Quiz Team"
 
@@ -93,7 +93,7 @@ def init_tasks(celery):
                             <li>Track your progress over time.</li>
                         </ul>
                         <p>
-                            <a href="#" 
+                            <a href="https://zingy-gelato-29d699.netlify.app" 
                             style="background-color: #4CAF50; color: white; padding: 10px 15px; text-decoration: none; border-radius: 5px;">
                             Take Today's Quiz
                             </a>
@@ -102,10 +102,14 @@ def init_tasks(celery):
                     </body>
                 </html>
                 """
-
+                user_email=User.query.all()
+                mails=[]
+                for i in user_email:
+                    mails.append(i.email)
+        
                 msg = Message("Your Daily Challenge Awaits! 🌟 Take Today's Quiz Now",
                             sender=sender_email,
-                            recipients=["zak2022.khan@gmail.com"])
+                            recipients=mails)
                 msg.body = text  
                 msg.html = html_content  
                 mail.send(msg)
@@ -121,7 +125,7 @@ def init_tasks(celery):
     celery.conf.beat_schedule = {
         "email-task": {
             "task": "send_mail",
-            "schedule": crontab(minute=1),
+            'schedule': crontab(day_of_month='*', hour=10, minute=0),
             "args": (
                 """Ready to test your knowledge and level up your skills? 🎓
                     Your daily quiz is live! Here's your chance to:
@@ -132,7 +136,7 @@ def init_tasks(celery):
         },
         "send-monthly-report": {
             "task": "send_monthy_report",
-            "schedule": crontab(minute=0, hour=0),
+            'schedule': crontab(day_of_month=1, hour=10),
         }
     }
     celery.conf.timezone = 'Asia/Kolkata'

@@ -1,3 +1,3 @@
 User_id,Quiz_id,Question_id,Question Description,User_answer,Correct_answer
-3,3,4,gfdzvn,1,1
-3,3,5,gzfn,3,1
+3,2,2,What is ChatGpt?,3,3
+3,2,3,Vue JS,1,1

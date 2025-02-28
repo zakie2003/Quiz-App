@@ -24,3 +24,6 @@ def make_celery(app):
 
 # celery -A app.celery beat --loglevel=info
 # celery -A app.celery worker --loglevel=info
+# python3 -m venv .venv
+
+# "schedule": crontab(minute="*"),

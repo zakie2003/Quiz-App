@@ -37,7 +37,7 @@ onMounted(()=>{
                     <h3>{{ item.name }}</h3>
                     <p>{{ item.email }}</p>
                 </div>
-                <button v-if="role!='user'" v-on:click="delete_user(item.email)" style="height: 50px;width: 50px;" class="btn delete-button"><i class='bx bxs-trash'></i></button>
+                <button v-if="role!='user'" v-on:click.prevent="delete_user(item.email)" style="height: 50px;width: 50px;z-index: 20;" class="btn delete-button"><i class='bx bxs-trash'></i></button>
             </div>
         </div>
         <div class="profile-details">
