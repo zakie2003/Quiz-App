@@ -4,7 +4,7 @@ MindSpark is a quiz application where users can take quizzes based on their pref
 Admins have full control to create, edit, and delete quizzes, as well as manage user accounts when necessary.
 
 
-![MindSpark Screenshot](Mad2_Project\src\assets\img\ReadmeImg.png)
+![MindSpark Screenshot](Mad2_Project/src/assets/img/ReadmeImg.png)
 
 
 ## Recommended Setup
