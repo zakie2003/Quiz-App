@@ -1,6 +1,8 @@
-# Mad2_Project
+# MindSpark - A Quiz App  
 
-This template should help get you started developing with Vue 3 in Vite.
+MindSpark is a quiz application where users can take quizzes based on their preferences and track their performance on a dedicated dashboard.  
+Admins have full control to create, edit, and delete quizzes, as well as manage user accounts when necessary.
+
 
 ## Recommended Setup
 
@@ -22,7 +24,13 @@ npm install
 npm run dev
 ```
 
+The Vue server will be running on:
+
+**http://localhost:5174**
+
+
 ### Compile and Minify for Production
+
 
 ```sh
 npm run build
