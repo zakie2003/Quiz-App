@@ -143,9 +143,9 @@ def get_chapters():
 def edit_chapter():
     try:
         data=request.json
-        chapter=Chapter.query.filter(Chapter.name==data["name"]).first()
-        question=Question.query.filter(Question.chapter_name==data["name"]).all()
-        if(len(question)>data["numberofquestion"] or data["numberofquestion"]<=0):
+        chapter=Chapter.query.filter(Chapter.name==data["old_name"]).first()
+        question=Question.query.filter(Question.chapter_name==data["old_name"]).all()
+        if(len(question)>int(data["numberofquestion"]) or int(data["numberofquestion"])<=0):
             return jsonify({"status":404,"message":f"Cannot Edit as already {len(question)} question"})
 
         chapter.name=data["name"]

@@ -7,6 +7,7 @@ import { ref } from "vue";
 let urlParams = new URLSearchParams(window.location.search);
 const data={
   name:urlParams.get('name'),
+  old_name:urlParams.get('name'),
   numberofquestion:urlParams.get('numberofquestion'),
   subject_id:urlParams.get('id')
 }
@@ -40,11 +41,11 @@ const edit_chapter=async(data)=>{
       <div class="container">
         <ErrorMessage v-if="alert_message" :message="alert_message"/>
       </div>
-      <h1 class="m-4">Edit Subject</h1>
+      <h1 class="m-4">Edit Chapter</h1>
       <div class="container">
         <form class="d-flex flex-column w-90" @submit.prevent="edit_chapter(data)" action="">
           <div class="mb-3">
-            <label style="font-size: 30px;" class="form-label my-2" for="subject">Subject Name</label>
+            <label style="font-size: 30px;" class="form-label my-2" for="subject">Chapter Name</label>
             <input style="font-size: 20px;" type="text" name="subject" class="form-control"  v-model="data.name" placeholder="Enter Subject Name">
           </div>
           <div class="mb-3">
