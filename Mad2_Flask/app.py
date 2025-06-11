@@ -31,7 +31,7 @@ app.config["SECRET_KEY"] = "secret"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config["SESSION_USE_SIGNER"] = True
 app.config["SESSION_TYPE"] = "redis"
-app.config["SESSION_REDIS"] = Redis(host=os.environ.get("REDIS_HOST"),port=13168,password=os.environ.get("REDIS_PASSWORD"),decode_responses=False)
+app.config["SESSION_REDIS"] = Redis(host=os.environ.get("REDIS_HOST"),port=10427,password=os.environ.get("REDIS_PASSWORD"),decode_responses=False)
 app.config['SESSION_COOKIE_SECURE'] = False
 app.config['SESSION_COOKIE_HTTPONLY'] = True
 app.config['SESSION_COOKIE_SAMESITE'] = 'None'
