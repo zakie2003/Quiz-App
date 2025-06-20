@@ -7,7 +7,8 @@ from flask_session import Session
 from Model.Model import Quiz,Question,User,ReadyQuiz,Quiz_Library,QuizSession,UserAnswerHistory,Score,DeviceTypeCount,UserSinginActivity,User_otp
 from Model.PDF import PDF
 from Model.cache_config import cache
-
+from google import genai
+import os
 userbp=Blueprint('userbp',__name__)
 
 def row2dict(row):
@@ -532,3 +533,20 @@ def get_stats():
         return jsonify({"status":200,"message":"Data received","user_data":row2dict(user),"stats":{"accuracy":accuracy,"quiz_attempted":len(quiz_user_ids)}})
     except Exception as e:
         return jsonify({"status":500,"error":f"Error {e}"})
+
+
+@userbp.route("/summerize_question",methods=["POST"])
+def summerize_question():
+    try:
+        data = request.json
+        question = data["question"]
+        print("Question:", question)
+        client = genai.Client(api_key=os.environ.get("GEMINI_KEY"))
+        response = client.models.generate_content(
+            model="gemini-2.5-flash",
+            contents="Please expain the question:"+question
+        )
+        summary = response.text
+        return jsonify({"status": 200, "summary": summary})
+    except Exception as e:
+        return jsonify({"status": 500, "error": f"Error {e}"})
